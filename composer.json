@@ -1,0 +1,20 @@
+{
+    "name": "codeception/robo-paracept",
+    "description": "Codeception Parallel Execution Tasks via Robo Task Runner",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Davert",
+            "email": "davert.php@resend.cc"
+        }
+    ],
+    "autoload":{
+        "psr-4":{
+            "Codeception\\Task\\":"src"
+        }
+    },
+    "require-dev": {
+        "codeception/codeception": "dev-master",
+        "codegyre/robo": "dev-master"
+    }
+}
