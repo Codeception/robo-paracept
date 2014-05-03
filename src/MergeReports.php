@@ -6,9 +6,9 @@ use Robo\Task\Shared\TaskInterface;
 
 trait MergeReports {
 
-    public function taskMergeXmlReports()
+    public function taskMergeXmlReports($src = [])
     {
-        return new MergeXmlReportsTask();
+        return new MergeXmlReportsTask($src);
     }
     
 }
@@ -20,6 +20,11 @@ class MergeXmlReportsTask implements TaskInterface
     protected $src = [];
     protected $dst;
     protected $summarizeTime = true;
+
+    public function __construct($src = [])
+    {
+        $this->src = $src;
+    }
 
     public function sumTime()
     {
