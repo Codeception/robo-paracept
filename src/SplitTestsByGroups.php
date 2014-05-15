@@ -3,30 +3,23 @@ namespace Codeception\Task;
 
 use Robo\Task\Shared\TaskException;
 use Robo\Task\Shared\TaskInterface;
+use Symfony\Component\Finder\Finder;
 
 trait SplitTestsByGroups {
 
-    public function taskSplitTestsByGroups($numGroups)
+    protected function taskSplitTestsByGroups($numGroups)
     {
         return new SplitTestsByGroupsTask($numGroups);
+    }
+
+    protected function taskSplitTestFilesByGroups($numGroups)
+    {
+        return new SplitTestFilesByGroupsTask($numGroups);
     }
     
 }
 
-/**
- *
- * Loads all tests into groups and saves them to groupfile according to pattern.
- *
- * ``` php
- * <?php
- * $this->taskSplitTestsByGroups(5)
- *    ->testsFrom('tests')
- *    ->groupsTo('tests/_log/paratest_')
- *    ->run();
- * ?>
- */
-class SplitTestsByGroupsTask implements TaskInterface
-{
+abstract class TestsSplitter {
     use \Robo\Output;
 
     protected $numGroups;
@@ -50,6 +43,23 @@ class SplitTestsByGroupsTask implements TaskInterface
         return $this;
     }
 
+}
+
+/**
+ *
+ * Loads all tests into groups and saves them to groupfile according to pattern.
+ *
+ * ``` php
+ * <?php
+ * $this->taskSplitTestsByGroups(5)
+ *    ->testsFrom('tests')
+ *    ->groupsTo('tests/_log/paratest_')
+ *    ->run();
+ * ?>
+ * ```
+ */
+class SplitTestsByGroupsTask extends TestsSplitter implements TaskInterface
+{
     public function run()
     {
         if (!class_exists('\Codeception\TestLoader')) {
@@ -78,3 +88,44 @@ class SplitTestsByGroupsTask implements TaskInterface
     }
 }
 
+/**
+ * Finds all test files and splits them by group.
+ * Unlike `SplitTestsByGroupsTask` does not load them into memory and not requires Codeception to be loaded
+ *
+ * ``` php
+ * <?php
+ * $this->taskSplitTestFilesByGroups(5)
+ *    ->testsFrom('tests')
+ *    ->groupsTo('tests/_log/paratest_')
+ *    ->run();
+ * ?>
+ * ```
+ */
+class SplitTestFilesByGroupsTask extends TestsSplitter implements TaskInterface
+{
+    public function run()
+    {
+        $files = Finder::create()
+            ->name("*Cept.php")
+            ->name("*Cest.php")
+            ->name("*Test.php")
+            ->in($this->testsFrom);
+
+        $i = 0;
+        $groups = [];
+
+        $this->printTaskInfo("Processing ".count($tests)." files");
+        // splitting tests by groups
+        foreach ($files as $file) {
+            $groups[($i % $this->numGroups) + 1][] = $file->getRelativePathname();
+            $i++;
+        }
+
+        // saving group files
+        foreach ($groups as $i => $tests) {
+            $filename = $this->saveTo . $i;
+            $this->printTaskInfo("Writing $filename");
+            file_put_contents($filename, implode("\n", $tests));
+        }
+    }
+}

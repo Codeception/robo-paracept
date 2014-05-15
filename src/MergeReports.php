@@ -6,7 +6,7 @@ use Robo\Task\Shared\TaskInterface;
 
 trait MergeReports {
 
-    public function taskMergeXmlReports($src = [])
+    protected function taskMergeXmlReports($src = [])
     {
         return new MergeXmlReportsTask($src);
     }
