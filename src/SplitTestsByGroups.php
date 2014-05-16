@@ -114,7 +114,7 @@ class SplitTestFilesByGroupsTask extends TestsSplitter implements TaskInterface
         $i = 0;
         $groups = [];
 
-        $this->printTaskInfo("Processing ".count($tests)." files");
+        $this->printTaskInfo("Processing ".count($files)." files");
         // splitting tests by groups
         foreach ($files as $file) {
             $groups[($i % $this->numGroups) + 1][] = $file->getRelativePathname();
