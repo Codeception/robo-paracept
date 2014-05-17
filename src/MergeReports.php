@@ -70,7 +70,7 @@ class MergeXmlReportsTask implements TaskInterface
             if (!file_exists($src)) {
                 throw new TaskException($this, "XML file $src does not exist");
             }
-            $loaded = $srcXml->loadXML(file_get_contents($src));
+            $loaded = $srcXml->load($src);
             if (!$loaded) {
                 throw new TaskException($this, "File $src can't be loaded as XML");
             }
