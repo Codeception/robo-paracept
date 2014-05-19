@@ -95,7 +95,8 @@ class SplitTestsByGroupsTask extends TestsSplitter implements TaskInterface
  * ``` php
  * <?php
  * $this->taskSplitTestFilesByGroups(5)
- *    ->testsFrom('tests')
+ *    ->testsFrom('tests/unit/Acme')
+ *    ->codeceptionRoot('projects/tested')
  *    ->groupsTo('tests/_log/paratest_')
  *    ->run();
  * ?>
@@ -103,13 +104,22 @@ class SplitTestsByGroupsTask extends TestsSplitter implements TaskInterface
  */
 class SplitTestFilesByGroupsTask extends TestsSplitter implements TaskInterface
 {
+    protected $projectRoot;
+    
+    public function projectRoot($path)
+    {
+        $this->projectRoot = $path;
+        return $this;
+    }
+
     public function run()
     {
         $files = Finder::create()
             ->name("*Cept.php")
             ->name("*Cest.php")
             ->name("*Test.php")
-            ->in($this->testsFrom);
+            ->path($this->testsFrom)
+            ->in($this->projectRoot ? $this->projectRoot : getcwd());
 
         $i = 0;
         $groups = [];

@@ -21,7 +21,8 @@ class SplitTestsByGroupsTaskTest extends PHPUnit_Framework_TestCase {
     public function testSplitFilesByGroups()
     {
         $this->taskSplitTestFilesByGroups(5)
-            ->testsFrom(realpath(__DIR__.'/../vendor/codeception/codeception/tests/unit/Codeception/Command'))
+            ->testsFrom('tests/unit/Codeception/Command')
+            ->projectRoot(realpath(__DIR__.'/../vendor/codeception/codeception/'))
             ->groupsTo('tests/result/group_')
             ->run();
 
