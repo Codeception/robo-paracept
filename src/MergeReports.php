@@ -72,7 +72,8 @@ class MergeXmlReportsTask implements TaskInterface
             }
             $loaded = $srcXml->load($src);
             if (!$loaded) {
-                throw new TaskException($this, "File $src can't be loaded as XML");
+                $this->printTaskInfo("<error>File $src can't be loaded as XML</error>");
+                continue;
             }
             $suiteNodes = (new \DOMXPath($srcXml))->query('//testsuites/testsuite');
             foreach ($suiteNodes as $suiteNode) {
