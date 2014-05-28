@@ -9,6 +9,20 @@ Robo tasks for Codeception tests parallel execution. Requires [Robo Task Runner]
 "codeception/robo-paracept":"@dev"
 ```
 
+Include into your RoboFile
+
+```
+<?php
+require_once 'vendor/autoload.php';
+
+class Robofile extends \Robo\Tasks
+{
+    use \Codeception\Task\MergeReports;
+    use \Codeception\Task\SplitTestsByGroups;
+}
+?>
+```
+
 ## Idea
 
 Parallel execution of Codeception tests can be implemented in different ways.
