@@ -11,7 +11,7 @@ Robo tasks for Codeception tests parallel execution. Requires [Robo Task Runner]
 
 Include into your RoboFile
 
-```
+```php
 <?php
 require_once 'vendor/autoload.php';
 
