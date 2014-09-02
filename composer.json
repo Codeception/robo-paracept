@@ -13,8 +13,10 @@
             "Codeception\\Task\\":"src"
         }
     },
+    "require": {
+        "codegyre/robo": "~0.4"
+    },
     "require-dev": {
-        "codeception/codeception": "dev-master",
-        "codegyre/robo": "dev-master"
+        "codeception/codeception": "~2.0"
     }
 }
