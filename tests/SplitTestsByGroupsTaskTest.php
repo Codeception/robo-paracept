@@ -1,9 +1,7 @@
 <?php
-//require_once "/home/davert/projects/Robo/vendor/autoload.php";
-//require_once "/home/davert/Codeception/autoload.php";
 
-class SplitTestsByGroupsTaskTest extends PHPUnit_Framework_TestCase {
-
+class SplitTestsByGroupsTaskTest extends PHPUnit_Framework_TestCase
+{
     use \Codeception\Task\SplitTestsByGroups;
 
     public function testGroupsCanBeSplit()
@@ -33,10 +31,9 @@ class SplitTestsByGroupsTaskTest extends PHPUnit_Framework_TestCase {
 
     public function setUp()
     {
+        @mkdir('tests/result');
         for ($i = 1; $i <= 10; $i++) {
             @unlink("tests/result/group_$i");
         }
     }
-    
 }
- 
