@@ -1,5 +1,4 @@
 <?php
-//require_once "/home/davert/projects/Robo/vendor/autoload.php";
 
 class MergeJUnitReportsTest extends \PHPUnit_Framework_TestCase
 {
@@ -23,7 +22,7 @@ class MergeJUnitReportsTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
+        @mkdir('tests/result');
         @unlink('tests/result/merged.xml');
     }
-
-} 
+}

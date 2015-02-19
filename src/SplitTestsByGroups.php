@@ -1,12 +1,14 @@
 <?php
 namespace Codeception\Task;
 
-use Robo\Task\Shared\TaskException;
-use Robo\Task\Shared\TaskInterface;
+use Robo\Common\TaskIO;
+use Robo\Contract\TaskInterface;
+use Robo\Exception\TaskException;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
 
-trait SplitTestsByGroups {
-
+trait SplitTestsByGroups
+{
     protected function taskSplitTestsByGroups($numGroups)
     {
         return new SplitTestsByGroupsTask($numGroups);
@@ -16,11 +18,11 @@ trait SplitTestsByGroups {
     {
         return new SplitTestFilesByGroupsTask($numGroups);
     }
-    
 }
 
-abstract class TestsSplitter {
-    use \Robo\Output;
+abstract class TestsSplitter
+{
+    use TaskIO;
 
     protected $numGroups;
     protected $testsFrom = 'tests';
@@ -42,7 +44,6 @@ abstract class TestsSplitter {
         $this->saveTo = $pattern;
         return $this;
     }
-
 }
 
 /**
@@ -126,6 +127,7 @@ class SplitTestFilesByGroupsTask extends TestsSplitter implements TaskInterface
 
         $this->printTaskInfo("Processing ".count($files)." files");
         // splitting tests by groups
+        /** @var SplFileInfo $file */
         foreach ($files as $file) {
             $groups[($i % $this->numGroups) + 1][] = $file->getRelativePathname();
             $i++;

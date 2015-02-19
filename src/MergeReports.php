@@ -1,21 +1,21 @@
 <?php
 namespace Codeception\Task;
 
-use Robo\Task\Shared\TaskException;
-use Robo\Task\Shared\TaskInterface;
+use Robo\Common\TaskIO;
+use Robo\Contract\TaskInterface;
+use Robo\Exception\TaskException;
 
-trait MergeReports {
-
+trait MergeReports
+{
     protected function taskMergeXmlReports($src = [])
     {
         return new MergeXmlReportsTask($src);
     }
-    
 }
 
 class MergeXmlReportsTask implements TaskInterface
 {
-    use \Robo\Output;
+    use TaskIO;
 
     protected $src = [];
     protected $dst;
@@ -110,9 +110,9 @@ class MergeXmlReportsTask implements TaskInterface
             $resulted->setAttribute('time', max($current->getAttribute('time'), $resulted->getAttribute('time')));
         }
 
+        /** @var \DOMNode $node */
         foreach ($current->childNodes as $node) {
             $resulted->appendChild($node->cloneNode(true));
         }
     }
 }
-
