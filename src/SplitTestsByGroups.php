@@ -63,10 +63,10 @@ class SplitTestsByGroupsTask extends TestsSplitter implements TaskInterface
 {
     public function run()
     {
-        if (!class_exists('\Codeception\TestLoader')) {
+        if (!class_exists('\Codeception\Lib\TestLoader')) {
             throw new TaskException($this, "This task requires Codeception to be loaded. Please require autoload.php of Codeception");
         }
-        $testLoader = new \Codeception\TestLoader($this->testsFrom);
+        $testLoader = new \Codeception\Lib\TestLoader($this->testsFrom);
         $testLoader->loadTests();
         $tests = $testLoader->getTests();
 
