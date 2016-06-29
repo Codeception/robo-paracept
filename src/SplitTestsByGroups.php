@@ -25,12 +25,19 @@ abstract class TestsSplitter
     use TaskIO;
 
     protected $numGroups;
+    protected $projectRoot = '.';
     protected $testsFrom = 'tests';
-    protected $saveTo = 'tests/_log/paracept_';
+    protected $saveTo = 'tests/_data/paracept_';
 
     public function __construct($groups)
     {
         $this->numGroups = $groups;
+    }
+    
+    public function projectRoot($path)
+    {
+        $this->projectRoot = $path;
+        return $this;
     }
 
     public function testsFrom($path)
@@ -63,17 +70,17 @@ class SplitTestsByGroupsTask extends TestsSplitter implements TaskInterface
 {
     public function run()
     {
-        if (!class_exists('\Codeception\Lib\TestLoader')) {
+        if (!class_exists('\Codeception\Test\Loader')) {
             throw new TaskException($this, "This task requires Codeception to be loaded. Please require autoload.php of Codeception");
         }
-        $testLoader = new \Codeception\Lib\TestLoader($this->testsFrom);
-        $testLoader->loadTests();
+        $testLoader = new \Codeception\Test\Loader(['path' => $this->testsFrom]);
+        $testLoader->loadTests($this->testsFrom);
         $tests = $testLoader->getTests();
 
         $i = 0;
         $groups = [];
 
-        $this->printTaskInfo("Processing ".count($tests)." files");
+        $this->printTaskInfo("Processing ".count($tests)." tests");
         // splitting tests by groups
         foreach ($tests as $test) {
             $groups[($i % $this->numGroups) + 1][] = \Codeception\TestCase::getTestFullName($test);
@@ -105,13 +112,6 @@ class SplitTestsByGroupsTask extends TestsSplitter implements TaskInterface
  */
 class SplitTestFilesByGroupsTask extends TestsSplitter implements TaskInterface
 {
-    protected $projectRoot;
-    
-    public function projectRoot($path)
-    {
-        $this->projectRoot = $path;
-        return $this;
-    }
 
     public function run()
     {
