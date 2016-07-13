@@ -12,11 +12,5 @@
         "psr-4":{
             "Codeception\\Task\\":"src"
         }
-    },
-    "require": {
-        "codegyre/robo": "~0.6.0"
-    },
-    "require-dev": {
-        "codeception/codeception": "~2.0"
     }
 }
