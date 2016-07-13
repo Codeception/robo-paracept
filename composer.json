@@ -2,6 +2,7 @@
     "name": "codeception/robo-paracept",
     "description": "Codeception Parallel Execution Tasks via Robo Task Runner",
     "license": "MIT",
+    "minimum-stability": "dev",
     "authors": [
         {
             "name": "Davert",
