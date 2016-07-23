@@ -14,7 +14,7 @@
         }
     },
     "require": {
-        "codegyre/robo": "~0.6.0"
+        "codegyre/robo": "~0.7.0"
     },
     "require-dev": {
         "codeception/codeception": "~2.0"
