@@ -168,7 +168,7 @@ class MergeHTMLReportsTask implements TaskInterface
         //save initial statament and switch on use_internal_errors mode
         $this->previousLibXmlUseErrors = libxml_use_internal_errors(true);
 		
-		$this->setLogger(new Logger('robo-paracept'));
+        $this->setLogger(new Logger('robo-paracept'));
 
         if (!$this->dst) {
             libxml_use_internal_errors($this->previousLibXmlUseErrors);

@@ -71,6 +71,8 @@ class SplitTestsByGroupsTask extends TestsSplitter implements TaskInterface
 {
     public function run()
     {
+        $this->setLogger(new Logger('robo-paracept'));
+						
         if (!class_exists('\Codeception\Test\Loader')) {
             throw new TaskException($this, "This task requires Codeception to be loaded. Please require autoload.php of Codeception");
         }
@@ -80,8 +82,6 @@ class SplitTestsByGroupsTask extends TestsSplitter implements TaskInterface
 
         $i = 0;
         $groups = [];
-
-		$this->setLogger(new Logger('robo-paracept'));
 
         $this->printTaskInfo("Processing ".count($tests)." tests");
         // splitting tests by groups
@@ -118,6 +118,8 @@ class SplitTestFilesByGroupsTask extends TestsSplitter implements TaskInterface
 
     public function run()
     {
+        $this->setLogger(new Logger('robo-paracept'));
+						
         $files = Finder::create()
             ->name("*Cept.php")
             ->name("*Cest.php")
