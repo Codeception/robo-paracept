@@ -6,6 +6,7 @@ use Robo\Contract\TaskInterface;
 use Robo\Exception\TaskException;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
+use Monolog\Logger;
 
 trait SplitTestsByGroups
 {
@@ -79,6 +80,8 @@ class SplitTestsByGroupsTask extends TestsSplitter implements TaskInterface
 
         $i = 0;
         $groups = [];
+
+		$this->setLogger(new Logger('robo-paracept'));
 
         $this->printTaskInfo("Processing ".count($tests)." tests");
         // splitting tests by groups
