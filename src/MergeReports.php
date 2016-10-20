@@ -4,22 +4,22 @@ namespace Codeception\Task;
 use Robo\Common\TaskIO;
 use Robo\Contract\TaskInterface;
 use Robo\Exception\TaskException;
-use Monolog\Logger;
+use Robo\Task\BaseTask;
 
 trait MergeReports
 {
     protected function taskMergeXmlReports($src = [])
     {
-        return new MergeXmlReportsTask($src);
+        return $this->task(MergeXmlReportsTask::class, $src);
     }
 
     protected function taskMergeHTMLReports($src = [])
     {
-        return new MergeHTMLReportsTask($src);
+        return $this->task(MergeHTMLReportsTask::class, $src);
     }
 }
 
-class MergeXmlReportsTask implements TaskInterface
+class MergeXmlReportsTask extends BaseTask implements TaskInterface
 {
     use TaskIO;
 
@@ -30,7 +30,6 @@ class MergeXmlReportsTask implements TaskInterface
     public function __construct($src = [])
     {
         $this->src = $src;
-        $this->setLogger(new Logger('robo-paracept'));				
     }
 
     public function sumTime()
@@ -129,7 +128,7 @@ class MergeXmlReportsTask implements TaskInterface
  * Class MergeHTMLReportsTask
  * @author Kerimov Asif
  */
-class MergeHTMLReportsTask implements TaskInterface
+class MergeHTMLReportsTask extends BaseTask implements TaskInterface
 {
     use TaskIO;
 

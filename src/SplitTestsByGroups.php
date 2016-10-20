@@ -4,24 +4,24 @@ namespace Codeception\Task;
 use Robo\Common\TaskIO;
 use Robo\Contract\TaskInterface;
 use Robo\Exception\TaskException;
+use Robo\Task\BaseTask;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
-use Monolog\Logger;
 
 trait SplitTestsByGroups
 {
     protected function taskSplitTestsByGroups($numGroups)
     {
-        return new SplitTestsByGroupsTask($numGroups);
+        return $this->task(SplitTestsByGroupsTask::class, $numGroups);
     }
 
     protected function taskSplitTestFilesByGroups($numGroups)
     {
-        return new SplitTestFilesByGroupsTask($numGroups);
+        return $this->task(SplitTestFilesByGroupsTask::class, $numGroups);
     }
 }
 
-abstract class TestsSplitter
+abstract class TestsSplitter extends BaseTask
 {
     use TaskIO;
 
@@ -33,7 +33,6 @@ abstract class TestsSplitter
     public function __construct($groups)
     {
         $this->numGroups = $groups;
-        $this->setLogger(new Logger('robo-paracept'));
     }
     
     public function projectRoot($path)
