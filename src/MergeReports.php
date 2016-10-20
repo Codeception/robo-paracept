@@ -30,6 +30,7 @@ class MergeXmlReportsTask implements TaskInterface
     public function __construct($src = [])
     {
         $this->src = $src;
+        $this->setLogger(new Logger('robo-paracept'));				
     }
 
     public function sumTime()
@@ -60,8 +61,6 @@ class MergeXmlReportsTask implements TaskInterface
 
     public function run()
     {
-        $this->setLogger(new Logger('robo-paracept'));
-		
         if (!$this->dst) {
             throw new TaskException($this, "No destination file is set. Use `->into()` method to set result xml");
         }
@@ -168,8 +167,6 @@ class MergeHTMLReportsTask implements TaskInterface
         //save initial statament and switch on use_internal_errors mode
         $this->previousLibXmlUseErrors = libxml_use_internal_errors(true);
 		
-        $this->setLogger(new Logger('robo-paracept'));
-
         if (!$this->dst) {
             libxml_use_internal_errors($this->previousLibXmlUseErrors);
             throw new TaskException($this, "No destination file is set. Use `->into()` method to set result HTML");

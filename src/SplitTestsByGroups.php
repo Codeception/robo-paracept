@@ -33,6 +33,7 @@ abstract class TestsSplitter
     public function __construct($groups)
     {
         $this->numGroups = $groups;
+        $this->setLogger(new Logger('robo-paracept'));
     }
     
     public function projectRoot($path)
@@ -71,8 +72,6 @@ class SplitTestsByGroupsTask extends TestsSplitter implements TaskInterface
 {
     public function run()
     {
-        $this->setLogger(new Logger('robo-paracept'));
-						
         if (!class_exists('\Codeception\Test\Loader')) {
             throw new TaskException($this, "This task requires Codeception to be loaded. Please require autoload.php of Codeception");
         }
@@ -118,8 +117,6 @@ class SplitTestFilesByGroupsTask extends TestsSplitter implements TaskInterface
 
     public function run()
     {
-        $this->setLogger(new Logger('robo-paracept'));
-						
         $files = Finder::create()
             ->name("*Cept.php")
             ->name("*Cest.php")
