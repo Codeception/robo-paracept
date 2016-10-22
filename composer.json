@@ -5,7 +5,7 @@
     "authors": [
         {
             "name": "Davert",
-            "email": "davert.php@resend.cc"
+            "email": "davert@codeception.com"
         }
     ],
     "autoload":{
@@ -14,9 +14,9 @@
         }
     },
     "require": {
-        "codegyre/robo": "~0.7.0"
+        "consolidation/robo": ">0.7.0 <2.0"
     },
     "require-dev": {
-        "codeception/codeception": "~2.0"
+        "codeception/base": "~2.2"
     }
 }

@@ -1,12 +1,12 @@
 robo-paracept
 =============
 
-Robo tasks for Codeception tests parallel execution. Requires [Robo Task Runner](https://github.com/Codegyre/Robo)
+Robo tasks for Codeception tests parallel execution. Requires [Robo Task Runner](http://robo.li)
 
 ## Install via Composer
 
 ```
-"codeception/robo-paracept":"@dev"
+"codeception/robo-paracept":"~0.2"
 ```
 
 Include into your RoboFile
@@ -15,7 +15,7 @@ Include into your RoboFile
 <?php
 require_once 'vendor/autoload.php';
 
-class Robofile extends \Robo\Tasks
+class RoboFile extends \Robo\Tasks
 {
     use \Codeception\Task\MergeReports;
     use \Codeception\Task\SplitTestsByGroups;
