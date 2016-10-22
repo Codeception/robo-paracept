@@ -1,6 +1,11 @@
 robo-paracept
 =============
 
+[![Build Status](https://travis-ci.org/Codeception/robo-paracept.svg?branch=master)](https://travis-ci.org/Codeception/robo-paracept) 
+[![Latest Stable Version](https://poser.pugx.org/codeception/robo-paracept/version)](https://packagist.org/packages/codeception/robo-paracept)
+[![Total Downloads](https://poser.pugx.org/codeception/robo-paracept/downloads)](https://packagist.org/packages/codeception/robo-paracept)
+[![License](https://poser.pugx.org/codeception/robo-paracept/license)](https://packagist.org/packages/codeception/robo-paracept)
+
 Robo tasks for Codeception tests parallel execution. Requires [Robo Task Runner](http://robo.li)
 
 ## Install via Composer
