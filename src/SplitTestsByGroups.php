@@ -23,8 +23,6 @@ trait SplitTestsByGroups
 
 abstract class TestsSplitter extends BaseTask
 {
-    use TaskIO;
-
     protected $numGroups;
     protected $projectRoot = '.';
     protected $testsFrom = 'tests';
