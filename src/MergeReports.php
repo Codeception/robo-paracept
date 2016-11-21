@@ -1,7 +1,6 @@
 <?php
 namespace Codeception\Task;
 
-use Robo\Common\TaskIO;
 use Robo\Contract\TaskInterface;
 use Robo\Exception\TaskException;
 use Robo\Task\BaseTask;
@@ -21,8 +20,6 @@ trait MergeReports
 
 class MergeXmlReportsTask extends BaseTask implements TaskInterface
 {
-    use TaskIO;
-
     protected $src = [];
     protected $dst;
     protected $summarizeTime = true;
@@ -130,8 +127,6 @@ class MergeXmlReportsTask extends BaseTask implements TaskInterface
  */
 class MergeHTMLReportsTask extends BaseTask implements TaskInterface
 {
-    use TaskIO;
-
     protected $src = [];
     protected $dst;
     protected $countSuccess = 0;
