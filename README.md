@@ -1,12 +1,17 @@
 robo-paracept
 =============
 
-Robo tasks for Codeception tests parallel execution. Requires [Robo Task Runner](https://github.com/Codegyre/Robo)
+[![Build Status](https://travis-ci.org/Codeception/robo-paracept.svg?branch=master)](https://travis-ci.org/Codeception/robo-paracept) 
+[![Latest Stable Version](https://poser.pugx.org/codeception/robo-paracept/version)](https://packagist.org/packages/codeception/robo-paracept)
+[![Total Downloads](https://poser.pugx.org/codeception/robo-paracept/downloads)](https://packagist.org/packages/codeception/robo-paracept)
+[![License](https://poser.pugx.org/codeception/robo-paracept/license)](https://packagist.org/packages/codeception/robo-paracept)
+
+Robo tasks for Codeception tests parallel execution. Requires [Robo Task Runner](http://robo.li)
 
 ## Install via Composer
 
 ```
-"codeception/robo-paracept":"@dev"
+"codeception/robo-paracept":"~0.2"
 ```
 
 Include into your RoboFile
@@ -15,7 +20,7 @@ Include into your RoboFile
 <?php
 require_once 'vendor/autoload.php';
 
-class Robofile extends \Robo\Tasks
+class RoboFile extends \Robo\Tasks
 {
     use \Codeception\Task\MergeReports;
     use \Codeception\Task\SplitTestsByGroups;
@@ -35,6 +40,44 @@ Thus, we are going to prepare a set of predefined tasks that can be combined and
 
 Loads tests from a folder and distributes them between groups.
 
-### MergeReports
+```php
+$this->taskSplitTestsByGroups(5)
+    ->testsFrom('tests/acceptance')
+    ->projectRoot('.')
+    ->groupsTo('tests/_data/group_')
+    ->run();
+```
 
-Mergex several XML reports
+this command uses `Codeception\Test\Loader` to load tests and organize them between group. If you want just split test file and not actual tests (and not load tests into memory) you can use:
+
+```php
+$this->taskSplitTestFilesByGroups(5)
+   ->testsFrom('tests')
+   ->groupsTo('tests/_data/paratest_')
+   ->run();
+```
+
+### MergeXmlReports
+
+Mergex several XML reports:
+
+```php
+$this->taskMergeXmlReports()
+    ->from('tests/result/result1.xml')
+    ->from('tests/result/result2.xml')
+    ->into('tests/result/merged.xml')
+    ->run();
+```
+
+
+### MergeHtmlReports
+
+Mergex several HTML reports:
+
+```php
+$this->taskMergeHtmlReports()
+    ->from('tests/result/result1.html')
+    ->from('tests/result/result2.html')
+    ->into('tests/result/merged.html')
+    ->run();
+```

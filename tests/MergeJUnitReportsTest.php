@@ -2,12 +2,12 @@
 
 class MergeJUnitReportsTest extends \PHPUnit_Framework_TestCase
 {
-    use \Codeception\Task\MergeReports;
+    use Codeception\Task\MergeReports;
 
     public function testMergeReports()
     {
-        $this->taskMergeXmlReports()
-            ->from('tests/fixtures/result1.xml')
+        $task = new Codeception\Task\MergeXmlReportsTask;
+        $task->from('tests/fixtures/result1.xml')
             ->from('tests/fixtures/result2.xml')
             ->into('tests/result/merged.xml')
             ->run();
