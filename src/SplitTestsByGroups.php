@@ -1,7 +1,6 @@
 <?php
 namespace Codeception\Task;
 
-use Robo\Common\TaskIO;
 use Robo\Contract\TaskInterface;
 use Robo\Exception\TaskException;
 use Robo\Task\BaseTask;
@@ -23,8 +22,6 @@ trait SplitTestsByGroups
 
 abstract class TestsSplitter extends BaseTask
 {
-    use TaskIO;
-
     protected $numGroups;
     protected $projectRoot = '.';
     protected $testsFrom = 'tests';
