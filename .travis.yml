@@ -6,10 +6,12 @@ cache:
     - $HOME/.composer/cache
 
 php:
+  - 5.6
   - 7
+  - 7.1
 
 before_script:
   - composer install
 
 script: 
-  - composer exec phpunit tests
+  - composer exec phpunit  -- tests --bootstrap tests/bootstrap.php

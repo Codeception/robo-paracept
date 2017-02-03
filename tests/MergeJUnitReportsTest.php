@@ -7,6 +7,7 @@ class MergeJUnitReportsTest extends \PHPUnit_Framework_TestCase
     public function testMergeReports()
     {
         $task = new Codeception\Task\MergeXmlReportsTask;
+        $task->setLogger(new \Consolidation\Log\Logger(new \Symfony\Component\Console\Output\NullOutput()));
         $task->from('tests/fixtures/result1.xml')
             ->from('tests/fixtures/result2.xml')
             ->into('tests/result/merged.xml')

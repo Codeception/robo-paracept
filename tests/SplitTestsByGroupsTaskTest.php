@@ -7,6 +7,7 @@ class SplitTestsByGroupsTaskTest extends PHPUnit_Framework_TestCase
     public function testGroupsCanBeSplit()
     {
         $task = new Codeception\Task\SplitTestsByGroupsTask(10);
+        $task->setLogger(new \Consolidation\Log\Logger(new \Symfony\Component\Console\Output\NullOutput()));
         $task->testsFrom('vendor/codeception/base/tests/unit/Codeception/Command')
             ->groupsTo('tests/result/group_')
             ->run();
@@ -19,6 +20,7 @@ class SplitTestsByGroupsTaskTest extends PHPUnit_Framework_TestCase
     public function testSplitFilesByGroups()
     {
         $task = new Codeception\Task\SplitTestsByGroupsTask(5);
+        $task->setLogger(new \Consolidation\Log\Logger(new \Symfony\Component\Console\Output\NullOutput()));
         $task->testsFrom('vendor/codeception/base/tests/unit/Codeception/Command')
             ->projectRoot('vendor/codeception/base/')
             ->groupsTo('tests/result/group_')
