@@ -34,28 +34,30 @@ abstract class TestsSplitter extends BaseTask
     {
         $this->numGroups = $groups;
     }
-    
+
     public function projectRoot($path)
     {
         $this->projectRoot = $path;
+
         return $this;
     }
 
     public function testsFrom($path)
     {
         $this->testsFrom = $path;
+
         return $this;
     }
 
     public function groupsTo($pattern)
     {
         $this->saveTo = $pattern;
+
         return $this;
     }
 }
 
 /**
- *
  * Loads all tests into groups and saves them to groupfile according to pattern.
  *
  * ``` php
@@ -72,7 +74,7 @@ class SplitTestsByGroupsTask extends TestsSplitter implements TaskInterface
     public function run()
     {
         if (!class_exists('\Codeception\Test\Loader')) {
-            throw new TaskException($this, "This task requires Codeception to be loaded. Please require autoload.php of Codeception");
+            throw new TaskException($this, 'This task requires Codeception to be loaded. Please require autoload.php of Codeception');
         }
         $testLoader = new \Codeception\Test\Loader(['path' => $this->testsFrom]);
         $testLoader->loadTests($this->testsFrom);
@@ -81,7 +83,7 @@ class SplitTestsByGroupsTask extends TestsSplitter implements TaskInterface
         $i = 0;
         $groups = [];
 
-        $this->printTaskInfo("Processing ".count($tests)." tests");
+        $this->printTaskInfo('Processing ' . count($tests) . ' tests');
         // splitting tests by groups
         foreach ($tests as $test) {
             $groups[($i % $this->numGroups) + 1][] = \Codeception\Test\Descriptor::getTestFullName($test);
@@ -99,7 +101,7 @@ class SplitTestsByGroupsTask extends TestsSplitter implements TaskInterface
 
 /**
  * Finds all test files and splits them by group.
- * Unlike `SplitTestsByGroupsTask` does not load them into memory and not requires Codeception to be loaded
+ * Unlike `SplitTestsByGroupsTask` does not load them into memory and not requires Codeception to be loaded.
  *
  * ``` php
  * <?php
@@ -113,20 +115,20 @@ class SplitTestsByGroupsTask extends TestsSplitter implements TaskInterface
  */
 class SplitTestFilesByGroupsTask extends TestsSplitter implements TaskInterface
 {
-
     public function run()
     {
         $files = Finder::create()
-            ->name("*Cept.php")
-            ->name("*Cest.php")
-            ->name("*Test.php")
+            ->name('*Cept.php')
+            ->name('*Cest.php')
+            ->name('*Test.php')
+            ->name('*.feature')
             ->path($this->testsFrom)
             ->in($this->projectRoot ? $this->projectRoot : getcwd());
 
         $i = 0;
         $groups = [];
 
-        $this->printTaskInfo("Processing ".count($files)." files");
+        $this->printTaskInfo('Processing ' . count($files) . ' files');
         // splitting tests by groups
         /** @var SplFileInfo $file */
         foreach ($files as $file) {
