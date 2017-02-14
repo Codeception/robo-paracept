@@ -18,7 +18,14 @@ trait MergeReports
     }
 }
 
-class MergeXmlReportsTask extends BaseTask implements TaskInterface
+interface MergeReportsTaskInterface
+{
+    public function from($fileName);
+
+    public function into($fileName);
+}
+
+class MergeXmlReportsTask extends BaseTask implements TaskInterface, MergeReportsTaskInterface
 {
     protected $src = [];
     protected $dst;
@@ -125,7 +132,7 @@ class MergeXmlReportsTask extends BaseTask implements TaskInterface
  * Class MergeHTMLReportsTask
  * @author Kerimov Asif
  */
-class MergeHTMLReportsTask extends BaseTask implements TaskInterface
+class MergeHTMLReportsTask extends BaseTask implements TaskInterface, MergeReportsTaskInterface
 {
     protected $src = [];
     protected $dst;
