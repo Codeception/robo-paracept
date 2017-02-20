@@ -225,7 +225,7 @@ class MergeHTMLReportsTask extends BaseTask implements TaskInterface, MergeRepor
      * @param $dstFile \DOMDocument - destination file
      */
     private function countSummary($dstFile){
-        $tests = (new \DOMXPath($dstFile))->query("//table//tr[contains(@class,'scenarioRow')]");
+        $tests = (new \DOMXPath($dstFile))->query("//table/tr[contains(@class,'scenarioRow')]");
         foreach($tests as $test){
             $class = str_replace('scenarioRow ', '', $test->getAttribute('class'));
             switch($class){
