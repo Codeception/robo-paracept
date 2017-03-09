@@ -28,6 +28,14 @@ class RoboFile extends \Robo\Tasks
 ?>
 ```
 
+Enable extension for collect execution time of you use taskSplitTestsByTime
+
+```
+extensions:
+    enabled:
+        - Codeception\Task\TimeReporter
+```
+
 ## Idea
 
 Parallel execution of Codeception tests can be implemented in different ways.
@@ -38,7 +46,17 @@ Thus, we are going to prepare a set of predefined tasks that can be combined and
 
 ### SplitTestsByGroups
 
-Loads tests from a folder and distributes them between groups.
+Loads tests from a folder and distributes them between groups by execution time.
+
+```php
+$this->taskSplitTestsByTime(5)
+    ->testsFrom('tests/acceptance')
+    ->projectRoot('.')
+    ->groupsTo('tests/_data/group_')
+    ->run();
+```
+
+this command need run all tests with `Codeception\Task\TimeReporter` for collect execution time. If you want just split tests between group (and not execute its) you can use:
 
 ```php
 $this->taskSplitTestsByGroups(5)
