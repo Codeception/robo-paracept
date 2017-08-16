@@ -26,6 +26,7 @@ abstract class TestsSplitter extends BaseTask
     protected $projectRoot = '.';
     protected $testsFrom = 'tests';
     protected $saveTo = 'tests/_data/paracept_';
+    protected $excludePath = 'vendor';
 
     public function __construct($groups)
     {
@@ -49,6 +50,13 @@ abstract class TestsSplitter extends BaseTask
     public function groupsTo($pattern)
     {
         $this->saveTo = $pattern;
+
+        return $this;
+    }
+
+    public function excludePath($path)
+    {
+        $this->excludePath = $path;
 
         return $this;
     }
@@ -120,7 +128,8 @@ class SplitTestFilesByGroupsTask extends TestsSplitter implements TaskInterface
             ->name('*Test.php')
             ->name('*.feature')
             ->path($this->testsFrom)
-            ->in($this->projectRoot ? $this->projectRoot : getcwd());
+            ->in($this->projectRoot ? $this->projectRoot : getcwd())
+            ->exclude($this->excludePath);
 
         $i = 0;
         $groups = [];
