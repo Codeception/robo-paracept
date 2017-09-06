@@ -83,6 +83,9 @@ class SplitTestsByGroupsTask extends TestsSplitter implements TaskInterface
         $this->printTaskInfo('Processing ' . count($tests) . ' tests');
         // splitting tests by groups
         foreach ($tests as $test) {
+            if ($test instanceof PHPUnit_Framework_TestSuite_DataProvider) {
+                $test = current($test->tests());
+            }
             $groups[($i % $this->numGroups) + 1][] = \Codeception\Test\Descriptor::getTestFullName($test);
             $i++;
         }
