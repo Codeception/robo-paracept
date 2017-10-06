@@ -11,7 +11,7 @@ Robo tasks for Codeception tests parallel execution. Requires [Robo Task Runner]
 ## Install via Composer
 
 ```
-"codeception/robo-paracept":"~0.2"
+"codeception/robo-paracept":"~0.4"
 ```
 
 Include into your RoboFile
@@ -19,6 +19,7 @@ Include into your RoboFile
 ```php
 <?php
 require_once 'vendor/autoload.php';
+require_once 'vendor/codeception/codeception/autoload.php';
 
 class RoboFile extends \Robo\Tasks
 {
@@ -26,6 +27,14 @@ class RoboFile extends \Robo\Tasks
     use \Codeception\Task\SplitTestsByGroups;
 }
 ?>
+```
+
+### PHPUnit 6 compatiblity
+
+Add ` 'vendor/codeception/codeception/autoload.php'` to enabled PHPUnit 6 class names:
+
+```php
+require_once 'vendor/codeception/codeception/autoload.php';
 ```
 
 ## Idea
