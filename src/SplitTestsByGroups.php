@@ -1,6 +1,9 @@
 <?php
 namespace Codeception\Task;
 
+use Codeception\Test\Descriptor as TestDescriptor;
+use Codeception\Test\Loader as TestLoader;
+use \PHPUnit_Framework_TestSuite_DataProvider as DataProviderTestSuite;
 use Robo\Contract\TaskInterface;
 use Robo\Exception\TaskException;
 use Robo\Task\BaseTask;
@@ -81,7 +84,7 @@ class SplitTestsByGroupsTask extends TestsSplitter implements TaskInterface
         if (!class_exists('\Codeception\Test\Loader')) {
             throw new TaskException($this, 'This task requires Codeception to be loaded. Please require autoload.php of Codeception');
         }
-        $testLoader = new \Codeception\Test\Loader(['path' => $this->testsFrom]);
+        $testLoader = new TestLoader(['path' => $this->testsFrom]);
         $testLoader->loadTests($this->testsFrom);
         $tests = $testLoader->getTests();
 
@@ -91,10 +94,10 @@ class SplitTestsByGroupsTask extends TestsSplitter implements TaskInterface
         $this->printTaskInfo('Processing ' . count($tests) . ' tests');
         // splitting tests by groups
         foreach ($tests as $test) {
-            if ($test instanceof PHPUnit_Framework_TestSuite_DataProvider) {
+            if ($test instanceof DataProviderTestSuite) {
                 $test = current($test->tests());
             }
-            $groups[($i % $this->numGroups) + 1][] = \Codeception\Test\Descriptor::getTestFullName($test);
+            $groups[($i % $this->numGroups) + 1][] = TestDescriptor::getTestFullName($test);
             $i++;
         }
 
