@@ -135,7 +135,8 @@ class SplitTestFilesByGroupsTask extends TestsSplitter implements TaskInterface
             ->name('*.feature')
             ->path($this->testsFrom)
             ->in($this->projectRoot ? $this->projectRoot : getcwd())
-            ->exclude($this->excludePath);
+            ->exclude($this->excludePath)
+            ->sortByName();
 
         $i = 0;
         $groups = [];
