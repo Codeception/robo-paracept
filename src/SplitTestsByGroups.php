@@ -3,7 +3,8 @@ namespace Codeception\Task;
 
 use Codeception\Test\Descriptor as TestDescriptor;
 use Codeception\Test\Loader as TestLoader;
-use \PHPUnit_Framework_TestSuite_DataProvider as DataProviderTestSuite;
+use \PHPUnit\Framework\DataProviderTestSuite as DataProviderTestSuite;
+use \PHPUnit_Framework_TestSuite_DataProvider as DataProvider;
 use Robo\Contract\TaskInterface;
 use Robo\Exception\TaskException;
 use Robo\Task\BaseTask;
@@ -94,7 +95,7 @@ class SplitTestsByGroupsTask extends TestsSplitter implements TaskInterface
         $this->printTaskInfo('Processing ' . count($tests) . ' tests');
         // splitting tests by groups
         foreach ($tests as $test) {
-            if ($test instanceof DataProviderTestSuite) {
+            if ($test instanceof DataProvider || $test instanceof DataProviderTestSuite) {
                 $test = current($test->tests());
             }
             $groups[($i % $this->numGroups) + 1][] = TestDescriptor::getTestFullName($test);
