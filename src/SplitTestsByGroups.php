@@ -130,6 +130,7 @@ class SplitTestFilesByGroupsTask extends TestsSplitter implements TaskInterface
     public function run()
     {
         $files = Finder::create()
+            ->followLinks()
             ->name('*Cept.php')
             ->name('*Cest.php')
             ->name('*Test.php')
