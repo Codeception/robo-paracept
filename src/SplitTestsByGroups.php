@@ -120,8 +120,8 @@ abstract class TestsSplitter extends BaseTask
             foreach ($test as $i => $dependency) {
 
                 // just test name, that means that class name is the same, just different method name
-                if (strpos($dependency, ':') === false) {
-                    $testsListWithDependencies[$testName][$i] = substr($testName,0,strpos($testName, ':') + 1) . $dependency;
+                if (strrpos($dependency, ':') === false) {
+                    $testsListWithDependencies[$testName][$i] = substr($testName,0,strrpos($testName, ':') + 1) . $dependency;
                     continue;
                 }
 
@@ -184,12 +184,36 @@ class SplitTestsByGroupsTask extends TestsSplitter implements TaskInterface
                 $test->preload();
             }
 
-            $testsListWithDependencies[TestDescriptor::getTestFullName($test)] = $test->getMetadata()->getDependencies();
-            if ($testsHaveAtLeastOneDependency === false and count($test->getMetadata()->getDependencies()) != 0) {
-                $testsHaveAtLeastOneDependency = true;
+            if (method_exists($test, 'getMetadata')) {
+                $testsListWithDependencies[TestDescriptor::getTestFullName($test)] = $test->getMetadata()
+                                                                                          ->getDependencies();
+                if ($testsHaveAtLeastOneDependency === false and count($test->getMetadata()->getDependencies()) != 0) {
+                    $testsHaveAtLeastOneDependency = true;
+                }
+
+            // little hack to get dependencies from phpunit test cases that are private.
+            } elseif ($test instanceof \PHPUnit\Framework\TestCase) {
+                $ref = new \ReflectionObject($test);
+                do {
+                    try{
+                        $property = $ref->getProperty('dependencies');
+                        $property->setAccessible(true);
+                        $testsListWithDependencies[TestDescriptor::getTestFullName($test)] = $property->getValue($test);
+
+                        if ($testsHaveAtLeastOneDependency === false and count($property->getValue($test)) != 0) {
+                            $testsHaveAtLeastOneDependency = true;
+                        }
+
+                    } catch (\ReflectionException $e) {
+                        // go up on level on inheritance chain.
+                    }
+                } while($ref = $ref->getParentClass());
+
+            } else {
+                $testsListWithDependencies[TestDescriptor::getTestFullName($test)] = [];
             }
         }
-
+        
         if ($testsHaveAtLeastOneDependency) {
             $this->printTaskInfo('Resolving test dependencies');
             // make sure that dependencies are in array as full names
@@ -197,9 +221,8 @@ class SplitTestsByGroupsTask extends TestsSplitter implements TaskInterface
                 $testsListWithDependencies = $this->resolveDependenciesToFullNames($testsListWithDependencies);
             } catch (\Exception $e) {
                 $this->printTaskError($e->getMessage());
-                exit;
+                return false;
             }
-
             // resolved and ordered list of dependencies
             $orderedListOfTests = [];
             // helper array
@@ -211,7 +234,7 @@ class SplitTestsByGroupsTask extends TestsSplitter implements TaskInterface
                     list ($orderedListOfTests, $unresolved) = $this->resolveDependencies($test, $testsListWithDependencies, $orderedListOfTests, $unresolved);
                 } catch (\Exception $e) {
                     $this->printTaskError($e->getMessage());
-                    exit;
+                    return false;
                 }
             }
 
@@ -221,7 +244,7 @@ class SplitTestsByGroupsTask extends TestsSplitter implements TaskInterface
         }
 
         // for even split, calculate number of tests in each group
-        $numberOfElementsInGroup = ceil(count($orderedListOfTests) / $this->numGroups);
+        $numberOfElementsInGroup = floor(count($orderedListOfTests) / $this->numGroups);
 
         $i = 1;
         $groups = [];
@@ -230,7 +253,7 @@ class SplitTestsByGroupsTask extends TestsSplitter implements TaskInterface
         foreach ($orderedListOfTests as $test) {
             // move to the next group ONLY if number of tests is equal or greater desired number of tests in group
             // AND current test has no dependencies AKA: we  are in different branch than previous test
-            if (!empty($groups[$i]) AND count($groups[$i]) >= $numberOfElementsInGroup AND empty($testsListWithDependencies[$test])) {
+            if (!empty($groups[$i]) AND count($groups[$i]) >= $numberOfElementsInGroup AND $i <= ($this->numGroups-1) AND empty($testsListWithDependencies[$test])) {
                 $i++;
             }
 
