@@ -119,14 +119,19 @@ abstract class TestsSplitter extends BaseTask
         foreach ($testsListWithDependencies as $testName => $test) {
             foreach ($test as $i => $dependency) {
 
+                // sometimes it is written as class::method.
+                // for that reason we do trim in first case and replace from :: to one in second case
+
+
                 // just test name, that means that class name is the same, just different method name
                 if (strrpos($dependency, ':') === false) {
-                    $testsListWithDependencies[$testName][$i] = substr($testName,0,strrpos($testName, ':') + 1) . $dependency;
+                    $testsListWithDependencies[$testName][$i] = trim(substr($testName,0,strrpos($testName, ':')), ':') . ':' . $dependency;
                     continue;
                 }
-
+                $dependency = str_replace('::', ':', $dependency);
                 // className:testName, that means we need to find proper test.
                 list($targetTestFileName, $targetTestMethodName) = explode(':', $dependency);
+
                 // look for proper test in list of all tests. Test could be in different directory so we need to compare
                 // strings and if matched we just assign found test name
                 foreach (array_keys($testsListWithDependencies) as $arrayKey) {
@@ -216,6 +221,7 @@ class SplitTestsByGroupsTask extends TestsSplitter implements TaskInterface
         
         if ($testsHaveAtLeastOneDependency) {
             $this->printTaskInfo('Resolving test dependencies');
+
             // make sure that dependencies are in array as full names
             try {
                 $testsListWithDependencies = $this->resolveDependenciesToFullNames($testsListWithDependencies);
@@ -223,6 +229,7 @@ class SplitTestsByGroupsTask extends TestsSplitter implements TaskInterface
                 $this->printTaskError($e->getMessage());
                 return false;
             }
+            
             // resolved and ordered list of dependencies
             $orderedListOfTests = [];
             // helper array

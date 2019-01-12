@@ -2,12 +2,17 @@
 
 class Example3Test extends \PHPUnit_Framework_TestCase {
 
-    
+    /**
+     * @group example
+     */
     public function testF(){
-
+        self::assertTrue(true);
     }
-    
-    public function testG(){
 
+    /**
+     * @group example
+     */
+    public function testG(){
+        self::assertTrue(true);
     }
 }
