@@ -94,9 +94,11 @@ class SplitTestsByGroupsTaskTest extends PHPUnit_Framework_TestCase
         @mkdir('tests/result');
 
         // remove all files even from bad runs.
-        foreach(glob("tests/result/group_*") as $file) {
+        foreach(glob('tests/result/group_*') as $file) {
+            $file = new SplFileInfo($file);
+            print date('Y-m-d H:i:s', $file->getMTime())."\n";
             if (is_file($file)) {
-                @unlink($file);
+                unlink($file);
             }
         }
     }
