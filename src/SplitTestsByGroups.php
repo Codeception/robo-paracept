@@ -188,7 +188,6 @@ class SplitTestsByGroupsTask extends TestsSplitter implements TaskInterface
                 $test->getMetadata()->setServices(['di'=>$di]);
                 $test->preload();
             }
-            die('test');
 
             if (method_exists($test, 'getMetadata')) {
                 $testsListWithDependencies[TestDescriptor::getTestFullName($test)] = $test->getMetadata()
