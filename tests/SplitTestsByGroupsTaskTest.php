@@ -45,7 +45,11 @@ class SplitTestsByGroupsTaskTest extends PHPUnit_Framework_TestCase
             ->projectRoot('vendor/codeception/base/')
             ->groupsTo('tests/result/group_')
             ->run();
-        self::assertContains('Circular dependency:', $output->fetch());
+
+        $d = $output->fetch();
+
+        var_dump($d);
+        self::assertContains('Circular dependency:', $d);
 
         // make sure that no files were generated.
         $this->assertEmpty(glob("tests/result/group_*"));
@@ -96,9 +100,8 @@ class SplitTestsByGroupsTaskTest extends PHPUnit_Framework_TestCase
         // remove all files even from bad runs.
         foreach(glob('tests/result/group_*') as $file) {
             $file = new SplFileInfo($file);
-            print date('Y-m-d H:i:s', $file->getMTime())."\n";
             if (is_file($file)) {
-                unlink($file);
+                @unlink($file);
             }
         }
     }
