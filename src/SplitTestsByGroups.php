@@ -10,6 +10,7 @@ use Robo\Exception\TaskException;
 use Robo\Task\BaseTask;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
+print "TEST TEST TEST";
 
 trait SplitTestsByGroups
 {
@@ -173,6 +174,7 @@ class SplitTestsByGroupsTask extends TestsSplitter implements TaskInterface
         $this->printTaskInfo('Processing ' . count($tests) . ' tests');
 
         $testsHaveAtLeastOneDependency = false;
+        print "TUTUTUTUTUTUTUTUT";
 
         // test preloading (and fetching dependencies) requires dummy DI service.
         $di = new \Codeception\Lib\Di();
