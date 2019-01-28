@@ -179,6 +179,7 @@ class SplitTestsByGroupsTask extends TestsSplitter implements TaskInterface
         // gather test dependencies and deal with dataproviders
         $testsListWithDependencies = [];
         foreach ($tests as $test) {
+            var_dump($tests);
             if ($test instanceof DataProvider || $test instanceof DataProviderTestSuite) {
                 $test = current($test->tests());
             }
