@@ -188,16 +188,13 @@ class SplitTestsByGroupsTask extends TestsSplitter implements TaskInterface
                 $test->getMetadata()->setServices(['di'=>$di]);
                 $test->preload();
             }
-            var_dump($test);
+
             if (method_exists($test, 'getMetadata')) {
                 $testsListWithDependencies[TestDescriptor::getTestFullName($test)] = $test->getMetadata()
                                                                                           ->getDependencies();
                 if ($testsHaveAtLeastOneDependency === false and count($test->getMetadata()->getDependencies()) != 0) {
                     $testsHaveAtLeastOneDependency = true;
-                } else {
-                    var_dump($test->getMetadata());
                 }
-                var_dump([$testsListWithDependencies[TestDescriptor::getTestFullName($test)], $testsHaveAtLeastOneDependency]);
 
             // little hack to get dependencies from phpunit test cases that are private.
             } elseif ($test instanceof \PHPUnit\Framework\TestCase) {
@@ -211,7 +208,6 @@ class SplitTestsByGroupsTask extends TestsSplitter implements TaskInterface
                         if ($testsHaveAtLeastOneDependency === false and count($property->getValue($test)) != 0) {
                             $testsHaveAtLeastOneDependency = true;
                         }
-                        var_dump([$testsListWithDependencies[TestDescriptor::getTestFullName($test)], $testsHaveAtLeastOneDependency]);
 
                     } catch (\ReflectionException $e) {
                         // go up on level on inheritance chain.
