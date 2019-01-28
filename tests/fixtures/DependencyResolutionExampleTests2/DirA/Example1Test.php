@@ -1,6 +1,6 @@
 <?php
 
-class Example4Test extends \PHPUnit_Framework_TestCase {
+class Example4Test extends \PHPUnit\Framework\TestCase {
 
     /**
      * @depends testB

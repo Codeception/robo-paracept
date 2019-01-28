@@ -1,6 +1,6 @@
 <?php
 
-class Example3Test extends \PHPUnit_Framework_TestCase {
+class Example3Test extends \PHPUnit\Framework\TestCase {
 
     /**
      * @group example

@@ -1,6 +1,6 @@
 <?php
 
-class SplitTestsByGroupsTaskTest extends PHPUnit_Framework_TestCase
+class SplitTestsByGroupsTaskTest extends \PHPUnit\Framework\TestCase
 {
     use \Codeception\Task\SplitTestsByGroups;
 
