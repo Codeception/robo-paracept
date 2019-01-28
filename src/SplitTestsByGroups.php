@@ -194,6 +194,8 @@ class SplitTestsByGroupsTask extends TestsSplitter implements TaskInterface
                                                                                           ->getDependencies();
                 if ($testsHaveAtLeastOneDependency === false and count($test->getMetadata()->getDependencies()) != 0) {
                     $testsHaveAtLeastOneDependency = true;
+                } else {
+                    var_dump($test->getMetadata());
                 }
                 var_dump([$testsListWithDependencies[TestDescriptor::getTestFullName($test)], $testsHaveAtLeastOneDependency]);
 

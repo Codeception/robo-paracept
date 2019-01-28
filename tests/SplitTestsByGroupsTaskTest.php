@@ -48,10 +48,6 @@ class SplitTestsByGroupsTaskTest extends PHPUnit_Framework_TestCase
 
         $d = $output->fetch();
 
-        $f = require_once 'vendor/composer/autoload_classmap.php';
-        print_r($f);
-
-
         self::assertContains('Circular dependency:', $d);
 
         // make sure that no files were generated.
