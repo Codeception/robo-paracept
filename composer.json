@@ -14,7 +14,9 @@
         }
     },
     "require": {
-        "consolidation/robo": "^1.0.0"
+        "consolidation/robo": "^1.0.0",
+        "guzzlehttp/guzzle": ">=4.1.4 <7.0",
+        "codeception/codeception": "^2.5"
     },
     "require-dev": {
         "codeception/base": "~2.2"
