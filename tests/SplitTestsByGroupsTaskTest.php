@@ -4,7 +4,7 @@ class SplitTestsByGroupsTaskTest extends PHPUnit_Framework_TestCase
 {
     use \Codeception\Task\SplitTestsByGroups;
 
-    public function t1estGroupsCanBeSplit()
+    public function testGroupsCanBeSplit()
     {
         $task = new Codeception\Task\SplitTestsByGroupsTask(10);
         $task->setLogger(new \Consolidation\Log\Logger(new \Symfony\Component\Console\Output\NullOutput()));
@@ -18,7 +18,7 @@ class SplitTestsByGroupsTaskTest extends PHPUnit_Framework_TestCase
         $this->assertFileNotExists("tests/result/group_11");
     }
 
-    public function t1estSplitFilesByGroups()
+    public function testSplitFilesByGroups()
     {
         $task = new Codeception\Task\SplitTestsByGroupsTask(5);
         $task->setLogger(new \Consolidation\Log\Logger(new \Symfony\Component\Console\Output\NullOutput()));
@@ -37,7 +37,7 @@ class SplitTestsByGroupsTaskTest extends PHPUnit_Framework_TestCase
      *
      * @throws \Robo\Exception\TaskException
      */
-    public function t1estCircularDependencyDetectionAndHandling(){
+    public function testCircularDependencyDetectionAndHandling(){
         $task = new Codeception\Task\SplitTestsByGroupsTask(5);
         $output = new \Symfony\Component\Console\Output\BufferedOutput();
         $task->setLogger(new \Consolidation\Log\Logger($output));
