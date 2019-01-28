@@ -1,8 +1,9 @@
 <?php
 
 //require_once 'vendor/autoload.php';
-require_once '../vendor/codeception/codeception/autoload.php';
+//require_once '../vendor/codeception/codeception/autoload.php';
 
+print_r($_SERVER);
 
 \Robo\Robo::createDefaultContainer(
     new Symfony\Component\Console\Input\ArrayInput([]),
