@@ -1,6 +1,6 @@
 <?php
 
-class MergeJUnitReportsTest extends \PHPUnit_Framework_TestCase
+class MergeJUnitReportsTest extends \PHPUnit\Framework\TestCase
 {
     use Codeception\Task\MergeReports;
 

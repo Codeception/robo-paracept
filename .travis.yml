@@ -10,7 +10,7 @@ php:
   - 7.1
 
 before_script:
-  - composer install
+  - composer install --dev
 
 script: 
-  - composer exec phpunit  -- tests --bootstrap tests/bootstrap.php
+  - composer -v exec phpunit  -- tests --bootstrap tests/bootstrap.php --exclude-group example --stderr -v --debug
