@@ -55,8 +55,6 @@ extensions:
         - Codeception\Task\TimeReporter
 ```
 
-### SplitTestsByGroups
-
 Loads tests from a folder and distributes them between groups by execution time.
 
 ```php
@@ -67,7 +65,9 @@ $this->taskSplitTestsByTime(5)
     ->run();
 ```
 
-this command need run all tests with `Codeception\Task\TimeReporter` for collect execution time. If you want just split tests between group (and not execute its) you can use:
+this command need run all tests with `Codeception\Task\TimeReporter` for collect execution time. If you want just split tests between group (and not execute its) you can use SplitTestsByGroups.
+
+### SplitTestsByGroups
 
 ```php
 $this->taskSplitTestsByGroups(5)

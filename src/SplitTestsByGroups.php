@@ -24,7 +24,6 @@ trait SplitTestsByGroups
      *
      * @return SplitTestsByGroupsTask
      */
-
     protected function taskSplitTestsByGroups($numGroups)
     {
         return $this->task(SplitTestsByGroupsTask::class, $numGroups);
