@@ -31,6 +31,10 @@ class MergeXmlReportsTask extends BaseTask implements TaskInterface, MergeReport
     protected $dst;
     protected $summarizeTime = true;
 
+    protected $mergeRewrite = false;
+    /** @var \DOMElement[][] */
+    protected $suites = [];
+
     public function __construct($src = [])
     {
         $this->src = $src;
@@ -44,6 +48,12 @@ class MergeXmlReportsTask extends BaseTask implements TaskInterface, MergeReport
     public function maxTime()
     {
         $this->summarizeTime = false;
+    }
+
+    public function mergeRewrite()
+    {
+        $this->mergeRewrite = true;
+        return $this;
     }
 
     public function from($fileName)
@@ -71,11 +81,10 @@ class MergeXmlReportsTask extends BaseTask implements TaskInterface, MergeReport
         $dstXml = new \DOMDocument();
         $dstXml->appendChild($dstXml->createElement('testsuites'));
 
-        $resultNodes = [];
-
+        $this->suites = [];
         foreach ($this->src as $src) {
             $this->printTaskInfo("Processing $src");
-            
+
             $srcXml = new \DOMDocument();
             if (!file_exists($src)) {
                 throw new TaskException($this, "XML file $src does not exist");
@@ -89,40 +98,57 @@ class MergeXmlReportsTask extends BaseTask implements TaskInterface, MergeReport
             foreach ($suiteNodes as $suiteNode) {
                 $suiteNode = $dstXml->importNode($suiteNode, true);
                 /** @var $suiteNode \DOMElement  **/
-                $suiteName = $suiteNode->getAttribute('name');
-                if (!isset($resultNodes[$suiteName])) {
-                    $resultNode = $dstXml->createElement("testsuite");
-                    $resultNode->setAttribute('name', $suiteName);
-                    $resultNodes[$suiteName] = $resultNode;
-                }
-                $this->mergeSuites($resultNodes[$suiteName], $suiteNode);
+                $this->loadSuites($suiteNode);
             }
         }
 
-        foreach ($resultNodes as $suiteNode) {
-            $dstXml->firstChild->appendChild($suiteNode);
-        }
-        $dstXml->save($this->dst);
-        $this->printTaskInfo("File <info>{$this->dst}</info> saved. ".count($resultNodes).' suites added');
+        $this->mergeSuites($dstXml);
 
+        $dstXml->save($this->dst);
+        $this->printTaskInfo("File <info>{$this->dst}</info> saved. ".count($this->suites).' suites added');
     }
 
-    protected function mergeSuites(\DOMElement $resulted, \DOMElement $current)
+    protected function loadSuites(\DOMElement $current)
     {
-        foreach (['tests', 'assertions', 'failures', 'errors'] as $attr) {
-            $sum = (int)$current->getAttribute($attr) + (int)$resulted->getAttribute($attr);
-            $resulted->setAttribute($attr, $sum);
-        }
-
-        if ($this->summarizeTime) {
-            $resulted->setAttribute('time', (float)$current->getAttribute('time') + (float)$resulted->getAttribute('time'));
-        } else {
-            $resulted->setAttribute('time', max($current->getAttribute('time'), $resulted->getAttribute('time')));
-        }
-
         /** @var \DOMNode $node */
         foreach ($current->childNodes as $node) {
-            $resulted->appendChild($node->cloneNode(true));
+            if ($node instanceof \DOMElement) {
+                if ($this->mergeRewrite) {
+                    $this->suites[$current->getAttribute('name')][$node->getAttribute('class') . '::' . $node->getAttribute('name')] = $node->cloneNode(true);
+                } else {
+                    $this->suites[$current->getAttribute('name')][] = $node->cloneNode(true);
+                }
+            }
+        }
+    }
+
+    protected function mergeSuites(\DOMDocument $dstXml)
+    {
+        foreach ($this->suites as $suiteName => $tests) {
+            $resultNode = $dstXml->createElement("testsuite");
+            $resultNode->setAttribute('name', $suiteName);
+            $data = [
+                'tests' => count($tests),
+                'assertions' => 0,
+                'failures' => 0,
+                'errors' => 0,
+                'time' => 0,
+            ];
+            foreach ($tests as $test) {
+                $resultNode->appendChild($test);
+
+                $data['assertions'] += (int)$test->getAttribute('assertions');
+                $data['time'] = $this->summarizeTime
+                    ? ((float) $test->getAttribute('time') + $data['time'])
+                    : max($test->getAttribute('time'), $data['time']);
+
+                $data['failures'] += $test->getElementsByTagName('failure')->length;
+                $data['errors'] += $test->getElementsByTagName('error')->length;
+            }
+            foreach ($data as $key => $value) {
+                $resultNode->setAttribute($key, $value);
+            }
+            $dstXml->firstChild->appendChild($resultNode);
         }
     }
 }
@@ -167,7 +193,7 @@ class MergeHTMLReportsTask extends BaseTask implements TaskInterface, MergeRepor
     {
         //save initial statament and switch on use_internal_errors mode
         $this->previousLibXmlUseErrors = libxml_use_internal_errors(true);
-		
+
         if (!$this->dst) {
             libxml_use_internal_errors($this->previousLibXmlUseErrors);
             throw new TaskException($this, "No destination file is set. Use `->into()` method to set result HTML");

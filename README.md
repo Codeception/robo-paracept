@@ -1,7 +1,7 @@
 robo-paracept
 =============
 
-[![Build Status](https://travis-ci.org/Codeception/robo-paracept.svg?branch=master)](https://travis-ci.org/Codeception/robo-paracept) 
+[![Build Status](https://travis-ci.org/Codeception/robo-paracept.svg?branch=master)](https://travis-ci.org/Codeception/robo-paracept)
 [![Latest Stable Version](https://poser.pugx.org/codeception/robo-paracept/version)](https://packagist.org/packages/codeception/robo-paracept)
 [![Total Downloads](https://poser.pugx.org/codeception/robo-paracept/downloads)](https://packagist.org/packages/codeception/robo-paracept)
 [![License](https://poser.pugx.org/codeception/robo-paracept/license)](https://packagist.org/packages/codeception/robo-paracept)
@@ -11,7 +11,7 @@ Robo tasks for Codeception tests parallel execution. Requires [Robo Task Runner]
 ## Install via Composer
 
 ```
-"codeception/robo-paracept":"~0.2"
+"codeception/robo-paracept":"~0.4"
 ```
 
 Include into your RoboFile
@@ -19,6 +19,7 @@ Include into your RoboFile
 ```php
 <?php
 require_once 'vendor/autoload.php';
+require_once 'vendor/codeception/codeception/autoload.php';
 
 class RoboFile extends \Robo\Tasks
 {
@@ -28,12 +29,12 @@ class RoboFile extends \Robo\Tasks
 ?>
 ```
 
-Enable extension for collect execution time of you use taskSplitTestsByTime
+### PHPUnit 6 compatiblity
 
-```
-extensions:
-    enabled:
-        - Codeception\Task\TimeReporter
+Add ` 'vendor/codeception/codeception/autoload.php'` to enabled PHPUnit 6 class names:
+
+```php
+require_once 'vendor/codeception/codeception/autoload.php';
 ```
 
 ## Idea
@@ -43,6 +44,16 @@ Depending on a project the actual needs can be different.
 Thus, we are going to prepare a set of predefined tasks that can be combined and reconfigured to fit needs.
 
 ## Tasks
+
+### SplitTestsByTime
+
+Enable extension for collect execution time of you use taskSplitTestsByTime
+
+```
+extensions:
+    enabled:
+        - Codeception\Task\TimeReporter
+```
 
 ### SplitTestsByGroups
 
