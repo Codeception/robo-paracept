@@ -220,10 +220,10 @@ class SplitTestsByTimeTask extends TestsSplitter implements TaskInterface
         }
 
         // saving group files
-        foreach ($groups as $i => list('tests' => $tests, 'sum' => $sum)) {
+        foreach ($groups as $i => $group) {
             $filename = $this->saveTo . ($i + 1);
-            $this->printTaskInfo("Writing $filename: " . count($tests) . ' tests with ' . number_format($sum, 2) . ' seconds');
-            file_put_contents($filename, implode("\n", $tests));
+            $this->printTaskInfo("Writing $filename: " . count($tests) . ' tests with ' . number_format($group['sum'], 2) . ' seconds');
+            file_put_contents($filename, implode("\n", $group['tests']));
         }
     }
 
