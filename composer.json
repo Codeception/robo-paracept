@@ -10,7 +10,7 @@
     ],
     "autoload":{
         "psr-4":{
-            "Codeception\\Task\\":"src"
+            "Codeception\\Task\\": "src/"
         }
     },
     "require": {
@@ -19,6 +19,6 @@
     },
     "require-dev": {
         "codeception/base": "^2.2",
-        "codeception/codeception": "^2.2"
+        "codeception/codeception": "^4.1"
     }
 }
