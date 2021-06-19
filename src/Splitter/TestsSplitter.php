@@ -1,20 +1,28 @@
 <?php
 declare(strict_types = 1);
 
-namespace Codeception\Task;
+namespace Codeception\Task\Splitter;
 
 use Robo\Task\BaseTask;
 
 abstract class TestsSplitter extends BaseTask
 {
-    /** @var array */
-    protected array $numGroups;
-    protected string $projectRoot = '.';
-    protected string $testsFrom = 'tests';
-    protected string $saveTo = 'tests/_data/paracept_';
-    protected string $excludePath = 'vendor';
+    /** @var int */
+    protected $numGroups;
+    /** @var string */
+    protected $projectRoot = '.';
+    /** @var string */
+    protected $testsFrom = 'tests';
+    /** @var string */
+    protected $saveTo = 'tests/_data/paracept_';
+    /** @var string */
+    protected $excludePath = 'vendor';
 
-    public function __construct(array $groups)
+    /**
+     * TestsSplitter constructor.
+     * @param int $groups number of groups to use
+     */
+    public function __construct(int $groups)
     {
         $this->numGroups = $groups;
     }
@@ -55,25 +63,30 @@ abstract class TestsSplitter extends BaseTask
      *
      * @return array
      */
-    protected function resolveDependencies($item, array $items, array $resolved, array $unresolved): array
-    {
+    protected function resolveDependencies(
+        $item,
+        array $items,
+        array $resolved,
+        array $unresolved
+    ): array {
         $unresolved[] = $item;
         foreach ($items[$item] as $dep) {
-            if (!in_array($dep, $resolved)) {
-                if (!in_array($dep, $unresolved)) {
+            if (!in_array($dep, $resolved, true)) {
+                if (!in_array($dep, $unresolved, true)) {
                     $unresolved[] = $dep;
-                    [$resolved, $unresolved] = $this->resolveDependencies($dep, $items, $resolved, $unresolved);
+                    [$resolved, $unresolved] =
+                        $this->resolveDependencies($dep, $items, $resolved, $unresolved);
                 } else {
                     throw new \RuntimeException("Circular dependency: $item -> $dep");
                 }
             }
         }
         // Add $item to $resolved if it's not already there
-        if (!in_array($item, $resolved)) {
+        if (!in_array($item, $resolved, true)) {
             $resolved[] = $item;
         }
         // Remove all occurrences of $item in $unresolved
-        while (($index = array_search($item, $unresolved)) !== false) {
+        while (($index = array_search($item, $unresolved, true)) !== false) {
             unset($unresolved[$index]);
         }
 
@@ -95,7 +108,6 @@ abstract class TestsSplitter extends BaseTask
                 // sometimes it is written as class::method.
                 // for that reason we do trim in first case and replace from :: to one in second case
 
-
                 // just test name, that means that class name is the same, just different method name
                 if (strrpos($dependency, ':') === false) {
                     $testsListWithDependencies[$testName][$i] = trim(
@@ -108,20 +120,24 @@ abstract class TestsSplitter extends BaseTask
                 // className:testName, that means we need to find proper test.
                 [$targetTestFileName, $targetTestMethodName] = explode(':', $dependency);
 
-                // look for proper test in list of all tests. Test could be in different directory so we need to compare
-                // strings and if matched we just assign found test name
+                // look for proper test in list of all tests. Test could be in different directory
+                // so we need to compare strings and if matched we just assign found test name
                 foreach (array_keys($testsListWithDependencies) as $arrayKey) {
-                    if (str_contains($arrayKey, $targetTestFileName . '.php:' . $targetTestMethodName)) {
+                    if (str_contains(
+                        $arrayKey,
+                        $targetTestFileName . '.php:' . $targetTestMethodName
+                    )) {
                         $testsListWithDependencies[$testName][$i] = $arrayKey;
                         continue 2;
                     }
                 }
                 throw new \RuntimeException(
-                    'Dependency target test '.$dependency.' not found.'
-                     . 'Please make sure test exists and you are using full test name'
+                    'Dependency target test ' . $dependency . ' not found.'
+                    . 'Please make sure test exists and you are using full test name'
                 );
             }
         }
+
         return $testsListWithDependencies;
     }
 }

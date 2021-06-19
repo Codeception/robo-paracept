@@ -1,14 +1,14 @@
 <?php
 declare(strict_types = 1);
 
-namespace Codeception\Task;
+namespace Codeception\Task\Splitter;
 
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
 /**
- * Finds all test files and splits them by group.
- * Unlike `SplitTestsByGroupsTask` does not load them into memory and not requires Codeception to be loaded.
+ * Finds all test files and splits them into group.s
+ * Unlike `TestsSplitterTask` does not load them into memory and not requires Codeception to be loaded.
  *
  * ``` php
  * <?php
@@ -20,16 +20,15 @@ use Symfony\Component\Finder\SplFileInfo;
  * ?>
  * ```
  */
-class SplitTestFilesByGroupsTask extends TestsSplitter
+class TestFileSplitterTask extends TestsSplitter
 {
+    private $pattern = ['*Cept.php', '*Cest.php', '*Test.php', '*.feature'];
+
     public function run()
     {
         $files = Finder::create()
             ->followLinks()
-            ->name('*Cept.php')
-            ->name('*Cest.php')
-            ->name('*Test.php')
-            ->name('*.feature')
+            ->name($this->getPattern())
             ->path($this->testsFrom)
             ->in($this->projectRoot ?: getcwd())
             ->exclude($this->excludePath);
@@ -51,5 +50,32 @@ class SplitTestFilesByGroupsTask extends TestsSplitter
             $this->printTaskInfo("Writing $filename");
             file_put_contents($filename, implode("\n", $tests));
         }
+    }
+
+    /**
+     * @param string[] $pattern
+     * @return TestFileSplitterTask
+     */
+    public function setPattern(array $pattern): TestFileSplitterTask
+    {
+        $this->pattern = $pattern;
+
+        return $this;
+    }
+
+    /**
+     * @param string $pattern
+     * @return TestFileSplitterTask
+     */
+    public function addPattern(string $pattern): TestFileSplitterTask
+    {
+        $this->pattern[] = $pattern;
+
+        return $this;
+    }
+
+    public function getPattern(): array
+    {
+        return $this->pattern;
     }
 }
