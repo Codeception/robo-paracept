@@ -10,13 +10,18 @@
     ],
     "autoload":{
         "psr-4":{
-            "Codeception\\Task\\":"src"
+            "Codeception\\Task\\":"src/"
         }
     },
     "require": {
         "consolidation/robo": "^3.0.0",
         "ext-dom": "*",
         "ext-libxml": "*"
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\Codeception\\Task": "tests/"
+        }
     },
     "require-dev": {
         "roave/security-advisories": "dev-latest",
