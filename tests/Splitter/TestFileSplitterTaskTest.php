@@ -73,7 +73,7 @@ class TestFileSplitterTaskTest extends TestCase
         for ($i = 1; $i <= $expected; $i++) {
             $this->assertFileExists($groupTo . $i);
         }
-        $this->assertFileNotExists($groupTo . ($expected + 1));
+        $this->assertFileDoesNotExist($groupTo . ($expected + 1));
     }
 
     /**
@@ -89,8 +89,8 @@ class TestFileSplitterTaskTest extends TestCase
             ->groupsTo(TEST_PATH . '/result/group_')
             ->run();
 
-        $this->assertFileNotExists(TEST_PATH . '/result/group_1');
-        $this->assertFileNotExists(TEST_PATH . '/result/group_2');
+        $this->assertFileDoesNotExist(TEST_PATH . '/result/group_1');
+        $this->assertFileDoesNotExist(TEST_PATH . '/result/group_2');
     }
 
     protected function tearDown(): void
