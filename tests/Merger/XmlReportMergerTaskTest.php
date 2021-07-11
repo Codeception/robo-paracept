@@ -45,15 +45,15 @@ class XmlReportMergerTaskTest extends TestCase
     {
         $task = new XmlReportMergerTask();
         $task->setLogger(new Logger(new NullOutput()));
-        $task->from('tests/fixtures/result1.xml')
-            ->from('tests/fixtures/result2.xml')
-            ->into('tests/result/merged.xml')
+        $task->from(TEST_PATH . '/fixtures/result1.xml')
+            ->from(TEST_PATH . '/fixtures/result2.xml')
+            ->into(TEST_PATH . '/result/merged.xml')
             ->run();
-        $this->assertFileExists('tests/result/merged.xml');
+        $this->assertFileExists(TEST_PATH . '/result/merged.xml');
 
         $task->mergeRewrite()->run();
-        $this->assertFileExists('tests/result/merged.xml');
-        $xml = file_get_contents('tests/result/merged.xml');
+        $this->assertFileExists(TEST_PATH . '/result/merged.xml');
+        $xml = file_get_contents(TEST_PATH . '/result/merged.xml');
         $this->assertStringContainsString('<testsuite name="cli" tests="51" assertions="204" failures="0" errors="0"', $xml);
         $this->assertStringContainsString('<testsuite name="unit" tests="22" assertions="52"', $xml);
         $this->assertStringContainsString('<testcase file="/home/anywhere/Codeception/tests/cli/BootstrapCest.php"', $xml, 'from first file');
