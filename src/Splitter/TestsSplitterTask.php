@@ -1,8 +1,11 @@
 <?php
 namespace Codeception\Task\Splitter;
 
+use Codeception\Lib\Di;
+use Codeception\Test\Cest;
 use Codeception\Test\Descriptor as TestDescriptor;
 use Codeception\Test\Loader as TestLoader;
+use Exception;
 use PHPUnit\Framework\DataProviderTestSuite;
 use PHPUnit\Framework\TestCase;
 use ReflectionObject;
@@ -24,22 +27,20 @@ class TestsSplitterTask extends TestsSplitter
 {
     public function run()
     {
-        if (!class_exists('\Codeception\Test\Loader')) {
+        if (!$this->doCodeceptLoaderExists()) {
             throw new TaskException(
                 $this,
                 'This task requires Codeception to be loaded. Please require autoload.php of Codeception'
             );
         }
-        $testLoader = new TestLoader(['path' => $this->testsFrom]);
-        $testLoader->loadTests($this->testsFrom);
-        $tests = $testLoader->getTests();
+        $tests = $this->loadTests();
 
         $this->printTaskInfo('Processing ' . count($tests) . ' tests');
 
         $testsHaveAtLeastOneDependency = false;
 
         // test preloading (and fetching dependencies) requires dummy DI service.
-        $di = new \Codeception\Lib\Di();
+        $di = new Di();
         // gather test dependencies and deal with dataproviders
         $testsListWithDependencies = [];
         foreach ($tests as $test) {
@@ -48,7 +49,7 @@ class TestsSplitterTask extends TestsSplitter
             }
 
             // load dependencies for cest type. Unit tests dependencies are loaded automatically
-            if ($test instanceof \Codeception\Test\Cest) {
+            if ($test instanceof Cest) {
                 $test->getMetadata()->setServices(['di'=>$di]);
                 $test->preload();
             }
@@ -89,7 +90,7 @@ class TestsSplitterTask extends TestsSplitter
                 $testsListWithDependencies = $this->resolveDependenciesToFullNames(
                     $testsListWithDependencies
                 );
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->printTaskError($e->getMessage());
                 return false;
             }
@@ -108,12 +109,11 @@ class TestsSplitterTask extends TestsSplitter
                         $orderedListOfTests,
                         $unresolved
                     );
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     $this->printTaskError($e->getMessage());
                     return false;
                 }
             }
-
             // if we don't have any dependencies just use keys from original list.
         } else {
             $orderedListOfTests = array_keys($testsListWithDependencies);
@@ -149,5 +149,32 @@ class TestsSplitterTask extends TestsSplitter
         }
 
         return true;
+    }
+
+    /**
+     * @return bool
+     */
+    protected function doCodeceptLoaderExists(): bool
+    {
+        return class_exists(TestLoader::class);
+    }
+
+    /**
+     * @return TestLoader
+     */
+    protected function getTestLoader(): TestLoader
+    {
+        return new TestLoader(['path' => $this->testsFrom]);
+    }
+
+    /**
+     * @return array
+     */
+    protected function loadTests(): array
+    {
+        $testLoader = $this->getTestLoader();
+        $testLoader->loadTests($this->testsFrom);
+
+        return $testLoader->getTests();
     }
 }
