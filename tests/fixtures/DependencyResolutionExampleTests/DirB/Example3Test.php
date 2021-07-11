@@ -1,18 +1,23 @@
 <?php
 
-class Example3Test extends \PHPUnit\Framework\TestCase {
+use PHPUnit\Framework\TestCase;
+
+class Example3Test extends TestCase
+{
 
     /**
      * @group example
      */
-    public function testF(){
+    public function testF()
+    {
         self::assertTrue(true);
     }
 
     /**
      * @group example
      */
-    public function testG(){
+    public function testG()
+    {
         self::assertTrue(true);
     }
 }
