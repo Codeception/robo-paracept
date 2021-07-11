@@ -6,11 +6,12 @@ cache:
     - $HOME/.composer/cache
 
 php:
-  - 7
-  - 7.1
+  - 7.3
+  - 7.4
+  - 8.0
 
 before_script:
   - composer install --dev
 
-script: 
+script:
   - composer -v exec phpunit  -- tests --bootstrap tests/bootstrap.php --exclude-group example --stderr -v --debug
