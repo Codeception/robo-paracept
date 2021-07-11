@@ -72,7 +72,7 @@ class XmlReportMergerTask extends BaseTask implements ReportMergerTaskInterface
      * @param string $fileName
      * @return $this
      */
-    public function into($fileName)
+    public function into($fileName): self
     {
         $this->dst = $fileName;
 
@@ -159,7 +159,7 @@ class XmlReportMergerTask extends BaseTask implements ReportMergerTaskInterface
                 $data['errors'] += $test->getElementsByTagName('error')->length;
             }
             foreach ($data as $key => $value) {
-                $resultNode->setAttribute($key, $value);
+                $resultNode->setAttribute($key, (string)$value);
             }
             $dstXml->firstChild->appendChild($resultNode);
         }
