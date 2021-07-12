@@ -18,7 +18,7 @@ class TestFileSplitterTaskTest extends TestCase
 {
     use TestsSplitterTrait;
 
-    public function providerTestFilesCanBeSplit()
+    public function providerTestFilesCanBeSplit(): array
     {
         return [
             [
