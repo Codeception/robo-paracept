@@ -7,7 +7,6 @@ use Codeception\Test\Descriptor as TestDescriptor;
 use Codeception\Test\Loader as TestLoader;
 use Exception;
 use PHPUnit\Framework\DataProviderTestSuite;
-use PHPUnit\Framework\ExecutionOrderDependency;
 use PHPUnit\Framework\TestCase;
 use ReflectionObject;
 use Robo\Exception\TaskException;
@@ -56,7 +55,6 @@ class TestsSplitterTask extends TestsSplitter
             }
 
             if (method_exists($test, 'getMetadata')) {
-                /** @var ExecutionOrderDependency[] $dependencies */
                 $dependencies = $test->getMetadata()->getDependencies();
                 if ($testsHaveAtLeastOneDependency === false && count($dependencies) !== 0) {
                     $testsHaveAtLeastOneDependency = true;
@@ -70,7 +68,6 @@ class TestsSplitterTask extends TestsSplitter
                     try {
                         $property = $ref->getProperty('dependencies');
                         $property->setAccessible(true);
-                        /** @var ExecutionOrderDependency[] $dependencies */
                         $dependencies = $property->getValue($test);
                         if ($testsHaveAtLeastOneDependency === false && count($dependencies) !== 0) {
                             $testsHaveAtLeastOneDependency = true;

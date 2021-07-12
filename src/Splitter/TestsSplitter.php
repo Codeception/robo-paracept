@@ -3,7 +3,6 @@ declare(strict_types = 1);
 
 namespace Codeception\Task\Splitter;
 
-use PHPUnit\Framework\ExecutionOrderDependency;
 use Robo\Task\BaseTask;
 
 abstract class TestsSplitter extends BaseTask
@@ -105,22 +104,21 @@ abstract class TestsSplitter extends BaseTask
     {
         // make sure that dependencies are in array as full names
         foreach ($testsListWithDependencies as $testName => $test) {
-            /**
-             * @var int $i
-             * @var ExecutionOrderDependency $dependency
-             */
             foreach ($test as $i => $dependency) {
+                if (is_a($dependency, '\PHPUnit\Framework\ExecutionOrderDependency')) {
+                    $dependency = $dependency->getTarget();
+                }
                 // sometimes it is written as class::method.
                 // for that reason we do trim in first case and replace from :: to one in second case
                 // just test name, that means that class name is the same, just different method name
-                if (strrpos($dependency->getTarget(), ':') === false) {
+                if (strrpos($dependency, ':') === false) {
                     $testsListWithDependencies[$testName][$i] = trim(
                         substr($testName, 0, strrpos($testName, ':')),
                         ':'
-                    ) . ':' . $dependency->getTarget();
+                    ) . ':' . $dependency;
                     continue;
                 }
-                $dependency = str_replace('::', ':', $dependency->getTarget());
+                $dependency = str_replace('::', ':', $dependency);
                 // className:testName, that means we need to find proper test.
                 [$targetTestFileName, $targetTestMethodName] = explode(':', $dependency);
 

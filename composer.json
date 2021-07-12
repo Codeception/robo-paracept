@@ -16,6 +16,7 @@
     "require": {
         "php": "^7.3",
         "consolidation/robo": "3.0.*",
+        "symfony/finder": ">=2.7 <6.0",
         "ext-dom": "*",
         "ext-libxml": "*"
     },
@@ -28,10 +29,10 @@
     "require-dev": {
         "roave/security-advisories": "dev-latest",
         "codeception/codeception": "4.1.*",
-        "squizlabs/php_codesniffer": "3.6.*",
-        "overtrue/phplint": "3.0.*",
-        "friendsofphp/php-cs-fixer": "3.0.*",
-        "phpunit/phpunit": "9.5.*",
+        "squizlabs/php_codesniffer": "^3.6.0",
+        "overtrue/phplint": "^3.0.0",
+        "friendsofphp/php-cs-fixer": "^3.0.0",
+        "phpunit/phpunit": ">=9.0",
         "codeception/phpunit-wrapper": "^9.0.6"
     }
 }
