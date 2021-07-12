@@ -3,8 +3,11 @@
 namespace Tests\Codeception\Task\Splitter;
 
 use Codeception\Task\Splitter\TestsSplitterTask;
+use Codeception\Task\Splitter\TestsSplitterTrait;
+use Consolidation\Log\Logger;
 use PHPUnit\Framework\TestCase;
 use Robo\Exception\TaskException;
+use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Finder\Finder;
 
 /**
@@ -13,6 +16,8 @@ use Symfony\Component\Finder\Finder;
  */
 class TestsSplitterTaskTest extends TestCase
 {
+    use TestsSplitterTrait;
+
     public function testRunThrowsExceptionIfCodeceptLoaderIsNotLoaded(): void
     {
         $service = $this->getMockBuilder(TestsSplitterTask::class)
@@ -61,6 +66,7 @@ class TestsSplitterTaskTest extends TestCase
         int $expectedFiles
     ): void {
         $task = new TestsSplitterTask($groups);
+        $task->setLogger(new Logger(new NullOutput()));
         $task->testsFrom(TEST_PATH . '/fixtures/');
         $groupTo = TEST_PATH . '/result/group_';
         $task->groupsTo($groupTo);

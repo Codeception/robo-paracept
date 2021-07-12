@@ -7,6 +7,7 @@ use Codeception\Test\Descriptor as TestDescriptor;
 use Codeception\Test\Loader as TestLoader;
 use Exception;
 use PHPUnit\Framework\DataProviderTestSuite;
+use PHPUnit\Framework\ExecutionOrderDependency;
 use PHPUnit\Framework\TestCase;
 use ReflectionObject;
 use Robo\Exception\TaskException;
@@ -50,15 +51,16 @@ class TestsSplitterTask extends TestsSplitter
 
             // load dependencies for cest type. Unit tests dependencies are loaded automatically
             if ($test instanceof Cest) {
-                $test->getMetadata()->setServices(['di'=>$di]);
+                $test->getMetadata()->setServices(['di' => $di]);
                 $test->preload();
             }
 
             if (method_exists($test, 'getMetadata')) {
-                $testsListWithDependencies[TestDescriptor::getTestFullName($test)] = $test->getMetadata()
-                                                                                          ->getDependencies();
-                if ($testsHaveAtLeastOneDependency === false && count($test->getMetadata()->getDependencies()) !== 0) {
+                /** @var ExecutionOrderDependency[] $dependencies */
+                $dependencies = $test->getMetadata()->getDependencies();
+                if ($testsHaveAtLeastOneDependency === false && count($dependencies) !== 0) {
                     $testsHaveAtLeastOneDependency = true;
+                    $testsListWithDependencies[TestDescriptor::getTestFullName($test)] = $dependencies;
                 }
 
                 // little hack to get dependencies from phpunit test cases that are private.
@@ -68,10 +70,13 @@ class TestsSplitterTask extends TestsSplitter
                     try {
                         $property = $ref->getProperty('dependencies');
                         $property->setAccessible(true);
-                        $testsListWithDependencies[TestDescriptor::getTestFullName($test)] = $property->getValue($test);
-
-                        if ($testsHaveAtLeastOneDependency === false && count($property->getValue($test)) !== 0) {
+                        /** @var ExecutionOrderDependency[] $dependencies */
+                        $dependencies = $property->getValue($test);
+                        if ($testsHaveAtLeastOneDependency === false && count($dependencies) !== 0) {
                             $testsHaveAtLeastOneDependency = true;
+                            $testsListWithDependencies[TestDescriptor::getTestFullName($test)] = $dependencies;
+                        } else {
+                            $testsListWithDependencies[TestDescriptor::getTestFullName($test)] = [];
                         }
                     } catch (\ReflectionException $e) {
                         // go up on level on inheritance chain.
@@ -84,7 +89,6 @@ class TestsSplitterTask extends TestsSplitter
 
         if ($testsHaveAtLeastOneDependency) {
             $this->printTaskInfo('Resolving test dependencies');
-
             // make sure that dependencies are in array as full names
             try {
                 $testsListWithDependencies = $this->resolveDependenciesToFullNames(
@@ -94,7 +98,6 @@ class TestsSplitterTask extends TestsSplitter
                 $this->printTaskError($e->getMessage());
                 return false;
             }
-
             // resolved and ordered list of dependencies
             $orderedListOfTests = [];
             // helper array
@@ -121,7 +124,6 @@ class TestsSplitterTask extends TestsSplitter
 
         // for even split, calculate number of tests in each group
         $numberOfElementsInGroup = floor(count($orderedListOfTests) / $this->numGroups);
-
         $i = 1;
         $groups = [];
 
