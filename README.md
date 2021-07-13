@@ -29,14 +29,6 @@ class RoboFile extends \Robo\Tasks
 ?>
 ```
 
-### PHPUnit 6 compatiblity
-
-Add ` 'vendor/codeception/codeception/autoload.php'` to enabled PHPUnit 6 class names:
-
-```php
-require_once 'vendor/codeception/codeception/autoload.php';
-```
-
 ## Idea
 
 Parallel execution of Codeception tests can be implemented in different ways.
@@ -65,6 +57,28 @@ $this->taskSplitTestFilesByGroups(5)
    ->groupsTo('tests/_data/paratest_')
    ->run();
 ```
+### SplitTestsByTime
+
+Enable extension for collect execution time of you use taskSplitTestsByTime
+
+```
+extensions:
+    enabled:
+        - Codeception\Task\Extension\TimeReporter
+```
+
+Loads tests from a folder and distributes them between groups by execution time.
+
+```php
+$this->taskSplitTestsByTime(5)
+    ->testsFrom('tests/acceptance')
+    ->projectRoot('.')
+    ->groupsTo('tests/_data/group_')
+    ->run();
+```
+
+this command need run all tests with `Codeception\Task\TimeReporter` for collect execution time. If you want just split tests between group (and not execute its) you can use SplitTestsByGroups.
+
 
 ### MergeXmlReports
 
