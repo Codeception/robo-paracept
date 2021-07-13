@@ -7,7 +7,8 @@ use Robo\Robo;
 
 const TEST_PATH = __DIR__;
 
-if (!is_dir($concurrentDirectory = TEST_PATH . '/result/')
+if (
+    !is_dir($concurrentDirectory = TEST_PATH . '/result/')
     && !mkdir($concurrentDirectory)
     && !is_dir($concurrentDirectory)
 ) {
@@ -15,4 +16,5 @@ if (!is_dir($concurrentDirectory = TEST_PATH . '/result/')
         sprintf('Directory "%s" was not created', $concurrentDirectory)
     );
 }
+
 Robo::createContainer();
