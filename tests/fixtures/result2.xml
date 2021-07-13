@@ -1,31 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites>
   <testsuite name="cli" tests="2" assertions="5" failures="0" errors="0" time="0.235430">
-    <testcase file="/home/davert/Codeception/tests/cli/RunCest.php" name="runHtml" class="RunCest" feature="execute tests with html output" assertions="1" time="0.126828"/>
-    <testcase name="Build" file="/home/davert/Codeception/tests/cli/BuildCept.php" feature="test build command" assertions="4" time="0.108602"/>
+    <testcase file="/home/anywhere/Codeception/tests/cli/RunCest.php" name="runHtml" class="RunCest" feature="execute tests with html output" assertions="1" time="0.126828"/>
+    <testcase name="Build" file="/home/anywhere/Codeception/tests/cli/BuildCept.php" feature="test build command" assertions="4" time="0.108602"/>
   </testsuite>
   <testsuite name="unit" tests="22" assertions="52" failures="0" errors="0" time="0.160419">
-    <testcase name="testBasic" class="GenerateCestTest" file="/home/davert/Codeception/tests/unit/Codeception/Command/GenerateCestTest.php" line="19" assertions="7" time="0.016049"/>
-    <testcase name="testSuites" class="ConfigurationTest" file="/home/davert/Codeception/tests/unit/Codeception/ConfigurationTest.php" line="20" assertions="2" time="0.003721"/>
-    <testcase name="testFunctionForStrippingClassNames" class="ConfigurationTest" file="/home/davert/Codeception/tests/unit/Codeception/ConfigurationTest.php" line="30" assertions="4" time="0.002449"/>
-    <testcase name="testModules" class="ConfigurationTest" file="/home/davert/Codeception/tests/unit/Codeception/ConfigurationTest.php" line="42" assertions="2" time="0.001838"/>
-    <testcase name="testActions" class="ConfigurationTest" file="/home/davert/Codeception/tests/unit/Codeception/ConfigurationTest.php" line="53" assertions="2" time="0.001800"/>
-    <testcase name="testActionsInExtendedModule" class="ConfigurationTest" file="/home/davert/Codeception/tests/unit/Codeception/ConfigurationTest.php" line="64" assertions="3" time="0.004866"/>
-    <testcase name="testActionsInExtendedButNotInheritedModule" class="ConfigurationTest" file="/home/davert/Codeception/tests/unit/Codeception/ConfigurationTest.php" line="76" assertions="3" time="0.002374"/>
-    <testcase name="testExplicitlySetActionsOnNotInherited" class="ConfigurationTest" file="/home/davert/Codeception/tests/unit/Codeception/ConfigurationTest.php" line="89" assertions="3" time="0.002299"/>
-    <testcase name="testActionsExplicitlySetForNotInheritedModule" class="ConfigurationTest" file="/home/davert/Codeception/tests/unit/Codeception/ConfigurationTest.php" line="103" assertions="2" time="0.002109"/>
-    <testcase name="testCreateModuleWithoutRequiredFields" class="ConfigurationTest" file="/home/davert/Codeception/tests/unit/Codeception/ConfigurationTest.php" line="115" assertions="1" time="0.002117"/>
-    <testcase name="testCreateModuleWithCorrectConfig" class="ConfigurationTest" file="/home/davert/Codeception/tests/unit/Codeception/ConfigurationTest.php" line="126" assertions="2" time="0.001627"/>
-    <testcase name="testReconfigureModule" class="ConfigurationTest" file="/home/davert/Codeception/tests/unit/Codeception/ConfigurationTest.php" line="143" assertions="4" time="0.001872"/>
-    <testcase name="testRun" class="SuiteManagerTest" file="/home/davert/Codeception/tests/unit/Codeception/SuiteManagerTest.php" line="22" assertions="1" time="0.002821"/>
-    <testcase name="testFewTests" class="SuiteManagerTest" file="/home/davert/Codeception/tests/unit/Codeception/SuiteManagerTest.php" line="35" assertions="2" time="0.004583"/>
-    <testcase name="testAddCestWithEnv" class="SuiteManagerTest" file="/home/davert/Codeception/tests/unit/Codeception/SuiteManagerTest.php" line="52" assertions="2" time="0.013231"/>
-    <testcase name="testFilename" class="CestTest" file="/home/davert/Codeception/tests/unit/Codeception/TestCase/CestTest.php" line="8" assertions="1" time="0.005312"/>
-    <testcase name="testRunStepEvents" class="TestCaseTest" file="/home/davert/Codeception/tests/unit/Codeception/TestCaseTest.php" line="30" assertions="2" time="0.002314"/>
-    <testcase name="testRunStep" class="TestCaseTest" file="/home/davert/Codeception/tests/unit/Codeception/TestCaseTest.php" line="42" assertions="5" time="0.003157"/>
-    <testcase name="testRunStepAddsTrace" class="TestCaseTest" file="/home/davert/Codeception/tests/unit/Codeception/TestCaseTest.php" line="59" assertions="2" time="0.001778"/>
-    <testcase name="testAddCept" class="TestLoaderTest" file="/home/davert/Codeception/tests/unit/Codeception/TestLoaderTest.php" line="17" assertions="1" time="0.001684"/>
-    <testcase name="testLoadFileWithFewCases" class="TestLoaderTest" file="/home/davert/Codeception/tests/unit/Codeception/TestLoaderTest.php" line="38" assertions="1" time="0.006224"/>
-    <testcase name="testLoadAllTests" class="TestLoaderTest" file="/home/davert/Codeception/tests/unit/Codeception/TestLoaderTest.php" line="47" assertions="0" time="0.076194"/>
+    <testcase name="testBasic" class="GenerateCestTest" file="/home/anywhere/Codeception/tests/unit/Codeception/Command/GenerateCestTest.php" line="19" assertions="7" time="0.016049"/>
+    <testcase name="testSuites" class="ConfigurationTest" file="/home/anywhere/Codeception/tests/unit/Codeception/ConfigurationTest.php" line="20" assertions="2" time="0.003721"/>
+    <testcase name="testFunctionForStrippingClassNames" class="ConfigurationTest" file="/home/anywhere/Codeception/tests/unit/Codeception/ConfigurationTest.php" line="30" assertions="4" time="0.002449"/>
+    <testcase name="testModules" class="ConfigurationTest" file="/home/anywhere/Codeception/tests/unit/Codeception/ConfigurationTest.php" line="42" assertions="2" time="0.001838"/>
+    <testcase name="testActions" class="ConfigurationTest" file="/home/anywhere/Codeception/tests/unit/Codeception/ConfigurationTest.php" line="53" assertions="2" time="0.001800"/>
+    <testcase name="testActionsInExtendedModule" class="ConfigurationTest" file="/home/anywhere/Codeception/tests/unit/Codeception/ConfigurationTest.php" line="64" assertions="3" time="0.004866"/>
+    <testcase name="testActionsInExtendedButNotInheritedModule" class="ConfigurationTest" file="/home/anywhere/Codeception/tests/unit/Codeception/ConfigurationTest.php" line="76" assertions="3" time="0.002374"/>
+    <testcase name="testExplicitlySetActionsOnNotInherited" class="ConfigurationTest" file="/home/anywhere/Codeception/tests/unit/Codeception/ConfigurationTest.php" line="89" assertions="3" time="0.002299"/>
+    <testcase name="testActionsExplicitlySetForNotInheritedModule" class="ConfigurationTest" file="/home/anywhere/Codeception/tests/unit/Codeception/ConfigurationTest.php" line="103" assertions="2" time="0.002109"/>
+    <testcase name="testCreateModuleWithoutRequiredFields" class="ConfigurationTest" file="/home/anywhere/Codeception/tests/unit/Codeception/ConfigurationTest.php" line="115" assertions="1" time="0.002117"/>
+    <testcase name="testCreateModuleWithCorrectConfig" class="ConfigurationTest" file="/home/anywhere/Codeception/tests/unit/Codeception/ConfigurationTest.php" line="126" assertions="2" time="0.001627"/>
+    <testcase name="testReconfigureModule" class="ConfigurationTest" file="/home/anywhere/Codeception/tests/unit/Codeception/ConfigurationTest.php" line="143" assertions="4" time="0.001872"/>
+    <testcase name="testRun" class="SuiteManagerTest" file="/home/anywhere/Codeception/tests/unit/Codeception/SuiteManagerTest.php" line="22" assertions="1" time="0.002821"/>
+    <testcase name="testFewTests" class="SuiteManagerTest" file="/home/anywhere/Codeception/tests/unit/Codeception/SuiteManagerTest.php" line="35" assertions="2" time="0.004583"/>
+    <testcase name="testAddCestWithEnv" class="SuiteManagerTest" file="/home/anywhere/Codeception/tests/unit/Codeception/SuiteManagerTest.php" line="52" assertions="2" time="0.013231"/>
+    <testcase name="testFilename" class="CestTest" file="/home/anywhere/Codeception/tests/unit/Codeception/TestCase/CestTest.php" line="8" assertions="1" time="0.005312"/>
+    <testcase name="testRunStepEvents" class="TestCaseTest" file="/home/anywhere/Codeception/tests/unit/Codeception/TestCaseTest.php" line="30" assertions="2" time="0.002314"/>
+    <testcase name="testRunStep" class="TestCaseTest" file="/home/anywhere/Codeception/tests/unit/Codeception/TestCaseTest.php" line="42" assertions="5" time="0.003157"/>
+    <testcase name="testRunStepAddsTrace" class="TestCaseTest" file="/home/anywhere/Codeception/tests/unit/Codeception/TestCaseTest.php" line="59" assertions="2" time="0.001778"/>
+    <testcase name="testAddCept" class="TestLoaderTest" file="/home/anywhere/Codeception/tests/unit/Codeception/TestLoaderTest.php" line="17" assertions="1" time="0.001684"/>
+    <testcase name="testLoadFileWithFewCases" class="TestLoaderTest" file="/home/anywhere/Codeception/tests/unit/Codeception/TestLoaderTest.php" line="38" assertions="1" time="0.006224"/>
+    <testcase name="testLoadAllTests" class="TestLoaderTest" file="/home/anywhere/Codeception/tests/unit/Codeception/TestLoaderTest.php" line="47" assertions="0" time="0.076194"/>
   </testsuite>
 </testsuites>

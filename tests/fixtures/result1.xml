@@ -1,58 +1,58 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites>
   <testsuite name="cli" tests="51" assertions="204" failures="0" errors="0" time="4.980045">
-    <testcase file="/home/davert/Codeception/tests/cli/BootstrapCest.php" name="bootstrapProject" class="BootstrapCest" feature="bootstrap project" assertions="14" time="0.090255"/>
-    <testcase file="/home/davert/Codeception/tests/cli/BootstrapCest.php" name="bootstrapWithNamespace" class="BootstrapCest" feature="bootstrap with namespace" assertions="20" time="0.088894"/>
-    <testcase file="/home/davert/Codeception/tests/cli/ExtensionsCest.php" name="useAlternativeFormatter" class="ExtensionsCest" feature="use alternative formatter delivered through extensions" assertions="2" time="0.083300"/>
-    <testcase file="/home/davert/Codeception/tests/cli/ExtensionsCest.php" name="reRunFailedTests" class="ExtensionsCest" feature="re run failed tests" assertions="4" time="0.257906"/>
-    <testcase file="/home/davert/Codeception/tests/cli/GeneratePageObjectCest.php" name="generateGlobalPageObject" class="GeneratePageObjectCest" feature="generate global page object" assertions="6" time="0.060479"/>
-    <testcase file="/home/davert/Codeception/tests/cli/GeneratePageObjectCest.php" name="generateSuitePageObject" class="GeneratePageObjectCest" feature="generate suite page object" assertions="8" time="0.063285"/>
-    <testcase file="/home/davert/Codeception/tests/cli/GeneratePageObjectCest.php" name="generateGlobalPageObjectInDifferentPath" class="GeneratePageObjectCest" feature="generate global page object in different path" assertions="6" time="0.061517"/>
-    <testcase file="/home/davert/Codeception/tests/cli/IncludedCest.php" name="runSuitesFromIncludedConfigs" class="IncludedCest" feature="run suites from included configs" assertions="6" time="0.106484"/>
-    <testcase file="/home/davert/Codeception/tests/cli/IncludedCest.php" name="runIncludedWithXmlOutput" class="IncludedCest" feature="run included with xml output" assertions="7" time="0.111763"/>
-    <testcase file="/home/davert/Codeception/tests/cli/IncludedCest.php" name="runIncludedWithHtmlOutput" class="IncludedCest" feature="run included with html output" assertions="7" time="0.109634"/>
-    <testcase file="/home/davert/Codeception/tests/cli/IncludedCest.php" name="runIncludedWithCoverage" class="IncludedCest" feature="run included with coverage" assertions="4" time="0.225616"/>
-    <testcase file="/home/davert/Codeception/tests/cli/OrderCest.php" name="checkOneFile" class="OrderCest" feature="check one file" assertions="2" time="0.085081"/>
-    <testcase file="/home/davert/Codeception/tests/cli/OrderCest.php" name="checkForFails" class="OrderCest" feature="check for fails" assertions="2" time="0.085883"/>
-    <testcase file="/home/davert/Codeception/tests/cli/OrderCest.php" name="checkSimpleFiles" class="OrderCest" feature="check simple files" assertions="2" time="0.103551"/>
-    <testcase file="/home/davert/Codeception/tests/cli/OrderCest.php" name="checkCestOrder" class="OrderCest" feature="check cest order" assertions="2" time="0.086646"/>
-    <testcase file="/home/davert/Codeception/tests/cli/OrderCest.php" name="checkCodeceptionTest" class="OrderCest" feature="check codeception test" assertions="2" time="0.086699"/>
-    <testcase file="/home/davert/Codeception/tests/cli/RunCest.php" name="runOneFile" class="RunCest" feature="execute one test" assertions="1" time="0.086588"/>
-    <testcase file="/home/davert/Codeception/tests/cli/RunCest.php" name="runHtml" class="RunCest" feature="execute tests with html output" assertions="1" time="0.100919"/>
-    <testcase file="/home/davert/Codeception/tests/cli/RunCest.php" name="runJsonReport" class="RunCest" feature="check json reports" assertions="3" time="0.101002"/>
-    <testcase file="/home/davert/Codeception/tests/cli/RunCest.php" name="runTapReport" class="RunCest" feature="check tap reports" assertions="1" time="0.100432"/>
-    <testcase file="/home/davert/Codeception/tests/cli/RunCest.php" name="runXmlReport" class="RunCest" feature="check xml reports" assertions="4" time="0.101352"/>
-    <testcase file="/home/davert/Codeception/tests/cli/RunCest.php" name="runReportMode" class="RunCest" feature="try the reporting mode" assertions="2" time="0.097315"/>
-    <testcase file="/home/davert/Codeception/tests/cli/RunCest.php" name="runOneGroup" class="RunCest" feature="run one group" assertions="2" time="0.087631"/>
-    <testcase file="/home/davert/Codeception/tests/cli/RunCest.php" name="skipRunOneGroup" class="RunCest" feature="skip run one group" assertions="2" time="0.086236"/>
-    <testcase file="/home/davert/Codeception/tests/cli/RunCest.php" name="runTwoSuites" class="RunCest" feature="run two suites" assertions="3" time="0.108375"/>
-    <testcase file="/home/davert/Codeception/tests/cli/RunCest.php" name="skipSuites" class="RunCest" feature="skip suites" assertions="4" time="0.104120"/>
-    <testcase file="/home/davert/Codeception/tests/cli/RunCest.php" name="runOneTestFromUnit" class="RunCest" feature="run one test from unit" assertions="2" time="0.087949"/>
-    <testcase file="/home/davert/Codeception/tests/cli/RunCest.php" name="runOneTestFromCest" class="RunCest" feature="run one test from cest" assertions="2" time="0.087184"/>
-    <testcase file="/home/davert/Codeception/tests/cli/RunCest.php" name="runTestWithDataProviders" class="RunCest" feature="run test with data providers" assertions="4" time="0.089151"/>
-    <testcase file="/home/davert/Codeception/tests/cli/RunCest.php" name="runTestWithFailFast" class="RunCest" feature="run test with fail fast" assertions="4" time="0.201355"/>
-    <testcase file="/home/davert/Codeception/tests/cli/RunCest.php" name="runWithCustomOuptutPath" class="RunCest" feature="run with custom ouptut path" assertions="7" time="0.106557"/>
-    <testcase file="/home/davert/Codeception/tests/cli/RunEnvironmentCest.php" name="testDevEnvironment" class="RunEnvironmentCest" feature="execute test in --dev environment" assertions="1" time="0.098770"/>
-    <testcase file="/home/davert/Codeception/tests/cli/RunEnvironmentCest.php" name="testProdEnvironment" class="RunEnvironmentCest" feature="execute test in non existent --prod environment" assertions="2" time="0.065091"/>
-    <testcase file="/home/davert/Codeception/tests/cli/RunEnvironmentCest.php" name="testEnvironmentParams" class="RunEnvironmentCest" feature="execute check that env params applied" assertions="3" time="0.083562"/>
-    <testcase file="/home/davert/Codeception/tests/cli/RunEnvironmentCest.php" name="testWithoutEnvironmentParams" class="RunEnvironmentCest" feature="execute check that env params applied" assertions="2" time="0.089282"/>
-    <testcase file="/home/davert/Codeception/tests/cli/RunEnvironmentCest.php" name="runTestForSpecificEnvironment" class="RunEnvironmentCest" feature="run test for specific environment" assertions="4" time="0.101882"/>
-    <testcase file="/home/davert/Codeception/tests/cli/RunEnvironmentCest.php" name="runTestForNotIncludedEnvironment" class="RunEnvironmentCest" feature="run test for not included environment" assertions="2" time="0.087974"/>
-    <testcase name="AutoRebuild" file="/home/davert/Codeception/tests/cli/AutoRebuildCept.php" feature="change configs and check that Guy is rebuilt" assertions="4" time="0.086254"/>
-    <testcase name="Build" file="/home/davert/Codeception/tests/cli/BuildCept.php" feature="test build command" assertions="4" time="0.080603"/>
-    <testcase name="GenerateCept" file="/home/davert/Codeception/tests/cli/GenerateCeptCept.php" feature="generate sample Cept" assertions="5" time="0.216939"/>
-    <testcase name="GenerateCest" file="/home/davert/Codeception/tests/cli/GenerateCestCept.php" feature="generate sample Cest" assertions="2" time="0.063848"/>
-    <testcase name="GenerateGroup" file="/home/davert/Codeception/tests/cli/GenerateGroupCept.php" feature="generate new group" assertions="6" time="0.061853"/>
-    <testcase name="GeneratePhpUnit" file="/home/davert/Codeception/tests/cli/GeneratePhpUnitCept.php" feature="generate sample Test" assertions="4" time="0.064127"/>
-    <testcase name="GenerateScenarios" file="/home/davert/Codeception/tests/cli/GenerateScenariosCept.php" feature="generate scenarios сценарий" assertions="2" time="0.075539"/>
-    <testcase name="GenerateStepObject" file="/home/davert/Codeception/tests/cli/GenerateStepObjectCept.php" feature="generate step object" assertions="5" time="0.061004"/>
-    <testcase name="GenerateSuite" file="/home/davert/Codeception/tests/cli/GenerateSuiteCept.php" feature="generate sample Suite" assertions="4" time="0.063826">
+    <testcase file="/home/anywhere/Codeception/tests/cli/BootstrapCest.php" name="bootstrapProject" class="BootstrapCest" feature="bootstrap project" assertions="14" time="0.090255"/>
+    <testcase file="/home/anywhere/Codeception/tests/cli/BootstrapCest.php" name="bootstrapWithNamespace" class="BootstrapCest" feature="bootstrap with namespace" assertions="20" time="0.088894"/>
+    <testcase file="/home/anywhere/Codeception/tests/cli/ExtensionsCest.php" name="useAlternativeFormatter" class="ExtensionsCest" feature="use alternative formatter delivered through extensions" assertions="2" time="0.083300"/>
+    <testcase file="/home/anywhere/Codeception/tests/cli/ExtensionsCest.php" name="reRunFailedTests" class="ExtensionsCest" feature="re run failed tests" assertions="4" time="0.257906"/>
+    <testcase file="/home/anywhere/Codeception/tests/cli/GeneratePageObjectCest.php" name="generateGlobalPageObject" class="GeneratePageObjectCest" feature="generate global page object" assertions="6" time="0.060479"/>
+    <testcase file="/home/anywhere/Codeception/tests/cli/GeneratePageObjectCest.php" name="generateSuitePageObject" class="GeneratePageObjectCest" feature="generate suite page object" assertions="8" time="0.063285"/>
+    <testcase file="/home/anywhere/Codeception/tests/cli/GeneratePageObjectCest.php" name="generateGlobalPageObjectInDifferentPath" class="GeneratePageObjectCest" feature="generate global page object in different path" assertions="6" time="0.061517"/>
+    <testcase file="/home/anywhere/Codeception/tests/cli/IncludedCest.php" name="runSuitesFromIncludedConfigs" class="IncludedCest" feature="run suites from included configs" assertions="6" time="0.106484"/>
+    <testcase file="/home/anywhere/Codeception/tests/cli/IncludedCest.php" name="runIncludedWithXmlOutput" class="IncludedCest" feature="run included with xml output" assertions="7" time="0.111763"/>
+    <testcase file="/home/anywhere/Codeception/tests/cli/IncludedCest.php" name="runIncludedWithHtmlOutput" class="IncludedCest" feature="run included with html output" assertions="7" time="0.109634"/>
+    <testcase file="/home/anywhere/Codeception/tests/cli/IncludedCest.php" name="runIncludedWithCoverage" class="IncludedCest" feature="run included with coverage" assertions="4" time="0.225616"/>
+    <testcase file="/home/anywhere/Codeception/tests/cli/OrderCest.php" name="checkOneFile" class="OrderCest" feature="check one file" assertions="2" time="0.085081"/>
+    <testcase file="/home/anywhere/Codeception/tests/cli/OrderCest.php" name="checkForFails" class="OrderCest" feature="check for fails" assertions="2" time="0.085883"/>
+    <testcase file="/home/anywhere/Codeception/tests/cli/OrderCest.php" name="checkSimpleFiles" class="OrderCest" feature="check simple files" assertions="2" time="0.103551"/>
+    <testcase file="/home/anywhere/Codeception/tests/cli/OrderCest.php" name="checkCestOrder" class="OrderCest" feature="check cest order" assertions="2" time="0.086646"/>
+    <testcase file="/home/anywhere/Codeception/tests/cli/OrderCest.php" name="checkCodeceptionTest" class="OrderCest" feature="check codeception test" assertions="2" time="0.086699"/>
+    <testcase file="/home/anywhere/Codeception/tests/cli/RunCest.php" name="runOneFile" class="RunCest" feature="execute one test" assertions="1" time="0.086588"/>
+    <testcase file="/home/anywhere/Codeception/tests/cli/RunCest.php" name="runHtml" class="RunCest" feature="execute tests with html output" assertions="1" time="0.100919"/>
+    <testcase file="/home/anywhere/Codeception/tests/cli/RunCest.php" name="runJsonReport" class="RunCest" feature="check json reports" assertions="3" time="0.101002"/>
+    <testcase file="/home/anywhere/Codeception/tests/cli/RunCest.php" name="runTapReport" class="RunCest" feature="check tap reports" assertions="1" time="0.100432"/>
+    <testcase file="/home/anywhere/Codeception/tests/cli/RunCest.php" name="runXmlReport" class="RunCest" feature="check xml reports" assertions="4" time="0.101352"/>
+    <testcase file="/home/anywhere/Codeception/tests/cli/RunCest.php" name="runReportMode" class="RunCest" feature="try the reporting mode" assertions="2" time="0.097315"/>
+    <testcase file="/home/anywhere/Codeception/tests/cli/RunCest.php" name="runOneGroup" class="RunCest" feature="run one group" assertions="2" time="0.087631"/>
+    <testcase file="/home/anywhere/Codeception/tests/cli/RunCest.php" name="skipRunOneGroup" class="RunCest" feature="skip run one group" assertions="2" time="0.086236"/>
+    <testcase file="/home/anywhere/Codeception/tests/cli/RunCest.php" name="runTwoSuites" class="RunCest" feature="run two suites" assertions="3" time="0.108375"/>
+    <testcase file="/home/anywhere/Codeception/tests/cli/RunCest.php" name="skipSuites" class="RunCest" feature="skip suites" assertions="4" time="0.104120"/>
+    <testcase file="/home/anywhere/Codeception/tests/cli/RunCest.php" name="runOneTestFromUnit" class="RunCest" feature="run one test from unit" assertions="2" time="0.087949"/>
+    <testcase file="/home/anywhere/Codeception/tests/cli/RunCest.php" name="runOneTestFromCest" class="RunCest" feature="run one test from cest" assertions="2" time="0.087184"/>
+    <testcase file="/home/anywhere/Codeception/tests/cli/RunCest.php" name="runTestWithDataProviders" class="RunCest" feature="run test with data providers" assertions="4" time="0.089151"/>
+    <testcase file="/home/anywhere/Codeception/tests/cli/RunCest.php" name="runTestWithFailFast" class="RunCest" feature="run test with fail fast" assertions="4" time="0.201355"/>
+    <testcase file="/home/anywhere/Codeception/tests/cli/RunCest.php" name="runWithCustomOuptutPath" class="RunCest" feature="run with custom ouptut path" assertions="7" time="0.106557"/>
+    <testcase file="/home/anywhere/Codeception/tests/cli/RunEnvironmentCest.php" name="testDevEnvironment" class="RunEnvironmentCest" feature="execute test in --dev environment" assertions="1" time="0.098770"/>
+    <testcase file="/home/anywhere/Codeception/tests/cli/RunEnvironmentCest.php" name="testProdEnvironment" class="RunEnvironmentCest" feature="execute test in non existent --prod environment" assertions="2" time="0.065091"/>
+    <testcase file="/home/anywhere/Codeception/tests/cli/RunEnvironmentCest.php" name="testEnvironmentParams" class="RunEnvironmentCest" feature="execute check that env params applied" assertions="3" time="0.083562"/>
+    <testcase file="/home/anywhere/Codeception/tests/cli/RunEnvironmentCest.php" name="testWithoutEnvironmentParams" class="RunEnvironmentCest" feature="execute check that env params applied" assertions="2" time="0.089282"/>
+    <testcase file="/home/anywhere/Codeception/tests/cli/RunEnvironmentCest.php" name="runTestForSpecificEnvironment" class="RunEnvironmentCest" feature="run test for specific environment" assertions="4" time="0.101882"/>
+    <testcase file="/home/anywhere/Codeception/tests/cli/RunEnvironmentCest.php" name="runTestForNotIncludedEnvironment" class="RunEnvironmentCest" feature="run test for not included environment" assertions="2" time="0.087974"/>
+    <testcase name="AutoRebuild" file="/home/anywhere/Codeception/tests/cli/AutoRebuildCept.php" feature="change configs and check that Guy is rebuilt" assertions="4" time="0.086254"/>
+    <testcase name="Build" file="/home/anywhere/Codeception/tests/cli/BuildCept.php" feature="test build command" assertions="4" time="0.080603"/>
+    <testcase name="GenerateCept" file="/home/anywhere/Codeception/tests/cli/GenerateCeptCept.php" feature="generate sample Cept" assertions="5" time="0.216939"/>
+    <testcase name="GenerateCest" file="/home/anywhere/Codeception/tests/cli/GenerateCestCept.php" feature="generate sample Cest" assertions="2" time="0.063848"/>
+    <testcase name="GenerateGroup" file="/home/anywhere/Codeception/tests/cli/GenerateGroupCept.php" feature="generate new group" assertions="6" time="0.061853"/>
+    <testcase name="GeneratePhpUnit" file="/home/anywhere/Codeception/tests/cli/GeneratePhpUnitCept.php" feature="generate sample Test" assertions="4" time="0.064127"/>
+    <testcase name="GenerateScenarios" file="/home/anywhere/Codeception/tests/cli/GenerateScenariosCept.php" feature="generate scenarios сценарий" assertions="2" time="0.075539"/>
+    <testcase name="GenerateStepObject" file="/home/anywhere/Codeception/tests/cli/GenerateStepObjectCept.php" feature="generate step object" assertions="5" time="0.061004"/>
+    <testcase name="GenerateSuite" file="/home/anywhere/Codeception/tests/cli/GenerateSuiteCept.php" feature="generate sample Suite" assertions="4" time="0.063826">
       <system-out>    </system-out>
     </testcase>
-    <testcase name="GenerateTest" file="/home/davert/Codeception/tests/cli/GenerateTestCept.php" feature="generate sample Test" assertions="5" time="0.063090"/>
-    <testcase name="GroupExtension" file="/home/davert/Codeception/tests/cli/GroupExtensionCept.php" feature="see that my group extension works" assertions="2" time="0.088975"/>
-    <testcase name="RunIncomplete" file="/home/davert/Codeception/tests/cli/RunIncompleteCept.php" feature="execute incomplete test" assertions="2" time="0.082625"/>
-    <testcase name="RunSkipped" file="/home/davert/Codeception/tests/cli/RunSkippedCept.php" feature="run skipped test" assertions="2" time="0.080867"/>
-    <testcase name="Unit" file="/home/davert/Codeception/tests/cli/UnitCept.php" feature="generate xml reports for unit tests" assertions="7" time="0.110775"/>
+    <testcase name="GenerateTest" file="/home/anywhere/Codeception/tests/cli/GenerateTestCept.php" feature="generate sample Test" assertions="5" time="0.063090"/>
+    <testcase name="GroupExtension" file="/home/anywhere/Codeception/tests/cli/GroupExtensionCept.php" feature="see that my group extension works" assertions="2" time="0.088975"/>
+    <testcase name="RunIncomplete" file="/home/anywhere/Codeception/tests/cli/RunIncompleteCept.php" feature="execute incomplete test" assertions="2" time="0.082625"/>
+    <testcase name="RunSkipped" file="/home/anywhere/Codeception/tests/cli/RunSkippedCept.php" feature="run skipped test" assertions="2" time="0.080867"/>
+    <testcase name="Unit" file="/home/anywhere/Codeception/tests/cli/UnitCept.php" feature="generate xml reports for unit tests" assertions="7" time="0.110775"/>
   </testsuite>
 </testsuites>
