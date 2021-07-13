@@ -23,8 +23,8 @@ require_once 'vendor/codeception/codeception/autoload.php';
 
 class RoboFile extends \Robo\Tasks
 {
-    use \Codeception\Task\MergeReports;
-    use \Codeception\Task\SplitTestsByGroups;
+    use Codeception\Task\Merger\ReportMerger;
+    use Codeception\Task\Splitter\TestsSplitterTrait;
 }
 ?>
 ```

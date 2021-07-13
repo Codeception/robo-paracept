@@ -1,12 +1,16 @@
 <?php
 
-class Example4Test extends \PHPUnit\Framework\TestCase {
+use PHPUnit\Framework\TestCase;
+
+class Example4Test extends TestCase
+{
 
     /**
      * @depends testB
      * @group example
      */
-    public function testA() {
+    public function testA()
+    {
         $this->markTestSkipped('Just a test ... test');
     }
 
@@ -14,7 +18,8 @@ class Example4Test extends \PHPUnit\Framework\TestCase {
      * @depends testA
      * @group example
      */
-    public function testB(){
+    public function testB()
+    {
         $this->markTestSkipped('Just a test ... test');
     }
 }
