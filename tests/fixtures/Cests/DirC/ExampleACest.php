@@ -2,12 +2,10 @@
 
 namespace Tests\Classes\Cests\DirC;
 
-use Codeception\Test\Unit;
-
-class ExampleACest extends Unit
+class ExampleACest
 {
-    public function testExampleStayHere()
+    public function testExampleStayHere(): void
     {
-        $this->assertTrue(false);
+        // nothing
     }
 }
