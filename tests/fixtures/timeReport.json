@@ -1,0 +1,14 @@
+{
+    "tests/fixtures/Cests/DirA/ExampleACest.php:testExampleGoTo": 29.98,
+    "tests/fixtures/Cests/DirB/ExampleACest.php:testExampleGoFrom": 20,
+    "tests/fixtures/Cests/DirC/ExampleACest.php:testExampleStayHere": 120.10,
+    "tests/fixtures/DependencyResolutionExampleTests/DirA/Example1Test.php:testA": 150,
+    "tests/fixtures/DependencyResolutionExampleTests/DirA/Example1Test.php:testB": 130,
+    "tests/fixtures/DependencyResolutionExampleTests/DirA/Example1Test.php:testC": 10,
+    "tests/fixtures/DependencyResolutionExampleTests/DirA/Example2Test.php:testD": 34,
+    "tests/fixtures/DependencyResolutionExampleTests/DirA/Example2Test.php:testE": 35,
+    "tests/fixtures/DependencyResolutionExampleTests/DirB/Example3Test.php:testF": 33,
+    "tests/fixtures/DependencyResolutionExampleTests/DirB/Example3Test.php:testG": 30,
+    "tests/fixtures/DependencyResolutionExampleTests2/DirA/Example1Test.php:testA": 20,
+    "tests/fixtures/DependencyResolutionExampleTests2/DirA/Example1Test.php:testB": 20
+}
