@@ -1,20 +1,25 @@
 <?php
 
-class Example2Test extends \PHPUnit\Framework\TestCase{
+use PHPUnit\Framework\TestCase;
+
+class Example2Test extends TestCase
+{
 
 
     /**
      * @depends Example2Test::testE
      * @group example
      */
-    public function testD(){
+    public function testD()
+    {
         self::assertTrue(true);
     }
 
     /**
      * @group example
      */
-    public function testE(){
+    public function testE()
+    {
         self::assertTrue(true);
     }
 }

@@ -1,9 +1,20 @@
 <?php
-//require_once 'vendor/autoload.php';
-require_once 'vendor/codeception/codeception/autoload.php';
 
-\Robo\Robo::createDefaultContainer(
-    new Symfony\Component\Console\Input\ArrayInput([]),
-    new Symfony\Component\Console\Output\NullOutput()
-);
-//\Robo\Robo::getContainer()->add('logger', new \Consolidation\Log\Logger(new \Symfony\Component\Console\Output\NullOutput));
+require_once dirname(__DIR__) . '/vendor/autoload.php';
+require_once dirname(__DIR__) . '/vendor/codeception/codeception/autoload.php';
+
+use Robo\Robo;
+
+const TEST_PATH = __DIR__;
+
+if (
+    !is_dir($concurrentDirectory = TEST_PATH . '/result/')
+    && !mkdir($concurrentDirectory)
+    && !is_dir($concurrentDirectory)
+) {
+    throw new \RuntimeException(
+        sprintf('Directory "%s" was not created', $concurrentDirectory)
+    );
+}
+
+Robo::createContainer();

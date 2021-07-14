@@ -1,7 +1,7 @@
 robo-paracept
 =============
 
-[![Build Status](https://travis-ci.org/Codeception/robo-paracept.svg?branch=master)](https://travis-ci.org/Codeception/robo-paracept) 
+[![PHP Composer](https://github.com/Codeception/robo-paracept/actions/workflows/php.yml/badge.svg)](https://github.com/Codeception/robo-paracept/actions/workflows/php.yml)
 [![Latest Stable Version](https://poser.pugx.org/codeception/robo-paracept/version)](https://packagist.org/packages/codeception/robo-paracept)
 [![Total Downloads](https://poser.pugx.org/codeception/robo-paracept/downloads)](https://packagist.org/packages/codeception/robo-paracept)
 [![License](https://poser.pugx.org/codeception/robo-paracept/license)](https://packagist.org/packages/codeception/robo-paracept)
@@ -23,8 +23,8 @@ require_once 'vendor/codeception/codeception/autoload.php';
 
 class RoboFile extends \Robo\Tasks
 {
-    use \Codeception\Task\MergeReports;
-    use \Codeception\Task\SplitTestsByGroups;
+    use Codeception\Task\Merger\ReportMerger;
+    use Codeception\Task\Splitter\TestsSplitterTrait;
 }
 ?>
 ```
