@@ -24,4 +24,13 @@ trait TestsSplitterTrait
     {
         return $this->task(TestFileSplitterTask::class, $numGroups);
     }
+
+    /**
+     * @param $numGroups
+     * @return TestGroupSplitterTask
+     */
+    protected function taskSplitTestGroupsByGroups($numGroups): TestGroupSplitterTask
+    {
+        return $this->task(TestGroupSplitterTask::class, $numGroups);
+    }
 }
