@@ -1,5 +1,7 @@
 <?php
 
+namespace Tests\Classes\DependencyResolutionExampleTests\DirA;
+
 use PHPUnit\Framework\TestCase;
 
 class Example2Test extends TestCase

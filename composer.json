@@ -18,12 +18,13 @@
         "consolidation/robo": "3.0.*",
         "symfony/finder": ">=2.7 <6.0",
         "ext-dom": "*",
-        "ext-libxml": "*"
+        "ext-libxml": "*",
+        "ext-json": "*"
     },
     "autoload-dev": {
         "psr-4": {
             "Tests\\Codeception\\Task\\": "tests/",
-            "Tests\\Classes\\": "tests/fixtures/Cests"
+            "Tests\\Classes\\": "tests/fixtures/"
         }
     },
     "require-dev": {

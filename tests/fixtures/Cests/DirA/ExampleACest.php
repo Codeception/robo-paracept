@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Classes\DirA;
+namespace Tests\Classes\Cests\DirA;
 
 use Codeception\Test\Unit;
 
