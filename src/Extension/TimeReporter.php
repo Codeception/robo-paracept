@@ -23,8 +23,7 @@ class TimeReporter extends Extension
      */
     public function after(TestEvent $e): void
     {
-        $name = Descriptor::getTestFullName($e->getTest());
-        $name = substr(str_replace($this->getRootDir(), '', $name), 1);
+        $name = $this->getTestname($e);
 
         if (empty($this->timeList[$name])) {
             $this->timeList[$name] = 0;
@@ -40,6 +39,16 @@ class TimeReporter extends Extension
         $file = $this->getLogDir() . 'timeReport.json';
         $data = is_file($file) ? json_decode(file_get_contents($file), true) : [];
         $data = array_replace($data, $this->timeList);
-        file_put_contents($file, json_encode($data));
+        file_put_contents($file, json_encode($data, JSON_PRETTY_PRINT));
+    }
+
+    /**
+     * @param TestEvent $e
+     * @return false|string
+     */
+    public function getTestname(TestEvent $e): string
+    {
+        $name = Descriptor::getTestFullName($e->getTest());
+        return substr(str_replace($this->getRootDir(), '', $name), 1);
     }
 }
