@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Classes\DependencyResolutionExampleTests\DirB;
+namespace Tests\Codeception\Task\fixtures\DependencyResolutionExampleTests\DirB;
 
 use PHPUnit\Framework\TestCase;
 

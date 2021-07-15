@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Classes\Cests\DirA;
+namespace Tests\Codeception\Task\fixtures\Cests\DirA;
 
 use Codeception\Step;
 

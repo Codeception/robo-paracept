@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Classes\Cests\DirB;
+namespace Tests\Codeception\Task\fixtures\Cests\DirB;
 
 class ExampleACest
 {

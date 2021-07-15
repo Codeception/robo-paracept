@@ -23,8 +23,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Tests\\Codeception\\Task\\": "tests/",
-            "Tests\\Classes\\": "tests/fixtures"
+            "Tests\\Codeception\\Task\\": "tests/"
         }
     },
     "require-dev": {
