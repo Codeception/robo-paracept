@@ -2,6 +2,7 @@
 
 namespace Codeception\Task\Splitter;
 
+use Codeception\Configuration;
 use Codeception\Test\Descriptor;
 use Codeception\Test\Loader;
 use JsonException;
@@ -49,7 +50,8 @@ class SplitTestsByTimeTask extends TestsSplitter
             if (1 !== preg_match('~^/~', $testName)) {
                 $testName = '/' . $testName;
             }
-            $testName = substr(str_replace($this->getProjectRoot(), '', $testName), 1);
+
+            $testName = substr(str_replace($this->getProjectDir(), '', $testName), 1);
             $testsWithTime[$testName] = $data[$testName] ?? 0;
         }
 
@@ -123,5 +125,10 @@ class SplitTestsByTimeTask extends TestsSplitter
         }
 
         return $data;
+    }
+
+    public function getProjectDir(): string
+    {
+        return Configuration::projectDir();
     }
 }
