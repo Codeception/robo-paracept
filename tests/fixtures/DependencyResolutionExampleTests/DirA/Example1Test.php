@@ -1,5 +1,7 @@
 <?php
 
+namespace Tests\Codeception\Task\fixtures\DependencyResolutionExampleTests\DirA;
+
 use PHPUnit\Framework\TestCase;
 
 class Example1Test extends TestCase

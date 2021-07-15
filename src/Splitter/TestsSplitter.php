@@ -27,6 +27,14 @@ abstract class TestsSplitter extends BaseTask
         $this->numGroups = $groups;
     }
 
+    /**
+     * @return string
+     */
+    public function getProjectRoot(): string
+    {
+        return realpath($this->projectRoot);
+    }
+
     public function projectRoot(string $path): TestsSplitter
     {
         $this->projectRoot = $path;

@@ -2,47 +2,56 @@
 
 namespace Codeception\Task\Splitter;
 
-use Codeception\Task\TestsSplitter;
-use PHPUnit_Framework_TestSuite_DataProvider;
-use Robo\Contract\TaskInterface;
+use Codeception\Configuration;
+use Codeception\Test\Descriptor;
+use Codeception\Test\Loader;
+use JsonException;
+use PHPUnit\Framework\DataProviderTestSuite;
 use Robo\Exception\TaskException;
+use RuntimeException;
 
-class SplitTestsByTimeTask extends TestsSplitter implements TaskInterface
+class SplitTestsByTimeTask extends TestsSplitter
 {
     protected $statFile = 'tests/_output/timeReport.json';
 
-    public function statFile($path)
+    public function statFile(string $path): self
     {
         $this->statFile = $path;
 
         return $this;
     }
 
-    public function run()
+    public function run(): void
     {
         if (!class_exists('\Codeception\Test\Loader')) {
-            throw new TaskException($this, 'This task requires Codeception to be loaded. Please require autoload.php of Codeception');
+            throw new TaskException(
+                $this,
+                'This task requires Codeception to be loaded. Please require autoload.php of Codeception'
+            );
         }
         if (!is_file($this->statFile)) {
             throw new TaskException($this, 'Can not find stat file - run tests with TimeReporter extension');
         }
 
-        $testLoader = new \Codeception\Test\Loader(['path' => $this->testsFrom]);
+        $testLoader = new Loader(['path' => $this->testsFrom]);
         $testLoader->loadTests($this->testsFrom);
         $tests = $testLoader->getTests();
-
-        $data = file_get_contents($this->statFile);
-        $data = json_decode($data, true);
+        $data = $this->readStatFileContent();
 
         $testsWithTime = [];
         $groups = [];
 
         $this->printTaskInfo('Processing ' . count($tests) . ' tests');
         foreach ($tests as $test) {
-            if ($test instanceof PHPUnit_Framework_TestSuite_DataProvider) {
+            if ($test instanceof DataProviderTestSuite) {
                 $test = current($test->tests());
             }
-            $testName = \Codeception\Test\Descriptor::getTestFullName($test);
+            $testName = Descriptor::getTestFullName($test);
+            if (1 !== preg_match('~^/~', $testName)) {
+                $testName = '/' . $testName;
+            }
+
+            $testName = substr(str_replace($this->getProjectDir(), '', $testName), 1);
             $testsWithTime[$testName] = $data[$testName] ?? 0;
         }
 
@@ -62,9 +71,16 @@ class SplitTestsByTimeTask extends TestsSplitter implements TaskInterface
         }
 
         // saving group files
-        foreach ($groups as $i => list('tests' => $tests, 'sum' => $sum)) {
+        foreach ($groups as $i => ['tests' => $tests, 'sum' => $sum]) {
             $filename = $this->saveTo . ($i + 1);
-            $this->printTaskInfo("Writing $filename: " . count($tests) . ' tests with ' . number_format($sum, 2) . ' seconds');
+            $this->printTaskInfo(
+                sprintf(
+                    'Writing %s: %d tests with %01.2f seconds',
+                    $filename,
+                    count($tests),
+                    number_format($sum, 2)
+                )
+            );
             file_put_contents($filename, implode("\n", $tests));
         }
     }
@@ -72,10 +88,10 @@ class SplitTestsByTimeTask extends TestsSplitter implements TaskInterface
     /**
      * Find group num with min execute time
      *
-     * @param $groups
-     * @return int|string
+     * @param array $groups
+     * @return int
      */
-    protected function getMinGroup($groups)
+    protected function getMinGroup(array $groups): int
     {
         $min = 0;
         $minSum = $groups[0]['sum'];
@@ -87,5 +103,32 @@ class SplitTestsByTimeTask extends TestsSplitter implements TaskInterface
         }
 
         return $min;
+    }
+
+    /**
+     * @return array
+     */
+    private function readStatFileContent(): array
+    {
+        if (false === ($data = file_get_contents($this->statFile))) {
+            throw new RuntimeException('Could not read content of stat file.');
+        }
+
+        try {
+            $data = json_decode($data, true, 512, JSON_THROW_ON_ERROR);
+        } catch (JsonException $exception) {
+            throw new RuntimeException(
+                "Could not decode content of stat file.",
+                0,
+                $exception
+            );
+        }
+
+        return $data;
+    }
+
+    public function getProjectDir(): string
+    {
+        return Configuration::projectDir();
     }
 }
