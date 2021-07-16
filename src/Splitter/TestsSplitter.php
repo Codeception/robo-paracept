@@ -3,6 +3,8 @@ declare(strict_types = 1);
 
 namespace Codeception\Task\Splitter;
 
+use Codeception\Test\Loader as TestLoader;
+use Robo\Exception\TaskException;
 use Robo\Task\BaseTask;
 
 abstract class TestsSplitter extends BaseTask
@@ -141,5 +143,46 @@ abstract class TestsSplitter extends BaseTask
         }
 
         return $testsListWithDependencies;
+    }
+
+    /**
+     * Claims that the Codeception is loaded for Tasks which need it
+     * @throws TaskException
+     */
+    protected function claimCodeceptionLoaded(): void
+    {
+        if (!$this->doCodeceptLoaderExists()) {
+            throw new TaskException(
+                $this,
+                'This task requires Codeception to be loaded. Please require autoload.php of Codeception'
+            );
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    protected function doCodeceptLoaderExists(): bool
+    {
+        return class_exists(TestLoader::class);
+    }
+
+    /**
+     * @return TestLoader
+     */
+    protected function getTestLoader(): TestLoader
+    {
+        return new TestLoader(['path' => $this->testsFrom]);
+    }
+
+    /**
+     * @return array
+     */
+    protected function loadTests(): array
+    {
+        $testLoader = $this->getTestLoader();
+        $testLoader->loadTests($this->testsFrom);
+
+        return $testLoader->getTests();
     }
 }
