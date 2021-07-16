@@ -1,13 +1,15 @@
 <?php
 
-namespace Tests\Classes\DirC;
+namespace Tests\Codeception\Task\fixtures\Cests\DirC;
 
-use Codeception\Test\Unit;
-
-class ExampleACest extends Unit
+class ExampleACest
 {
+    /**
+     * @group bar
+     * @group no
+     */
     public function testExampleStayHere()
     {
-        $this->assertTrue(false);
+        // nothing
     }
 }
