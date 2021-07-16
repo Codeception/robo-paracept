@@ -2,8 +2,12 @@
 
 namespace Tests\Codeception\Task\Splitter;
 
+use Codeception\Task\Splitter\TestGroupSplitterTask;
 use Codeception\Task\Splitter\TestsSplitterTrait;
+use Consolidation\Log\Logger;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Finder\Finder;
 
 /**
@@ -39,7 +43,8 @@ class TestGroupSplitterTaskTest extends TestCase
         ];
 
         $groupTo = TEST_PATH . '/result/group_';
-        $task = $this->taskSplitTestGroupsByGroups(5);
+        $task = new TestGroupSplitterTask(5);
+        $task->setLogger(new Logger(new NullOutput()));
         $task
             ->testsFrom(TEST_PATH . '/fixtures/')
             ->groupsTo($groupTo);
@@ -57,7 +62,6 @@ class TestGroupSplitterTaskTest extends TestCase
      */
     public function testGetIncludedGroups(): void
     {
-
         $groupsToAdd = [
             'foo',
             'bar',
@@ -76,7 +80,8 @@ class TestGroupSplitterTaskTest extends TestCase
         ];
 
         $groupTo = TEST_PATH . '/result/group_';
-        $task = $this->taskSplitTestGroupsByGroups(5);
+        $task = new TestGroupSplitterTask(5);
+        $task->setLogger(new Logger(new NullOutput()));
         $task
             ->testsFrom(TEST_PATH . '/fixtures/')
             ->groupsTo($groupTo);
@@ -95,12 +100,13 @@ class TestGroupSplitterTaskTest extends TestCase
     public function testDoNotAddGroupToIncludedAndExcluded(): void
     {
         $groupTo = TEST_PATH . '/result/group_';
-        $task = $this->taskSplitTestGroupsByGroups(5);
+        $task = new TestGroupSplitterTask(5);
+        $task->setLogger(new Logger(new NullOutput()));
         $task
             ->testsFrom(TEST_PATH . '/fixtures/')
             ->groupsTo($groupTo)
             ->groupIncluded('foo');
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectErrorMessageMatches(
             '/^You can mark group "\w+" only as included OR excluded.$/'
         );
@@ -114,12 +120,13 @@ class TestGroupSplitterTaskTest extends TestCase
     public function testDoNotAddGroupToExcludedAndIncluded(): void
     {
         $groupTo = TEST_PATH . '/result/group_';
-        $task = $this->taskSplitTestGroupsByGroups(5);
+        $task = new TestGroupSplitterTask(5);
+        $task->setLogger(new Logger(new NullOutput()));
         $task
             ->testsFrom(TEST_PATH . '/fixtures/')
             ->groupsTo($groupTo)
             ->groupExcluded('bar');
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectErrorMessageMatches(
             '/^You can mark group "\w+" only as included OR excluded.$/'
         );
@@ -136,5 +143,25 @@ class TestGroupSplitterTaskTest extends TestCase
         foreach ($finder->in(TEST_PATH . '/result') as $file) {
             unlink($file->getPathname());
         }
+    }
+
+    /**
+     * @covers ::run
+     */
+    public function testRun(): void
+    {
+        $from = TEST_PATH . '/fixtures/Cests/';
+        $to = TEST_PATH . '/result/group_';
+        $task = new TestGroupSplitterTask(5);
+        $task->setLogger(new Logger(new NullOutput()));
+        $task
+            ->testsFrom($from)
+            ->groupsTo($to)
+            ->groupIncluded('foo')
+            ->groupIncluded('bar')
+            ->groupExcluded('no')
+            ->run();
+
+        $this->assertCount(1, []);
     }
 }

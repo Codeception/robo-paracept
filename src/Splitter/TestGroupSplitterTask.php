@@ -3,6 +3,8 @@ declare(strict_types = 1);
 
 namespace Codeception\Task\Splitter;
 
+use Codeception\Test\Descriptor as TestDescriptor;
+use Codeception\Util\Annotation;
 use InvalidArgumentException;
 
 /**
@@ -97,6 +99,32 @@ class TestGroupSplitterTask extends TestsSplitter
 
     public function run()
     {
-        // TODO: Implement run() method.
+        $this->claimCodeceptionLoaded();
+        $tests = $this->loadTestsByGroup();
+        $this->printTaskInfo('Processing ' . count($tests) . ' tests');
+    }
+
+    /**
+     * Loads the Test which have exactly the given groups included
+     * Excludes the tests which matches one of the excluded groups
+     * @return array
+     */
+    protected function loadTestsByGroup(): array
+    {
+        $testsByGroups = [];
+        $tests = $this->loadTests();
+        foreach ($tests as $test) {
+            [$class, $method] = explode(':', TestDescriptor::getTestSignature($test));
+            $annotations = Annotation::forMethod($class, $method)->fetchAll('group');
+            if ([] === array_diff($this->getExcludedGroups(), $annotations)) {
+                continue;
+            }
+            if ([] !== array_diff($this->getIncludedGroups(), $annotations)) {
+                continue;
+            }
+            $testsByGroups[] = $test;
+        }
+
+        return $testsByGroups;
     }
 }
