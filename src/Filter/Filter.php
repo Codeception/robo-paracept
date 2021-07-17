@@ -13,13 +13,13 @@ interface Filter
 {
     /**
      * Set the collection of tests which should be filtered
-     * @param SelfDescribing[] $tests
+     * @param array $tests
      */
     public function setTests(array $tests): void;
 
     /**
      * Returns the filtered Tests
-     * @return SelfDescribing[]
+     * @return array
      */
     public function filter(): array;
 }
