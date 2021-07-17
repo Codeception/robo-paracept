@@ -4,29 +4,35 @@ namespace Codeception\Task\Splitter;
 use Codeception\Lib\Di;
 use Codeception\Test\Cest;
 use Codeception\Test\Descriptor as TestDescriptor;
+use Codeception\Test\Loader as TestLoader;
 use Exception;
 use PHPUnit\Framework\DataProviderTestSuite;
 use PHPUnit\Framework\TestCase;
 use ReflectionObject;
+use Robo\Exception\TaskException;
 
 /**
  * Loads all tests into groups and saves them to groupfile according to pattern.
+ * The loaded tests can be filtered by the given Filter. FIFO principal
  *
  * ``` php
  * <?php
  * $this->taskSplitTestsByGroups(5)
  *    ->testsFrom('tests')
  *    ->groupsTo('tests/_log/paratest_')
+ *    ->addFilter(new Filter1())
+ *    ->addFilter(new Filter2())
  *    ->run();
  * ?>
  * ```
  */
 class TestsSplitterTask extends TestsSplitter
 {
+
     public function run()
     {
         $this->claimCodeceptionLoaded();
-        $tests = $this->loadTests();
+        $tests = $this->filter($this->loadTests());
 
         $this->printTaskInfo('Processing ' . count($tests) . ' tests');
 
@@ -141,5 +147,46 @@ class TestsSplitterTask extends TestsSplitter
         }
 
         return true;
+    }
+
+    /**
+     * Claims that the Codeception is loaded for Tasks which need it
+     * @throws TaskException
+     */
+    protected function claimCodeceptionLoaded(): void
+    {
+        if (!$this->doCodeceptLoaderExists()) {
+            throw new TaskException(
+                $this,
+                'This task requires Codeception to be loaded. Please require autoload.php of Codeception'
+            );
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    protected function doCodeceptLoaderExists(): bool
+    {
+        return class_exists(TestLoader::class);
+    }
+
+    /**
+     * @return TestLoader
+     */
+    protected function getTestLoader(): TestLoader
+    {
+        return new TestLoader(['path' => $this->testsFrom]);
+    }
+
+    /**
+     * @return array
+     */
+    protected function loadTests(): array
+    {
+        $testLoader = $this->getTestLoader();
+        $testLoader->loadTests($this->testsFrom);
+
+        return $testLoader->getTests();
     }
 }
