@@ -8,6 +8,7 @@ class ExampleACest
      * @group foo
      * @group bar
      * @group no
+     * @group example
      */
     public function testExampleGoTo()
     {

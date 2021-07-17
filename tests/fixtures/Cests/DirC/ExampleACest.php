@@ -7,6 +7,7 @@ class ExampleACest
     /**
      * @group bar
      * @group no
+     * @group example
      */
     public function testExampleStayHere()
     {
