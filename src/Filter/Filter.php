@@ -1,9 +1,8 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 namespace Codeception\Task\Filter;
-
-use PHPUnit\Framework\SelfDescribing;
 
 /**
  * Interface Filter allows to Filter the Files before split to groups

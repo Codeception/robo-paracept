@@ -1,5 +1,6 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 namespace Codeception\Task\Merger;
 
@@ -16,5 +17,5 @@ interface ReportMergerTaskInterface
      * @param string $fileName
      * @return $this
      */
-    public function into($fileName);
+    public function into(string $fileName);
 }

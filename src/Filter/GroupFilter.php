@@ -1,5 +1,6 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 namespace Codeception\Task\Filter;
 
@@ -13,7 +14,6 @@ use PHPUnit\Framework\SelfDescribing;
  */
 class GroupFilter implements Filter
 {
-
     /** @var string[] $includedGroups */
     private $includedGroups = [];
 
@@ -132,12 +132,14 @@ class GroupFilter implements Filter
             }
             [$class, $method] = explode(':', TestDescriptor::getTestSignature($test));
             $annotations = Annotation::forMethod($class, $method)->fetchAll('group');
-            if (!empty($this->getExcludedGroups())
+            if (
+                !empty($this->getExcludedGroups())
                 && [] === array_diff($this->getExcludedGroups(), $annotations)
             ) {
                 continue;
             }
-            if (!empty($this->getIncludedGroups())
+            if (
+                !empty($this->getIncludedGroups())
                 && [] !== array_diff($this->getIncludedGroups(), $annotations)
             ) {
                 continue;

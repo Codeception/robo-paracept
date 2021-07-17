@@ -1,5 +1,6 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 namespace Codeception\Task\Splitter;
 
@@ -21,6 +22,7 @@ abstract class TestsSplitter extends BaseTask
     protected $excludePath = 'vendor';
     /** @var Filter[] $filter */
     protected $filter;
+
     /**
      * TestsSplitter constructor.
      * @param int $groups number of groups to use
@@ -138,10 +140,12 @@ abstract class TestsSplitter extends BaseTask
                 // look for proper test in list of all tests. Test could be in different directory
                 // so we need to compare strings and if matched we just assign found test name
                 foreach (array_keys($testsListWithDependencies) as $arrayKey) {
-                    if (str_contains(
-                        $arrayKey,
-                        $targetTestFileName . '.php:' . $targetTestMethodName
-                    )) {
+                    if (
+                        str_contains(
+                            $arrayKey,
+                            $targetTestFileName . '.php:' . $targetTestMethodName
+                        )
+                    ) {
                         $testsListWithDependencies[$testName][$i] = $arrayKey;
                         continue 2;
                     }
