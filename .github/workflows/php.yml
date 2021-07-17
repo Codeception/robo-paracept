@@ -38,10 +38,12 @@ jobs:
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress
 
-
-    # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
-    # Docs: https://getcomposer.org/doc/articles/scripts.md
-
     - name: Run test suite
-      run: composer -v exec phpunit  -- tests --bootstrap tests/bootstrap.php --exclude-group example --stderr -v --debug
+      run: composer unit
+
+    - name: Run lint Tests
+      run: composer lint
+
+    - name: Run CodeStyle Check
+      run: composer codestyle
 
