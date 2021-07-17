@@ -125,6 +125,11 @@ class GroupFilter implements Filter
     {
         $testsByGroups = [];
         foreach ($this->getTests() as $test) {
+            if (!($test instanceof SelfDescribing)) {
+                throw new InvalidArgumentException(
+                    'Tests must be an instance of ' . SelfDescribing::class
+                );
+            }
             [$class, $method] = explode(':', TestDescriptor::getTestSignature($test));
             $annotations = Annotation::forMethod($class, $method)->fetchAll('group');
             if (!empty($this->getExcludedGroups())
