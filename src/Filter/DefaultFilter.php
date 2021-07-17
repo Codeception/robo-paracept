@@ -4,7 +4,7 @@ declare(strict_types = 1);
 namespace Codeception\Task\Filter;
 
 /**
- * Class DefaultFilter - The Default Filter which is implemented every Time
+ * Class DefaultFilter - The Default Filter which is implemented by default
  */
 class DefaultFilter implements Filter
 {
