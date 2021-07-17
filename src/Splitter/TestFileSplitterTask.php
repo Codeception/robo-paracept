@@ -41,7 +41,7 @@ class TestFileSplitterTask extends TestsSplitter
         $groups = [];
 
         $this->printTaskInfo('Processing ' . count($files) . ' files');
-        $files = $this->filter($files->getIterator());
+        $files = $this->filter(iterator_to_array($files->getIterator()));
 
         // splitting tests by groups
         /** @var SplFileInfo $file */
