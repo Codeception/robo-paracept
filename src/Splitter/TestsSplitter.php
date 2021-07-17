@@ -3,8 +3,8 @@ declare(strict_types = 1);
 
 namespace Codeception\Task\Splitter;
 
-use Codeception\Test\Loader as TestLoader;
-use Robo\Exception\TaskException;
+use Codeception\Task\Filter\DefaultFilter;
+use Codeception\Task\Filter\Filter;
 use Robo\Task\BaseTask;
 
 abstract class TestsSplitter extends BaseTask
@@ -19,7 +19,8 @@ abstract class TestsSplitter extends BaseTask
     protected $saveTo = 'tests/_data/paracept_';
     /** @var string */
     protected $excludePath = 'vendor';
-
+    /** @var Filter[] $filter */
+    protected $filter;
     /**
      * TestsSplitter constructor.
      * @param int $groups number of groups to use
@@ -27,6 +28,16 @@ abstract class TestsSplitter extends BaseTask
     public function __construct(int $groups)
     {
         $this->numGroups = $groups;
+        $this->filter[] = new DefaultFilter();
+    }
+
+    public function addFilter(Filter $filter): TestsSplitter
+    {
+        if (!in_array($filter, $this->filter, true)) {
+            $this->filter[] = $filter;
+        }
+
+        return $this;
     }
 
     public function projectRoot(string $path): TestsSplitter
@@ -146,43 +157,17 @@ abstract class TestsSplitter extends BaseTask
     }
 
     /**
-     * Claims that the Codeception is loaded for Tasks which need it
-     * @throws TaskException
-     */
-    protected function claimCodeceptionLoaded(): void
-    {
-        if (!$this->doCodeceptLoaderExists()) {
-            throw new TaskException(
-                $this,
-                'This task requires Codeception to be loaded. Please require autoload.php of Codeception'
-            );
-        }
-    }
-
-    /**
-     * @return bool
-     */
-    protected function doCodeceptLoaderExists(): bool
-    {
-        return class_exists(TestLoader::class);
-    }
-
-    /**
-     * @return TestLoader
-     */
-    protected function getTestLoader(): TestLoader
-    {
-        return new TestLoader(['path' => $this->testsFrom]);
-    }
-
-    /**
+     * Filter tests by the given filters, FIFO principal
+     * @param array $tests
      * @return array
      */
-    protected function loadTests(): array
+    protected function filter(array $tests): array
     {
-        $testLoader = $this->getTestLoader();
-        $testLoader->loadTests($this->testsFrom);
+        foreach ($this->filter as $filter) {
+            $filter->setTests($tests);
+            $tests = $filter->filter();
+        }
 
-        return $testLoader->getTests();
+        return $tests;
     }
 }
