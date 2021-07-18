@@ -22,8 +22,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Tests\\Codeception\\Task\\": "tests/",
-            "Tests\\Classes\\": "tests/fixtures/Cests"
+            "Tests\\Codeception\\Task\\": "tests/"
         }
     },
     "require-dev": {
@@ -34,5 +33,10 @@
         "friendsofphp/php-cs-fixer": "^3.0.0",
         "phpunit/phpunit": ">=9.0",
         "codeception/phpunit-wrapper": "^9.0.6"
+    },
+    "scripts": {
+        "unit": "vendor/bin/phpunit --bootstrap tests/bootstrap.php tests/ --exclude-group example --stderr -v --debug",
+        "lint": "vendor/bin/phplint -v ./ --exclude=vendor",
+        "codestyle": "vendor/bin/phpcs --standard=PSR12 ./src"
     }
 }
