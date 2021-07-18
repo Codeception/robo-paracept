@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Codeception\Task\Splitter;
 
 use Codeception\Lib\Di;
@@ -13,27 +16,26 @@ use Robo\Exception\TaskException;
 
 /**
  * Loads all tests into groups and saves them to groupfile according to pattern.
+ * The loaded tests can be filtered by the given Filter. FIFO principal
  *
  * ``` php
  * <?php
  * $this->taskSplitTestsByGroups(5)
  *    ->testsFrom('tests')
  *    ->groupsTo('tests/_log/paratest_')
+ *    ->addFilter(new Filter1())
+ *    ->addFilter(new Filter2())
  *    ->run();
  * ?>
  * ```
  */
 class TestsSplitterTask extends TestsSplitter
 {
+
     public function run()
     {
-        if (!$this->doCodeceptLoaderExists()) {
-            throw new TaskException(
-                $this,
-                'This task requires Codeception to be loaded. Please require autoload.php of Codeception'
-            );
-        }
-        $tests = $this->loadTests();
+        $this->claimCodeceptionLoaded();
+        $tests = $this->filter($this->loadTests());
 
         $this->printTaskInfo('Processing ' . count($tests) . ' tests');
 
@@ -148,6 +150,20 @@ class TestsSplitterTask extends TestsSplitter
         }
 
         return true;
+    }
+
+    /**
+     * Claims that the Codeception is loaded for Tasks which need it
+     * @throws TaskException
+     */
+    protected function claimCodeceptionLoaded(): void
+    {
+        if (!$this->doCodeceptLoaderExists()) {
+            throw new TaskException(
+                $this,
+                'This task requires Codeception to be loaded. Please require autoload.php of Codeception'
+            );
+        }
     }
 
     /**
