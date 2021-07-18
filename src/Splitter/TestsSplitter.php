@@ -1,8 +1,11 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 namespace Codeception\Task\Splitter;
 
+use Codeception\Task\Filter\DefaultFilter;
+use Codeception\Task\Filter\Filter;
 use Robo\Task\BaseTask;
 
 abstract class TestsSplitter extends BaseTask
@@ -17,6 +20,8 @@ abstract class TestsSplitter extends BaseTask
     protected $saveTo = 'tests/_data/paracept_';
     /** @var string */
     protected $excludePath = 'vendor';
+    /** @var Filter[] $filter */
+    protected $filter;
 
     /**
      * TestsSplitter constructor.
@@ -25,6 +30,16 @@ abstract class TestsSplitter extends BaseTask
     public function __construct(int $groups)
     {
         $this->numGroups = $groups;
+        $this->filter[] = new DefaultFilter();
+    }
+
+    public function addFilter(Filter $filter): TestsSplitter
+    {
+        if (!in_array($filter, $this->filter, true)) {
+            $this->filter[] = $filter;
+        }
+
+        return $this;
     }
 
     /**
@@ -133,10 +148,12 @@ abstract class TestsSplitter extends BaseTask
                 // look for proper test in list of all tests. Test could be in different directory
                 // so we need to compare strings and if matched we just assign found test name
                 foreach (array_keys($testsListWithDependencies) as $arrayKey) {
-                    if (str_contains(
-                        $arrayKey,
-                        $targetTestFileName . '.php:' . $targetTestMethodName
-                    )) {
+                    if (
+                        str_contains(
+                            $arrayKey,
+                            $targetTestFileName . '.php:' . $targetTestMethodName
+                        )
+                    ) {
                         $testsListWithDependencies[$testName][$i] = $arrayKey;
                         continue 2;
                     }
@@ -149,5 +166,20 @@ abstract class TestsSplitter extends BaseTask
         }
 
         return $testsListWithDependencies;
+    }
+
+    /**
+     * Filter tests by the given filters, FIFO principal
+     * @param array $tests
+     * @return array
+     */
+    protected function filter(array $tests): array
+    {
+        foreach ($this->filter as $filter) {
+            $filter->setTests($tests);
+            $tests = $filter->filter();
+        }
+
+        return $tests;
     }
 }
