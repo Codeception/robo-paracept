@@ -213,5 +213,4 @@ abstract class TestsSplitter extends BaseTask
     {
         return class_exists('\Codeception\Test\Loader');
     }
-
 }
