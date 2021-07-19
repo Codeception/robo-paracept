@@ -7,6 +7,7 @@ namespace Codeception\Task\Splitter;
 use Codeception\Task\Filter\DefaultFilter;
 use Codeception\Task\Filter\Filter;
 use ReflectionClass;
+use Robo\Exception\TaskException;
 use Robo\Task\BaseTask;
 
 abstract class TestsSplitter extends BaseTask
@@ -190,4 +191,27 @@ abstract class TestsSplitter extends BaseTask
 
         return $tests;
     }
+
+    /**
+     * Claims that the Codeception is loaded for Tasks which need it
+     * @throws TaskException
+     */
+    protected function claimCodeceptionLoaded(): void
+    {
+        if (!$this->doCodeceptLoaderExists()) {
+            throw new TaskException(
+                $this,
+                'This task requires Codeception to be loaded. Please require autoload.php of Codeception'
+            );
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    protected function doCodeceptLoaderExists(): bool
+    {
+        return class_exists('\Codeception\Test\Loader');
+    }
+
 }

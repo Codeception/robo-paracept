@@ -12,7 +12,6 @@ use Exception;
 use PHPUnit\Framework\DataProviderTestSuite;
 use PHPUnit\Framework\TestCase;
 use ReflectionObject;
-use Robo\Exception\TaskException;
 
 /**
  * Loads all tests into groups and saves them to groupfile according to pattern.
@@ -150,28 +149,6 @@ class TestsSplitterTask extends TestsSplitter
         }
 
         return true;
-    }
-
-    /**
-     * Claims that the Codeception is loaded for Tasks which need it
-     * @throws TaskException
-     */
-    protected function claimCodeceptionLoaded(): void
-    {
-        if (!$this->doCodeceptLoaderExists()) {
-            throw new TaskException(
-                $this,
-                'This task requires Codeception to be loaded. Please require autoload.php of Codeception'
-            );
-        }
-    }
-
-    /**
-     * @return bool
-     */
-    protected function doCodeceptLoaderExists(): bool
-    {
-        return class_exists(TestLoader::class);
     }
 
     /**
