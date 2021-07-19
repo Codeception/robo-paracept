@@ -36,7 +36,7 @@ class TestsSplitterTask extends TestsSplitter
     {
         $this->claimCodeceptionLoaded();
         $tests = $this->filter($this->loadTests());
-
+        var_dump(count($tests));
         $this->printTaskInfo('Processing ' . count($tests) . ' tests');
 
         $testsHaveAtLeastOneDependency = false;
