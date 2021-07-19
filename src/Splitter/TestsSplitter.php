@@ -6,6 +6,7 @@ namespace Codeception\Task\Splitter;
 
 use Codeception\Task\Filter\DefaultFilter;
 use Codeception\Task\Filter\Filter;
+use ReflectionClass;
 use Robo\Task\BaseTask;
 
 abstract class TestsSplitter extends BaseTask
@@ -129,7 +130,11 @@ abstract class TestsSplitter extends BaseTask
         foreach ($testsListWithDependencies as $testName => $test) {
             foreach ($test as $i => $dependency) {
                 if (is_a($dependency, '\PHPUnit\Framework\ExecutionOrderDependency')) {
+                    // getTarget gives the classname::method
                     $dependency = $dependency->getTarget();
+                    [$class, $method] = explode('::', $dependency);
+                    $ref = new ReflectionClass($class);
+                    $dependency = $ref->getFileName() . ':' . $method;
                 }
                 // sometimes it is written as class::method.
                 // for that reason we do trim in first case and replace from :: to one in second case
@@ -144,20 +149,23 @@ abstract class TestsSplitter extends BaseTask
                 $dependency = str_replace('::', ':', $dependency);
                 // className:testName, that means we need to find proper test.
                 [$targetTestFileName, $targetTestMethodName] = explode(':', $dependency);
-
+                if (false === strrpos($targetTestFileName, '.php')) {
+                    $targetTestFileName .= '.php';
+                }
                 // look for proper test in list of all tests. Test could be in different directory
                 // so we need to compare strings and if matched we just assign found test name
                 foreach (array_keys($testsListWithDependencies) as $arrayKey) {
                     if (
                         str_contains(
                             $arrayKey,
-                            $targetTestFileName . '.php:' . $targetTestMethodName
+                            $targetTestFileName . ':' . $targetTestMethodName
                         )
                     ) {
                         $testsListWithDependencies[$testName][$i] = $arrayKey;
                         continue 2;
                     }
                 }
+
                 throw new \RuntimeException(
                     'Dependency target test ' . $dependency . ' not found.'
                     . 'Please make sure test exists and you are using full test name'

@@ -9,7 +9,7 @@ class Example2Test extends TestCase
 
 
     /**
-     * @depends Example2Test::testE
+     * @depends testE
      * @group example
      */
     public function testD()
