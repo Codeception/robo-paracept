@@ -9,7 +9,7 @@ class ExampleACest
      * @group bar
      * @group example
      */
-    public function testExampleGoFrom()
+    public function testExampleGoFrom(): void
     {
         // nothing
     }

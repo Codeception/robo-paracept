@@ -9,7 +9,7 @@ class ExampleACest
      * @group no
      * @group example
      */
-    public function testExampleStayHere()
+    public function testExampleStayHere(): void
     {
         // nothing
     }
