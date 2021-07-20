@@ -11,7 +11,7 @@ class ExampleBTest extends TestCase
      * @group baz
      * @group bar
      * @group example
-     * @depends ExampleATest::testA
+     * @depends testB
      */
     public function testA(): void
     {

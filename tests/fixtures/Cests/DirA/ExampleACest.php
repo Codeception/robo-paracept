@@ -10,7 +10,7 @@ class ExampleACest
      * @group no
      * @group example
      */
-    public function testExampleGoTo()
+    public function testExampleGoTo(): void
     {
         // nothing
     }
