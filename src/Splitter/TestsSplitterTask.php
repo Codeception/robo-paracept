@@ -12,7 +12,6 @@ use Exception;
 use PHPUnit\Framework\DataProviderTestSuite;
 use PHPUnit\Framework\TestCase;
 use ReflectionObject;
-use Robo\Exception\TaskException;
 
 /**
  * Loads all tests into groups and saves them to groupfile according to pattern.
@@ -36,7 +35,6 @@ class TestsSplitterTask extends TestsSplitter
     {
         $this->claimCodeceptionLoaded();
         $tests = $this->filter($this->loadTests());
-
         $this->printTaskInfo('Processing ' . count($tests) . ' tests');
 
         $testsHaveAtLeastOneDependency = false;
@@ -58,11 +56,12 @@ class TestsSplitterTask extends TestsSplitter
 
             if (method_exists($test, 'getMetadata')) {
                 $dependencies = $test->getMetadata()->getDependencies();
-                if ($testsHaveAtLeastOneDependency === false && count($dependencies) !== 0) {
+                if (count($dependencies) !== 0) {
                     $testsHaveAtLeastOneDependency = true;
                     $testsListWithDependencies[TestDescriptor::getTestFullName($test)] = $dependencies;
+                } else {
+                    $testsListWithDependencies[TestDescriptor::getTestFullName($test)] = [];
                 }
-
                 // little hack to get dependencies from phpunit test cases that are private.
             } elseif ($test instanceof TestCase) {
                 $ref = new ReflectionObject($test);
@@ -71,7 +70,7 @@ class TestsSplitterTask extends TestsSplitter
                         $property = $ref->getProperty('dependencies');
                         $property->setAccessible(true);
                         $dependencies = $property->getValue($test);
-                        if ($testsHaveAtLeastOneDependency === false && count($dependencies) !== 0) {
+                        if (count($dependencies) !== 0) {
                             $testsHaveAtLeastOneDependency = true;
                             $testsListWithDependencies[TestDescriptor::getTestFullName($test)] = $dependencies;
                         } else {
@@ -150,28 +149,6 @@ class TestsSplitterTask extends TestsSplitter
         }
 
         return true;
-    }
-
-    /**
-     * Claims that the Codeception is loaded for Tasks which need it
-     * @throws TaskException
-     */
-    protected function claimCodeceptionLoaded(): void
-    {
-        if (!$this->doCodeceptLoaderExists()) {
-            throw new TaskException(
-                $this,
-                'This task requires Codeception to be loaded. Please require autoload.php of Codeception'
-            );
-        }
-    }
-
-    /**
-     * @return bool
-     */
-    protected function doCodeceptLoaderExists(): bool
-    {
-        return class_exists(TestLoader::class);
     }
 
     /**

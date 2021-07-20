@@ -10,6 +10,10 @@ use PHPUnit\Framework\DataProviderTestSuite;
 use Robo\Exception\TaskException;
 use RuntimeException;
 
+/**
+ * This task will not consider any 'depends' annotation!
+ * It will only split tests by the execution time
+ */
 class SplitTestsByTimeTask extends TestsSplitter
 {
     protected $statFile = 'tests/_output/timeReport.json';
@@ -23,12 +27,8 @@ class SplitTestsByTimeTask extends TestsSplitter
 
     public function run(): void
     {
-        if (!class_exists('\Codeception\Test\Loader')) {
-            throw new TaskException(
-                $this,
-                'This task requires Codeception to be loaded. Please require autoload.php of Codeception'
-            );
-        }
+        $this->claimCodeceptionLoaded();
+
         if (!is_file($this->statFile)) {
             throw new TaskException($this, 'Can not find stat file - run tests with TimeReporter extension');
         }

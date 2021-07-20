@@ -10,5 +10,9 @@
     "tests/fixtures/DependencyResolutionExampleTests/DirB/Example3Test.php:testF": 33,
     "tests/fixtures/DependencyResolutionExampleTests/DirB/Example3Test.php:testG": 30,
     "tests/fixtures/DependencyResolutionExampleTests2/DirA/Example1Test.php:testA": 20,
-    "tests/fixtures/DependencyResolutionExampleTests2/DirA/Example1Test.php:testB": 20
+    "tests/fixtures/DependencyResolutionExampleTests2/DirA/Example1Test.php:testB": 20,
+    "tests/fixtures/Unit/ExampleATest.php:testA": 0.3,
+    "tests/fixtures/Unit/ExampleATest.php:testB": 0.3,
+    "tests/fixtures/Unit/ExampleBTest.php:testA": 0.5,
+    "tests/fixtures/Unit/ExampleBTest.php:testB": 1.5
 }
