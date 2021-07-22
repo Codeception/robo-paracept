@@ -11,7 +11,7 @@ Robo tasks for Codeception tests parallel execution. Requires [Robo Task Runner]
 ## Install via Composer
 
 ```
-"codeception/robo-paracept":"~0.4"
+composer require codeception/robo-paracept --dev
 ```
 
 Include into your RoboFile
@@ -29,25 +29,17 @@ class RoboFile extends \Robo\Tasks
 ?>
 ```
 
-### PHPUnit 6 compatiblity
-
-Add ` 'vendor/codeception/codeception/autoload.php'` to enabled PHPUnit 6 class names:
-
-```php
-require_once 'vendor/codeception/codeception/autoload.php';
-```
-
 ## Idea
 
 Parallel execution of Codeception tests can be implemented in different ways.
 Depending on a project the actual needs can be different.
-Thus, we are going to prepare a set of predefined tasks that can be combined and reconfigured to fit needs.
+So we prepared a set of predefined Robo tasks that can be combined and reconfigured to fit your needs.
 
 ## Tasks
 
 ### SplitTestsByGroups
 
-Loads tests from a folder and distributes them between groups.
+Load tests from a folder and distributes them between groups.
 
 ```php
 $this->taskSplitTestsByGroups(5)
@@ -65,6 +57,27 @@ $this->taskSplitTestFilesByGroups(5)
    ->groupsTo('tests/_data/paratest_')
    ->run();
 ```
+### SplitTestsByTime
+
+Enable extension for collect execution time of you use taskSplitTestsByTime
+
+```
+extensions:
+    enabled:
+        - Codeception\Task\Extension\TimeReporter
+```
+
+Load tests from a folder and distributes them between groups by execution time.
+
+```php
+$this->taskSplitTestsByTime(5)
+    ->testsFrom('tests/acceptance')
+    ->projectRoot('.')
+    ->groupsTo('tests/_data/group_')
+    ->run();
+```
+
+this command need run all tests with `Codeception\Task\TimeReporter` for collect execution time. If you want just split tests between group (and not execute its) you can use SplitTestsByGroups. **Please be aware**: This task will not consider any 'depends' annotation!
 
 ### MergeXmlReports
 
@@ -90,3 +103,53 @@ $this->taskMergeHtmlReports()
     ->into('tests/result/merged.html')
     ->run();
 ```
+
+
+## Filters
+
+You can use a custom filter to select the necessary tests.
+
+Two filters already included: DefaultFilter, GroupFilter
+
+* **DefaultFilter** is enabled by default, takes all tests.
+* **GroupFilter** _(Can only be used by taskSplitTestsByGroups)_, allows you to filter the loaded tests by the given groups. You have the possibility to declare groups which you want to include or exclude. If you declare foo and bar as included, only tests with this both group annotations will be matched. The same thing is happend when you add excluded groups. If you combine the included and excluded group the only tests which have exactly the correct group annotations for the included items and none of the excluded items.
+
+You can add as many filters as you want. The FIFO (First In - First Out) principle applies. The next filter will only get the result of the filter before.
+
+### Usage
+
+For example, you want all tests which have in the doc comment the groups 'foo' AND 'bar' but not 'baz' then you can do it like this:
+
+```php 
+$filter = new GroupFilter();
+$filter
+    ->groupIncluded('foo')
+    ->groupIncluded('bar')
+    ->groupExcluded('baz');
+
+$this->taskSplitTestsByGroups(5)
+   ->testsFrom('tests')
+   ->groupsTo('tests/_data/paratest_')
+   ->addFilter($filter)
+   ->run();
+```
+
+Now create your own filter class:
+```php 
+<?php
+
+declare(strict_types=1);
+
+namespace ...;
+
+use Codeception\Task\Filter\DefaultFilter;
+
+class CustomFilter extends DefaultFilter {
+
+}
+```
+
+The TestFileSplitterTask.php pushes an array of SplFileInfo Objects to the filter.  
+The TestsSplitterTask.php pushes an array of SelfDescribing Objects to the filter.
+
+### License MIT

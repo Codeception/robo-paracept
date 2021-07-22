@@ -40,17 +40,29 @@ class TestsSplitterTaskTest extends TestCase
     public function providerTestLoadTestsWithDifferentPatterns(): array
     {
         return [
-            [
-                'groups' => 1,
-                'expectedFiles' => 7,
-            ],
-            [
+            'Cests' => [
+                'type' => 'cest',
                 'groups' => 2,
-                'expectedFiles' => 7,
+                'from' => TEST_PATH . '/fixtures/Cests/',
+                'expectedFiles' => 2,
             ],
-            [
-                'groups' => 7,
-                'expectedFiles' => 7,
+            'Dependencies' => [
+                'type' => 'depends',
+                'groups' => 2,
+                'from' => TEST_PATH . '/fixtures/DependencyResolutionExampleTests/',
+                'expectedFiles' => 2,
+            ],
+            'Unit Tests' => [
+                'type' => 'unit',
+                'groups' => 2,
+                'from' => TEST_PATH . '/fixtures/Unit/',
+                'expectedFiles' => 2,
+            ],
+            'Circular Dep' => [
+                'type' => 'circ_depends',
+                'groups' => 1,
+                'from' => TEST_PATH . '/fixtures/DependencyResolutionExampleTests2/',
+                'expectedFiles' => 0, // Circular dependency
             ],
         ];
     }
@@ -58,16 +70,20 @@ class TestsSplitterTaskTest extends TestCase
     /**
      * @covers ::run
      * @dataProvider providerTestLoadTestsWithDifferentPatterns
+     * @param string $type
      * @param int $groups
+     * @param string $from
      * @param int $expectedFiles
      */
     public function testLoadTests(
+        string $type,
         int $groups,
+        string $from,
         int $expectedFiles
     ): void {
         $task = new TestsSplitterTask($groups);
         $task->setLogger(new Logger(new NullOutput()));
-        $task->testsFrom(TEST_PATH . '/fixtures/');
+        $task->testsFrom($from);
         $groupTo = TEST_PATH . '/result/group_';
         $task->groupsTo($groupTo);
         $task->run();
@@ -77,10 +93,43 @@ class TestsSplitterTaskTest extends TestCase
             ->in(TEST_PATH . '/result/')
             ->name('group_*');
 
-        $this->assertCount($groups, $files->getIterator());
+        $this->assertCount($expectedFiles, $files->getIterator());
 
-        for ($i = 1; $i <= $groups; $i++) {
+        for ($i = 1; $i <= $expectedFiles; $i++) {
             $this->assertFileExists($groupTo . $i);
+        }
+        // check that the dependencies are ordered correct
+        if ('depends' === $type) {
+            for ($i = 1; $i <= $expectedFiles; $i++) {
+                $content = explode(PHP_EOL, file_get_contents($groupTo . $i));
+                $check = array_flip(
+                    array_map(
+                        static function (string $fullpath): string {
+                            return explode(':', $fullpath)[1];
+                        },
+                        $content
+                    )
+                );
+                if (preg_grep('/Example1Test\.php/', $content)) {
+                    $this->assertGreaterThan(
+                        $check['testB'],
+                        $check['testA'],
+                        'The index of testA must be greater than testB to ensure the correct order.'
+                    );
+                    $this->assertGreaterThan(
+                        $check['testA'],
+                        $check['testC'],
+                        'The index of testC must be greater than testA to ensure the correct order.'
+                    );
+                }
+                if (preg_grep('/Example2Test\.php/', $content)) {
+                    $this->assertGreaterThan(
+                        $check['testE'],
+                        $check['testD'],
+                        'The index of testD must be greater than testE to ensure the correct order.'
+                    );
+                }
+            }
         }
     }
 

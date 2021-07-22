@@ -1,5 +1,6 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 namespace Codeception\Task\Merger;
 
@@ -41,7 +42,7 @@ class XmlReportMergerTask extends BaseTask implements ReportMergerTaskInterface
         $this->summarizeTime = true;
     }
 
-    public function maxTime():void
+    public function maxTime(): void
     {
         $this->summarizeTime = false;
     }

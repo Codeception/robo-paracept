@@ -1,5 +1,7 @@
 <?php
 
+namespace Tests\Codeception\Task\fixtures\DependencyResolutionExampleTests\DirA;
+
 use PHPUnit\Framework\TestCase;
 
 class Example2Test extends TestCase
@@ -7,7 +9,7 @@ class Example2Test extends TestCase
 
 
     /**
-     * @depends Example2Test::testE
+     * @depends testE
      * @group example
      */
     public function testD()

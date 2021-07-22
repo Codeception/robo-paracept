@@ -1,5 +1,6 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 namespace Codeception\Task\Splitter;
 
@@ -9,6 +10,8 @@ use Symfony\Component\Finder\SplFileInfo;
 /**
  * Finds all test files and splits them into group.s
  * Unlike `TestsSplitterTask` does not load them into memory and not requires Codeception to be loaded.
+ * Here you can also use your on Filter
+ * Please be aware that we pass an array of SplFileInfo to the filter
  *
  * ``` php
  * <?php
@@ -16,6 +19,8 @@ use Symfony\Component\Finder\SplFileInfo;
  *    ->testsFrom('tests/unit/Acme')
  *    ->codeceptionRoot('projects/tested')
  *    ->groupsTo('tests/_log/paratest_')
+ *    ->addFilter(new Filter1())
+ *    ->addFilter(new Filter2())
  *    ->run();
  * ?>
  * ```
@@ -37,6 +42,8 @@ class TestFileSplitterTask extends TestsSplitter
         $groups = [];
 
         $this->printTaskInfo('Processing ' . count($files) . ' files');
+        $files = $this->filter(iterator_to_array($files->getIterator()));
+
         // splitting tests by groups
         /** @var SplFileInfo $file */
         foreach ($files as $file) {
