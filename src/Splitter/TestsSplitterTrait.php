@@ -4,14 +4,16 @@ declare(strict_types=1);
 
 namespace Codeception\Task\Splitter;
 
+use Robo\Collection\CollectionBuilder;
+
 trait TestsSplitterTrait
 {
     /**
      * @param int $numGroups
      *
-     * @return TestsSplitterTask
+     * @return CollectionBuilder|TestsSplitterTask
      */
-    protected function taskSplitTestsByGroups(int $numGroups): TestsSplitterTask
+    protected function taskSplitTestsByGroups(int $numGroups)
     {
         return $this->task(TestsSplitterTask::class, $numGroups);
     }
@@ -19,9 +21,9 @@ trait TestsSplitterTrait
     /**
      * @param int $numGroups
      *
-     * @return TestFileSplitterTask
+     * @return CollectionBuilder|TestFileSplitterTask
      */
-    protected function taskSplitTestFilesByGroups(int $numGroups): TestFileSplitterTask
+    protected function taskSplitTestFilesByGroups(int $numGroups)
     {
         return $this->task(TestFileSplitterTask::class, $numGroups);
     }
@@ -29,10 +31,20 @@ trait TestsSplitterTrait
     /**
      * @param $numGroups
      *
-     * @return TestFileSplitterTask
+     * @return CollectionBuilder|SplitTestsByTimeTask
      */
-    protected function taskSplitTestsByTime($numGroups): TestFileSplitterTask
+    protected function taskSplitTestsByTime($numGroups)
     {
         return $this->task(SplitTestsByTimeTask::class, $numGroups);
+    }
+
+    /**
+     * @param $numGroups
+     *
+     * @return  CollectionBuilder|SplitTestsFilesByFailedTask
+     */
+    protected function taskSplitTestsFilesByFailed($numGroups)
+    {
+        return $this->task(SplitTestsFilesByFailedTask::class, $numGroups);
     }
 }
