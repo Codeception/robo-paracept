@@ -1,0 +1,8 @@
+tests/acceptance/bar/baz.php:testA
+tests/acceptance/bar/baz.php:testB
+tests/acceptance/bar/baz.php:testC
+tests/acceptance/bar/baz.php:testD
+tests/acceptance/bar/baz.php:testE
+tests/acceptance/bar/baz.php:testF
+tests/acceptance/bar/baz.php:testG
+tests/acceptance/bar/baz.php:testH
