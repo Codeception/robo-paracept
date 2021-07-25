@@ -213,4 +213,31 @@ abstract class TestsSplitter extends BaseTask
     {
         return class_exists('\Codeception\Test\Loader');
     }
+
+    /**
+     * Splitting array of files to the group files
+     * @param string[] $files - the relative path of the Testfile with or without test function
+     * @example $this->splitToGroupFiles(['tests/FooCest.php', 'tests/BarTest.php:testBarReturn']);
+     */
+    protected function splitToGroupFiles(array $files): void
+    {
+        $i = 0;
+        $groups = [];
+
+        $this->printTaskInfo('Processing ' . count($files) . ' files');
+
+        // splitting tests by groups
+        /** @var string $file */
+        foreach ($files as $file) {
+            $groups[($i % $this->numGroups) + 1][] = $file;
+            $i++;
+        }
+
+        // saving group files
+        foreach ($groups as $i => $tests) {
+            $filename = $this->saveTo . $i;
+            $this->printTaskInfo("Writing $filename");
+            file_put_contents($filename, implode("\n", $tests));
+        }
+    }
 }
