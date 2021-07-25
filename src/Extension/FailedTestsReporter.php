@@ -19,8 +19,12 @@ use Codeception\Test\Descriptor;
  */
 class FailedTestsReporter extends Extension
 {
+    /** @var string */
+    public const REPORT_NAME = 'failedTests.txt';
+
     /** @var string $reportFile */
-    private $reportFile = 'failedTests.txt';
+    private $reportFile = self::REPORT_NAME;
+
     /** @var array $failedTests */
     private $failedTests = [];
 
