@@ -38,25 +38,14 @@ class TestFileSplitterTask extends TestsSplitter
             ->in($this->projectRoot ?: getcwd())
             ->exclude($this->excludePath);
 
-        $i = 0;
-        $groups = [];
-
-        $this->printTaskInfo('Processing ' . count($files) . ' files');
-        $files = $this->filter(iterator_to_array($files->getIterator()));
-
-        // splitting tests by groups
-        /** @var SplFileInfo $file */
-        foreach ($files as $file) {
-            $groups[($i % $this->numGroups) + 1][] = $file->getRelativePathname();
-            $i++;
-        }
-
-        // saving group files
-        foreach ($groups as $i => $tests) {
-            $filename = $this->saveTo . $i;
-            $this->printTaskInfo("Writing $filename");
-            file_put_contents($filename, implode("\n", $tests));
-        }
+        $this->splitToGroupFiles(
+            array_map(
+                static function (SplFileInfo $fileInfo): string {
+                    return $fileInfo->getRelativePathname();
+                },
+                $this->filter(iterator_to_array($files->getIterator()))
+            )
+        );
     }
 
     /**

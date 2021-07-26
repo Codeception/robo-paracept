@@ -79,6 +79,25 @@ $this->taskSplitTestsByTime(5)
 
 this command need run all tests with `Codeception\Task\TimeReporter` for collect execution time. If you want just split tests between group (and not execute its) you can use SplitTestsByGroups. **Please be aware**: This task will not consider any 'depends' annotation!
 
+### SplitFailedTests
+
+Enable extension for collect failed tests if you use taskSplitFailedTests
+
+```
+extensions:
+    enabled:
+        - Codeception\Task\Extension\FailedTestsReporter
+```
+
+Load the failed Tests from a reportfile into the groups:
+- Default report path is: `Configuration::outputDir() . 'failedTests.txt'`
+```php
+$this
+    ->taskSplitFailedTests(5)
+    ->setReportPath('tests/_output/' . FailedTestsReporter::REPORT_NAME)
+    ->groupsTo('tests/_data/group_')
+    ->run();
+```
 ### MergeXmlReports
 
 Mergex several XML reports:
