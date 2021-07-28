@@ -33,10 +33,11 @@ class TestFileSplitterTask extends TestsSplitter
     {
         $files = Finder::create()
             ->followLinks()
-            ->name($this->getPattern())
+            ->name(($this->name !== '') ? $this->name : $this->getPattern())
             ->path($this->testsFrom)
             ->in($this->projectRoot ?: getcwd())
-            ->exclude($this->excludePath);
+            ->exclude($this->excludePath)
+            ->notName($this->notName);
 
         $i = 0;
         $groups = [];

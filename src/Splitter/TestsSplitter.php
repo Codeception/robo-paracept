@@ -24,6 +24,10 @@ abstract class TestsSplitter extends BaseTask
     protected $excludePath = 'vendor';
     /** @var Filter[] $filter */
     protected $filter;
+    /** @var array */
+    protected $notName = '';
+    /** @var array */
+    protected $name = '';
 
     /**
      * TestsSplitter constructor.
@@ -76,6 +80,20 @@ abstract class TestsSplitter extends BaseTask
     public function excludePath(string $path): TestsSplitter
     {
         $this->excludePath = $path;
+
+        return $this;
+    }
+
+    public function notName(array $name): TestsSplitter
+    {
+        $this->notName = $name;
+
+        return $this;
+    }
+
+    public function name(array $name): TestsSplitter
+    {
+        $this->name = $name;
 
         return $this;
     }
