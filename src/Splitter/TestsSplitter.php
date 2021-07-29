@@ -16,7 +16,7 @@ abstract class TestsSplitter extends BaseTask
     protected $numGroups;
     /** @var string */
     protected $projectRoot = '.';
-    /** @var string */
+    /** @var string|array */
     protected $testsFrom = 'tests';
     /** @var string */
     protected $saveTo = 'tests/_data/paracept_';
@@ -59,7 +59,7 @@ abstract class TestsSplitter extends BaseTask
         return $this;
     }
 
-    public function testsFrom(string $path): TestsSplitter
+    public function testsFrom(string|array $path): TestsSplitter
     {
         $this->testsFrom = $path;
 
