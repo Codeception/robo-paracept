@@ -31,6 +31,10 @@ use ReflectionObject;
 class TestsSplitterTask extends TestsSplitter
 {
 
+    /**
+     * @return bool|null
+     * @throws \Robo\Exception\TaskException
+     */
     public function run()
     {
         $this->claimCodeceptionLoaded();
@@ -148,7 +152,7 @@ class TestsSplitterTask extends TestsSplitter
             file_put_contents($filename, implode("\n", $tests));
         }
 
-        return true;
+        return null;
     }
 
     /**
