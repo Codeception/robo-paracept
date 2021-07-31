@@ -1,0 +1,528 @@
+<html>
+<head>
+    <title>Test results</title>
+    <meta charset="utf-8">
+    <link href="https://fonts.googleapis.com/css?family=Varela+Round&amp;v2" rel="stylesheet"
+          type="text/css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        .layout {
+            margin: 0 auto;
+            max-width: 1000px;
+
+        }
+
+        body {
+            font-family: arial, serif;
+            margin: 0;
+            padding: 0;
+            background: #ecf0f1;
+            font-size: 20px;
+        }
+
+        h1, h2, h3 {
+            font-family: arial, serif;
+            color: #7f8c8d;
+        }
+
+        h1 {
+            font-size: 2.5em;
+        }
+
+        h2 {
+            font-size: 1.3em;
+        }
+
+        h3 {
+            font-size: 1em;
+            color: #84BBDD;
+            margin: 0.5em 0;
+        }
+
+        table {
+            border: none;
+            margin: 0;
+            padding: 0;
+            font-size: 0.9em;
+        }
+
+        .scenarioStepsTable .stepName {
+            padding: 5px;
+        }
+
+        .scenarioStepsTable td {
+            background: #fff;
+        }
+
+        .quiet {
+            color: #333;
+            font-size: 0.8em;
+        }
+
+        .screenshot {
+            max-height: 400px;
+            overflow-y: scroll;
+            display: block;
+        }
+
+        .screenshot img {
+            zoom: 0.5;
+        }
+
+        @media (max-width: 1200px) {
+            #toolbar-filter {
+                display: none !important;
+            }
+        }
+
+        .scenarioStepsTable .nostyle {
+            background: none;
+            border: none;
+        }
+
+        p {
+            cursor: pointer;
+        }
+
+        .scenarioRow > td > p {
+            padding: 5px;
+        }
+
+        .scenarioStepsTable .failedStep {
+            padding: 10px;
+            background: #ecf0f1;
+            border: 2px solid #e74c3c;
+            border-radius: 0px;
+            color: #e74c3c;
+        }
+
+        .scenarioStepsTable .error {
+            background: #999;
+            padding: 10px;
+            color: #fff;
+            border-radius: 0px;
+        }
+
+        .scenarioStepsTable .error a {
+            color: #eef;
+        }
+
+        .scenarioStepsTable.substeps td {
+            background: #bdc3c7;
+        }
+
+        .header {
+            font-size: large;
+            font-weight: bold;
+        }
+
+        p.scenarioSuccess {
+            background: rgb(157, 213, 58); /* Old browsers */
+        }
+
+
+        .scenario {
+            color: black;
+        }
+
+        p.scenarioFailed, p.scenarioError {
+            color: black;
+            background: #e74c3c
+        }
+
+        table.scenarioFailed tr:last-child {
+            font-weight: bold;
+        }
+
+        td.scenarioSuccess {
+            color: green
+        }
+
+        td.scenarioFailed {
+            color: red
+        }
+
+        .scenarioSkipped {
+            color: teal;
+        }
+
+        .scenarioIncomplete {
+            color: gray;
+        }
+
+        .scenarioStepsTable {
+            margin-left: 10px;
+            display: none;
+            color: #333;
+        }
+
+        #stepContainerSummary {
+            background: white;
+            -webkit-border-radius: 5px;
+            -moz-border-radius: 5px;
+            border-radius: 5px;
+            padding: 20px;
+        }
+
+        .toggle {
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 10px;
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            text-align: center;
+            margin: auto;
+            color: #666
+        }
+
+        ul#toolbar-filter {
+            display: block;
+            position: fixed;
+            top: 20px;
+            left: 0px;
+            padding: 0px;
+        }
+
+        ul#toolbar-filter li {
+            list-style: none;
+            text-align: center;
+            padding: 20px;
+            background-color: #3498db;
+        }
+
+        ul#toolbar-filter li a, ul#toolbar-filter li a:hover, ul#toolbar-filter li a:visited {
+            color: #34495e;
+            text-decoration: none;
+        }
+
+        ul#toolbar-filter li.disabled {
+            background-color: #bdc3c7;
+        }
+    </style>
+
+    <script type="text/javascript">
+        var showAll = true;
+
+        function showHide(nodeId, linkObj) {
+            var subObj = document.getElementById('stepContainer' + nodeId);
+            var toggle = linkObj.childNodes[0];
+            if (toggle.innerHTML != '-') {
+                toggle.innerHTML = '-';
+                subObj.style.display = 'block';
+                subObj.style.width = '100%';
+            } else {
+                toggle.innerHTML = '+';
+                subObj.style.display = 'none';
+            }
+        }
+
+        function showAllScenarios() {
+            var toolbar = document.getElementById('toolbar-filter');
+            for (var i = 0; i < toolbar.children.length; i++) {
+                toolbar.children[i].className = '';
+            }
+
+            var trs = document.getElementsByTagName('tr');
+            for (var z = 0; z < trs.length; z++) {
+                trs[z].style.display = '';
+            }
+            showAll = true;
+        }
+
+        function toggleScenarios(name, linkObj) {
+            var links = document.getElementById('toolbar-filter').children;
+            var rows = document.getElementsByClassName('scenarioRow');
+            if (showAll) {
+                for (var i = 0; i < links.length; i++) {
+                    links[i].className = 'disabled';
+                }
+
+                for (var i = 0; i < rows.length; i++) {
+                    rows[i].style.display = 'none';
+                }
+
+            }
+            showAll = false;
+
+            if (linkObj.className == '') {
+                linkObj.className = 'disabled';
+                for (var i = 0; i < rows.length; i++) {
+                    if (rows[i].classList.contains(name)) {
+                        rows[i].style.display = 'none';
+                    }
+                }
+                return;
+            }
+            if (linkObj.className == 'disabled') {
+                linkObj.className = '';
+                for (var i = 0; i < rows.length; i++) {
+                    if (rows[i].classList.contains(name)) {
+                        rows[i].style.display = 'table-row';
+                    }
+                }
+                return;
+            }
+
+        }
+    </script>
+</head>
+
+<body>
+<ul id="toolbar-filter">
+    <li><a href="#" title="Show all" onclick="showAllScenarios()">&#9711;</a></li>
+    <li><a href="#" title="Successful"
+           onclick="toggleScenarios('scenarioSuccess', this.parentElement)">&#10004; 3</a></li>
+    <li><a href="#" title="Failed" onclick="toggleScenarios('scenarioFailed', this.parentElement)">&#10007;
+        0</a></li>
+    <li><a href="#" title="Skipped"
+           onclick="toggleScenarios('scenarioSkipped', this.parentElement)">S 0</a></li>
+    <li><a href="#" title="Incomplete"
+           onclick="toggleScenarios('scenarioIncomplete', this.parentElement)">I 0</a></li>
+</ul>
+<div class="layout">
+    <h1>Codeception Results <small><span style="color: green">OK</span> (234.98s)</small></h1>
+    <table border="0" style="width: 100%;">
+        <tr>
+            <td>
+                <h3>Acceptance (cloud-stage) Tests</h3>
+            </td>
+        </tr>
+        <tr class="scenarioRow scenarioSuccess">
+            <td>
+                <p class="scenarioSuccess" onclick="showHide('1', this)"><span
+                    class="toggle">+</span>
+                    <span class="quiet">ExpleogroupCest &raquo;</span> Student apply expleogroup and
+                    choose interest <span style="color: #34495e; font-size: 70%;">103.29s</span></p>
+            </td>
+        </tr>
+        <tr class="scenarioRow scenarioSuccess">
+            <td>
+                <table border="0" width="100%" class="scenarioSuccess scenarioStepsTable"
+                       id="stepContainer1">
+
+
+                    <tr>
+                        <td class="stepName "><p onclick="showHide('60ffbecd33c93', this)"><span
+                            class="toggle">+</span> I acting as <span style="color: #732E81">"Vincenzo"</span>
+                        </p>
+
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="stepName "><p onclick="showHide('60ffbecd3458a', this)"><span
+                            class="toggle">+</span> I set locale <span
+                            style="color: #732E81">"fr"</span></p>
+
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="stepName "><p onclick="showHide('60ffbecd34868', this)"><span
+                            class="toggle">+</span> I visit <span style="color: #732E81">"Page\Applications\ApplicationFormPage","","appsource=expleogroup"</span>
+                        </p>
+
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="stepName "><p onclick="showHide('60ffbecd34997', this)"><span
+                            class="toggle">+</span> Page\Applications\ApplicationFormPage: start
+                            application <span style="color: #732E81">{"title":"La premi&egrave;re &eacute;tape de votre candidature","button":"Commencer"}</span>
+                        </p>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="stepName "><p onclick="showHide('60ffbecd34a6a', this)"><span
+                            class="toggle">+</span> Page\Applications\ApplicationFormPage: fill
+                            personal details <span style="color: #732E81">{"title":"Votre profil","birthdate":"Votre date de naissance","address":"Votre adresse","gender":"Votre genre"},{"gender":"Masculin","address":"7 cit&eacute; paradis PARIS"}</span>
+                        </p>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="stepName "><p onclick="showHide('60ffbecd34f75', this)"><span
+                            class="toggle">+</span> Page\Applications\ApplicationFormPage: fill
+                            education <span style="color: #732E81">{"title":"Vos &eacute;tudes","education":"","diploma":"Quel est votre niveau de dipl&ocirc;me le plus &eacute;lev&eacute; ?","frenchLevel":"","englishLevel":"Quel est votre niveau d&rsquo;anglais ?"},{"diploma":"Bac+2","englishLevel":"Interm&eacute;diaire (B1-B2)"}</span>
+                        </p>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="stepName "><p onclick="showHide('60ffbecd352b7', this)"><span
+                            class="toggle">+</span> Page\Applications\ApplicationFormPage: fill
+                            learning resources <span style="color: #732E81">{"title":"La formation en ligne et vous","followedCourses":"Avez-vous d&eacute;j&agrave; suivi des cours en ligne ?","followedCoursesSubject":"Sur quels sujets et sur quels sites ?","resources":"Pour cette formation, vous aurez acc&egrave;s &agrave; :"},{"followedCourses":"Oui","followedCoursesSubject":"Coursera","resources":["Un endroit calme","Un ordinateur","Un micro"]}</span>
+                        </p>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="stepName "><p onclick="showHide('60ffbecd356c6', this)"><span
+                            class="toggle">+</span> Page\Applications\ApplicationFormPage: fill
+                            motivation <span style="color: #732E81">{"title":"Votre nouvelle carri&egrave;re","professionalProject":"D&eacute;taillez votre projet professionnel (&agrave; court, moyen et long-terme)","cv":"Ajoutez votre CV","linkedin":"","foundEmployer":"","desiredStartDate":"","nextButton":"Envoyer la candidature"},{"cv":"cv.pdf"}</span>
+                        </p>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="stepName "><p onclick="showHide('60ffbecd358f3', this)"><span
+                            class="toggle">+</span> Page\Applications\ApplicationFormPage: see
+                            application end <span style="color: #732E81">{"title":"Merci de votre int&eacute;r&ecirc;t pour nos formations !","button":"RETOUR &Agrave; L&rsquo;ACCUEIL"}</span>
+                        </p>
+
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <h3>Api (cloud-stage) Tests</h3>
+            </td>
+        </tr>
+        <tr class="scenarioRow scenarioSuccess">
+            <td>
+                <p class="scenarioSuccess" onclick="showHide('2', this)"><span
+                    class="toggle">+</span>
+                    <span class="quiet">AnalyticsCest &raquo;</span> Get analytics with paths code
+                    <span style="color: #34495e; font-size: 70%;">2.44s</span></p>
+            </td>
+        </tr>
+        <tr class="scenarioRow scenarioSuccess">
+            <td>
+                <table border="0" width="100%" class="scenarioSuccess scenarioStepsTable"
+                       id="stepContainer2">
+
+
+                    <tr>
+                        <td class="stepName "><p onclick="showHide('60ffbe6963165', this)"><span
+                            class="toggle">+</span> I acting as <span style="color: #732E81">"Business\Users\BotAdmin"</span>
+                        </p>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="stepName "><p onclick="showHide('60ffbe6963468', this)"><span
+                            class="toggle">+</span> I get analytics <span style="color: #732E81">"PATHS",[],"0-1000"</span>
+                        </p>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="stepName "><p onclick="showHide('60ffbe696362a', this)"><span
+                            class="toggle">+</span> I see analytics <span style="color: #732E81">"PATHS"</span>
+                        </p>
+
+                        </td>
+                    </tr>
+
+                </table>
+
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <h3>Bdd (cloud-stage) Tests</h3>
+            </td>
+        </tr>
+        <tr class="scenarioRow scenarioSuccess">
+            <td>
+                <p class="scenarioSuccess" onclick="showHide('3', this)"><span
+                    class="toggle">+</span>
+                    <span class="quiet">Course &raquo;</span> Member can follow a course and pass a
+                    quiz <span style="color: #34495e; font-size: 70%;">129.25s</span></p>
+            </td>
+        </tr>
+        <tr class="scenarioRow scenarioSuccess">
+            <td>
+                <table border="0" width="100%" class="scenarioSuccess scenarioStepsTable"
+                       id="stepContainer3">
+
+
+                    <tr>
+                        <td class="stepName ">&nbsp;&nbsp;&nbsp;&nbsp;<strong>As a member</strong>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="stepName ">&nbsp;&nbsp;&nbsp;&nbsp;<strong>I want to follow a
+                            course and pass a quiz</strong></td>
+                    </tr>
+
+                    <tr>
+                        <td class="stepName ">&nbsp;&nbsp;&nbsp;&nbsp;<strong>In order to make
+                            progress on the platform</strong></td>
+                    </tr>
+
+                    <tr>
+                        <td class="stepName "><p onclick="showHide('60ffbeea3a13f', this)"><span
+                            class="toggle">+</span> Given i am "member"</p>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="stepName "><p onclick="showHide('60ffbeea3a209', this)"><span
+                            class="toggle">+</span> When i choose a course</p>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="stepName "><p onclick="showHide('60ffbeea3a23a', this)"><span
+                            class="toggle">+</span> And i follow a course</p>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="stepName "><p onclick="showHide('60ffbeea3a281', this)"><span
+                            class="toggle">+</span> And i pass a quiz</p>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="stepName "><p onclick="showHide('60ffbeea3a312', this)"><span
+                            class="toggle">+</span> Then i see that i have followed the course</p>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="stepName "><p onclick="showHide('60ffbeea3a37c', this)"><span
+                            class="toggle">+</span> And i see that i have passed the quiz</p>
+
+                        </td>
+                    </tr>
+                </table>
+
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <h2>Summary</h2>
+                <div id="stepContainerSummary">
+                    <table border="0">
+                        <tr>
+                            <td width="250" class="scenarioSuccess">Successful scenarios:</td>
+                            <td class="scenarioSuccessValue">3</td>
+                        </tr>
+                        <tr>
+                            <td class="scenarioFailed">Failed scenarios:</td>
+                            <td class="scenarioFailedValue">0</td>
+                        </tr>
+                        <tr>
+                            <td class="scenarioSkipped">Skipped scenarios:</td>
+                            <td class="scenarioSkippedValue">0</td>
+                        </tr>
+                        <tr>
+                            <td class="scenarioIncomplete">Incomplete scenarios:</td>
+                            <td class="scenarioIncompleteValue">0</td>
+                        </tr>
+                    </table>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>
