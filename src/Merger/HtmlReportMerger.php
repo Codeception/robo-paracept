@@ -22,12 +22,19 @@ use RuntimeException;
  */
 class HtmlReportMerger extends BaseTask implements ReportMergerTaskInterface
 {
+    /** @var string[] */
     protected $src = [];
+    /** @var string */
     protected $dst;
+    /** @var int */
     protected $countSuccess = 0;
+    /** @var int */
     protected $countFailed = 0;
+    /** @var int */
     protected $countSkipped = 0;
+    /** @var int */
     protected $countIncomplete = 0;
+    /** @var bool */
     protected $previousLibXmlUseErrors;
 
     /**
@@ -35,12 +42,20 @@ class HtmlReportMerger extends BaseTask implements ReportMergerTaskInterface
      */
     private $executionTimeSum = 0;
 
-    public function __construct($src = [])
+    /**
+     * HtmlReportMerger constructor.
+     * @param string[] $src - array of source reports
+     */
+    public function __construct(array $src = [])
     {
         $this->src = $src;
     }
 
-    public function from($fileName)
+    /**
+     * @param string[]|string $fileName - a single report file or array of report files
+     * @return $this|HtmlReportMerger
+     */
+    public function from($fileName): self
     {
         if (is_array($fileName)) {
             $this->src = array_merge($fileName, $this->src);
@@ -50,7 +65,11 @@ class HtmlReportMerger extends BaseTask implements ReportMergerTaskInterface
         return $this;
     }
 
-    public function into($fileName)
+    /**
+     * @param string $fileName
+     * @return $this|HtmlReportMerger
+     */
+    public function into(string $fileName): self
     {
         $this->dst = $fileName;
         return $this;
@@ -78,6 +97,7 @@ class HtmlReportMerger extends BaseTask implements ReportMergerTaskInterface
             throw XPathExpressionException::malformedXPath("//table");
         }
         $index = 0;
+        /** @var DOMNode $table */
         $table = $nodeList->item($index);
         if (null === $table) {
             throw new KeyNotFoundException('Could not find table item at pos: ' . $index);
@@ -161,6 +181,10 @@ class HtmlReportMerger extends BaseTask implements ReportMergerTaskInterface
         $this->executionTimeSum += (float)$matches['timesum'];
     }
 
+    /**
+     * @param DOMDocument $dstFile
+     * @throws XPathExpressionException
+     */
     private function updateHeaderLine(DOMDocument $dstFile): void
     {
         $xpathHeadline = "//h1[text() = 'Codeception Results ']";
@@ -181,11 +205,11 @@ class HtmlReportMerger extends BaseTask implements ReportMergerTaskInterface
         $executionTimeNode->nodeValue = " ({$this->executionTimeSum}s)";
     }
 
-     /**
-     * This function counts all types of tests' scenarios and writes in class members
-     * @param DOMDocument $dstFile - destination file
-     * @throws XPathExpressionException
-     */
+    /**
+    * This function counts all types of tests' scenarios and writes in class members
+    * @param DOMDocument $dstFile - destination file
+    * @throws XPathExpressionException
+    */
     private function countSummary(DOMDocument $dstFile): void
     {
         $xpathExprTests = "//table/tr[contains(@class,'scenarioRow')]";
@@ -261,6 +285,7 @@ class HtmlReportMerger extends BaseTask implements ReportMergerTaskInterface
     /**
      * This function updates "+" and "-" button for viewing test steps in final report
      * @param $dstFile DOMDocument - destination file
+     * @throws XPathExpressionException
      */
     private function updateButtons(DOMDocument $dstFile)
     {
