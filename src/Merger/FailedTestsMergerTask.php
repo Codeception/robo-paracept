@@ -27,7 +27,7 @@ use Symfony\Component\Finder\Finder;
  * ?>
  * ```
  */
-class FailedTestsMergerTask extends BaseTask implements ReportMergerTaskInterface
+class FailedTestsMergerTask extends AbstractMerger
 {
     public const DEFAULT_PATTERN = '/^failedTests_\w+\.\w+\.txt$/';
 
@@ -39,7 +39,7 @@ class FailedTestsMergerTask extends BaseTask implements ReportMergerTaskInterfac
     private $dest;
 
     /** @var string[] */
-    private $src = [];
+    protected $src = [];
 
     /**
      * @param string[]|string $fileName

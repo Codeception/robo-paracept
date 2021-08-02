@@ -15,8 +15,9 @@ use Robo\Task\BaseTask;
  * Class MergeHTMLReportsTask
  * @author Kerimov Asif
  */
-class HtmlReportMerger extends BaseTask implements ReportMergerTaskInterface
+class HtmlReportMerger extends AbstractMerger
 {
+    /** @var string[] */
     protected $src = [];
     protected $dst;
     protected $countSuccess = 0;
@@ -24,11 +25,6 @@ class HtmlReportMerger extends BaseTask implements ReportMergerTaskInterface
     protected $countSkipped = 0;
     protected $countIncomplete = 0;
     protected $previousLibXmlUseErrors;
-
-    public function __construct($src = [])
-    {
-        $this->src = $src;
-    }
 
     public function from($fileName)
     {
