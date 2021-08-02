@@ -2,8 +2,8 @@
 
 namespace Tests\Codeception\Task\Splitter;
 
-use Codeception\Task\Extension\FailedTestsReporter;
 use Codeception\Task\Splitter\FailedTestSplitterTask;
+use Codeception\Task\Splitter\TestsSplitter;
 use Consolidation\Log\Logger;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
@@ -17,7 +17,7 @@ class FailedTestSplitterTaskTest extends TestCase
     {
         $task = new FailedTestSplitterTask(5);
         $task->setLogger(new Logger(new NullOutput()));
-        $task->setReportPath('tests/_output/')
+        $task->setReportPath('tests/_output/failedTests.txt')
             ->groupsTo(TEST_PATH . '/result/group_');
 
         $this->expectException(RuntimeException::class);
