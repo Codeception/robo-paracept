@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Codeception\Task\Splitter;
 
-use Codeception\Configuration;
-use Codeception\Task\Extension\FailedTestsReporter;
 use RuntimeException;
 
 class FailedTestSplitterTask extends TestsSplitter
@@ -15,11 +13,10 @@ class FailedTestSplitterTask extends TestsSplitter
 
     /**
      * @return string
-     * @throws \Codeception\Exception\ConfigurationException
      */
     public function getReportPath(): string
     {
-        return $this->reportPath ?? (Configuration::logDir() . FailedTestsReporter::REPORT_NAME);
+        return $this->reportPath;
     }
 
     /**

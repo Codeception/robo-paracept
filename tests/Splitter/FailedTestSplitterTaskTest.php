@@ -4,11 +4,9 @@ namespace Tests\Codeception\Task\Splitter;
 
 use Codeception\Task\Extension\FailedTestsReporter;
 use Codeception\Task\Splitter\FailedTestSplitterTask;
-use Codeception\Task\Splitter\TestsSplitter;
 use Consolidation\Log\Logger;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
-use Robo\Exception\TaskException;
 use RuntimeException;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Finder\Finder;
@@ -36,7 +34,7 @@ class FailedTestSplitterTaskTest extends TestCase
         $task->setLogger(new Logger(new NullOutput()));
         $groupTo = TEST_PATH . '/result/group_';
         $task
-            ->setReportPath(TEST_PATH . '/fixtures/' . FailedTestsReporter::REPORT_NAME)
+            ->setReportPath(TEST_PATH . '/fixtures/failedTests.txt')
             ->groupsTo($groupTo)
             ->run();
 
