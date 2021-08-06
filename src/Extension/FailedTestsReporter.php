@@ -11,7 +11,11 @@ use Codeception\Extension;
 use Codeception\Test\Descriptor;
 
 /**
- * Class FailedTestsReporter - reports the failed tests to a reportfile
+ * Class FailedTestsReporter - reports the failed tests to a reportfile with
+ * a unique name for parallel execution.
+ *
+ * Pattern is '/failedTests_\w+\.\w+\.txt/'
+ *
  * Modify the codeception.yml to enable this extension:
  *  extensions:
  *      enabled:
@@ -20,10 +24,7 @@ use Codeception\Test\Descriptor;
 class FailedTestsReporter extends Extension
 {
     /** @var string */
-    public const REPORT_NAME = 'failedTests.txt';
-
-    /** @var string $reportFile */
-    private $reportFile = self::REPORT_NAME;
+    public const REPORT_NAME = 'failedTests';
 
     /** @var array $failedTests */
     private $failedTests = [];
@@ -54,7 +55,7 @@ class FailedTestsReporter extends Extension
             return;
         }
 
-        $file = $this->getLogDir() . $this->reportFile;
+        $file = $this->getLogDir() . $this->getUniqReportFile();
         if (is_file($file)) {
             unlink($file); // remove old reportFile
         }
@@ -71,5 +72,13 @@ class FailedTestsReporter extends Extension
         $name = Descriptor::getTestFullName($e->getTest());
 
         return substr(str_replace($this->getRootDir(), '', $name), 1);
+    }
+
+    /**
+     * @return string
+     */
+    public function getUniqReportFile(): string
+    {
+        return self::REPORT_NAME . '_' . uniqid('', true) . '.txt';
     }
 }
