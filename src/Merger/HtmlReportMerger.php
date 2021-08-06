@@ -20,7 +20,7 @@ use RuntimeException;
  * Class MergeHTMLReportsTask
  * @author Kerimov Asif
  */
-class HtmlReportMerger extends BaseTask implements ReportMergerTaskInterface
+class HtmlReportMerger extends AbstractMerger
 {
     /** @var string[] */
     protected $src = [];

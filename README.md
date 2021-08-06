@@ -81,7 +81,8 @@ this command need run all tests with `Codeception\Task\TimeReporter` for collect
 
 ### SplitFailedTests
 
-Enable extension for collect failed tests if you use taskSplitFailedTests
+Enable extension for collect failed tests if you use taskSplitFailedTests  
+The extension saves the report files into \Codeception\Configuration::outputDir()
 
 ```
 extensions:
@@ -89,15 +90,23 @@ extensions:
         - Codeception\Task\Extension\FailedTestsReporter
 ```
 
+Merge the created report files from the FailedTestsReporter into single file
+```php
+$this->taskMergeFailedTestsReports()
+    ->fromPathWithPattern(\Codeception\Configuration::outputDir(), '/failedTests_\w+\.txt$/')
+    ->into(\Codeception\Configuration::outputDir() . 'failedTests.txt') // absolute path with Filename
+    ->run();
+```
+
 Load the failed Tests from a reportfile into the groups:
-- Default report path is: `Configuration::outputDir() . 'failedTests.txt'`
 ```php
 $this
     ->taskSplitFailedTests(5)
-    ->setReportPath('tests/_output/' . FailedTestsReporter::REPORT_NAME)
-    ->groupsTo('tests/_data/group_')
+    ->setReportPath(\Codeception\Configuration::outputDir() . 'failedTests.txt') // absoulute Path to Reportfile
+    ->groupsTo(\Codeception\Configuration::outputDir() . 'group_')
     ->run();
 ```
+
 ### MergeXmlReports
 
 Mergex several XML reports:
