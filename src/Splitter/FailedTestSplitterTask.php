@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace Codeception\Task\Splitter;
 
-use Codeception\Configuration;
-use Codeception\Task\Extension\FailedTestsReporter;
+use InvalidArgumentException;
 use RuntimeException;
 
 class FailedTestSplitterTask extends TestsSplitter
@@ -14,12 +13,11 @@ class FailedTestSplitterTask extends TestsSplitter
     private $reportPath = null;
 
     /**
-     * @return string
-     * @throws \Codeception\Exception\ConfigurationException
+     * @return string - the absolute path to the report file with the failed tests
      */
     public function getReportPath(): string
     {
-        return $this->reportPath ?? (Configuration::logDir() . FailedTestsReporter::REPORT_NAME);
+        return $this->reportPath;
     }
 
     /**
@@ -30,9 +28,9 @@ class FailedTestSplitterTask extends TestsSplitter
         $this->claimCodeceptionLoaded();
         $reportPath = $this->getReportPath();
 
-        if (!@file_exists($reportPath)) {
+        if (!@file_exists($reportPath) || !is_file($reportPath)) {
             throw new RuntimeException(
-                'The reportfile "failedTests.txt" did not exists.'
+                'The reportfile did not exists or is not a regular file.'
             );
         }
 
@@ -47,16 +45,16 @@ class FailedTestSplitterTask extends TestsSplitter
     }
 
     /**
-     * @param string $reportPath
+     * @param string $reportFilePath
      * @return FailedTestSplitterTask
      */
-    public function setReportPath(string $reportPath): FailedTestSplitterTask
+    public function setReportPath(string $reportFilePath): FailedTestSplitterTask
     {
-        if (empty($reportPath)) {
-            throw new \InvalidArgumentException('The reportPath could not be empty!');
+        if (empty($reportFilePath)) {
+            throw new InvalidArgumentException('The reportPath could not be empty!');
         }
 
-        $this->reportPath = $reportPath;
+        $this->reportPath = $reportFilePath;
 
         return $this;
     }
