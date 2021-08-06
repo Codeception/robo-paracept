@@ -4,11 +4,16 @@ declare(strict_types=1);
 
 namespace Codeception\Task\Merger;
 
+use Codeception\Task\Exception\KeyNotFoundException;
+use Codeception\Task\Exception\XPathExpressionException;
+use DOMAttr;
 use DOMDocument;
 use DOMNode;
+use DOMNodeList;
 use DOMXPath;
 use Robo\Exception\TaskException;
 use Robo\Task\BaseTask;
+use RuntimeException;
 
 /**
  * Generate common HTML report
@@ -19,14 +24,38 @@ class HtmlReportMerger extends AbstractMerger
 {
     /** @var string[] */
     protected $src = [];
+    /** @var string */
     protected $dst;
+    /** @var int */
     protected $countSuccess = 0;
+    /** @var int */
     protected $countFailed = 0;
+    /** @var int */
     protected $countSkipped = 0;
+    /** @var int */
     protected $countIncomplete = 0;
+    /** @var bool */
     protected $previousLibXmlUseErrors;
 
-    public function from($fileName)
+    /**
+     * @var float
+     */
+    private $executionTimeSum = 0;
+
+    /**
+     * HtmlReportMerger constructor.
+     * @param string[] $src - array of source reports
+     */
+    public function __construct(array $src = [])
+    {
+        $this->src = $src;
+    }
+
+    /**
+     * @param string[]|string $fileName - a single report file or array of report files
+     * @return $this|HtmlReportMerger
+     */
+    public function from($fileName): self
     {
         if (is_array($fileName)) {
             $this->src = array_merge($fileName, $this->src);
@@ -36,7 +65,11 @@ class HtmlReportMerger extends AbstractMerger
         return $this;
     }
 
-    public function into($fileName)
+    /**
+     * @param string $fileName
+     * @return $this|HtmlReportMerger
+     */
+    public function into(string $fileName): self
     {
         $this->dst = $fileName;
         return $this;
@@ -57,18 +90,34 @@ class HtmlReportMerger extends AbstractMerger
         //read first source file as main
         $dstHTML = new DOMDocument();
         $dstHTML->loadHTMLFile($this->src[0], LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
-
+        $this->countExecutionTime($dstHTML);
         //main node for all table rows
-        $table = (new \DOMXPath($dstHTML))->query("//table")->item(0);
-
+        $nodeList = (new DOMXPath($dstHTML))->query("//table");
+        if (!$nodeList) {
+            throw XPathExpressionException::malformedXPath("//table");
+        }
+        $index = 0;
+        /** @var DOMNode $table */
+        $table = $nodeList->item($index);
+        if (null === $table) {
+            throw new KeyNotFoundException('Could not find table item at pos: ' . $index);
+        }
         //prepare reference nodes for envs
-        $refnodes = (new DOMXPath($dstHTML))->query("//div[@class='layout']/table/tr[not(@class)]");
-
+        $xpathExprRefNodes = "//div[@class='layout']/table/tr[not(@class)]";
+        $refnodes = (new DOMXPath($dstHTML))->query($xpathExprRefNodes);
+        if (!$refnodes) {
+            throw XPathExpressionException::malformedXPath($xpathExprRefNodes);
+        }
         for ($k = 1, $kMax = count($this->src); $k < $kMax; $k++) {
             $srcHTML = new DOMDocument();
             $src = $this->src[$k];
             $srcHTML->loadHTMLFile($src, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
-            $suiteNodes = (new DOMXPath($srcHTML))->query("//div[@class='layout']/table/tr");
+            $this->countExecutionTime($srcHTML);
+            $xpathExprSuiteNodes = "//div[@class='layout']/table/tr";
+            $suiteNodes = (new DOMXPath($srcHTML))->query($xpathExprSuiteNodes);
+            if (!$suiteNodes) {
+                throw XPathExpressionException::malformedXPath($xpathExprSuiteNodes);
+            }
             $j = 0;
             foreach ($suiteNodes as $suiteNode) {
                 if ($suiteNode->getAttribute('class') == '') {
@@ -86,13 +135,14 @@ class HtmlReportMerger extends AbstractMerger
         }
 
         /**
-         * The next 5 functions correct our almost finished final report
+         * The next 6 functions correct our almost finished final report
          */
         $this->countSummary($dstHTML);
         $this->moveSummaryTable($dstHTML, $table);
         $this->updateSummaryTable($dstHTML);
         $this->updateToolbarTable($dstHTML);
         $this->updateButtons($dstHTML);
+        $this->updateHeaderLine($dstHTML);
 
         //save final report
         file_put_contents($this->dst, $dstHTML->saveHTML());
@@ -102,12 +152,72 @@ class HtmlReportMerger extends AbstractMerger
     }
 
     /**
-     * This function counts all types of tests' scenarios and writes in class members
-     * @param $dstFile DOMDocument - destination file
+     * This function sums all execution time of each report
+     * @param DOMDocument $dstFile
+     * @throws XPathExpressionException
      */
-    private function countSummary($dstFile)
+    private function countExecutionTime(DOMDocument $dstFile): void
     {
-        $tests = (new \DOMXPath($dstFile))->query("//table/tr[contains(@class,'scenarioRow')]");
+        $xpathHeadline = "//h1[text() = 'Codeception Results ']";
+        $nodeList = (new DOMXPath($dstFile))
+            ->query($xpathHeadline);
+        if (!$nodeList) {
+            throw XPathExpressionException::malformedXPath($xpathHeadline);
+        }
+        $pregResult = preg_match(
+            '/^Codeception Results .* \((?<timesum>\d+\.\d+)s\)$/',
+            $nodeList[0]->nodeValue,
+            $matches
+        );
+
+        if (false === $pregResult) {
+            throw new RuntimeException('Regexpression is malformed');
+        }
+
+        if (0 === $pregResult) {
+            return;
+        }
+
+        $this->executionTimeSum += (float)$matches['timesum'];
+    }
+
+    /**
+     * @param DOMDocument $dstFile
+     * @throws XPathExpressionException
+     */
+    private function updateHeaderLine(DOMDocument $dstFile): void
+    {
+        $xpathHeadline = "//h1[text() = 'Codeception Results ']";
+        $nodeList = (new DOMXPath($dstFile))
+            ->query($xpathHeadline);
+        if (!$nodeList) {
+            throw XPathExpressionException::malformedXPath($xpathHeadline);
+        }
+        /** @var DOMNode $executionTimeNode */
+        $executionTimeNode = $nodeList[0]->childNodes[1]->childNodes[1];
+        /** @var DOMAttr $statusAttr */
+        $statusNode = $nodeList[0]->childNodes[1]->childNodes[0];
+        $statusAttr = $statusNode->attributes[0];
+        if (0 !== ($this->countFailed + $this->countIncomplete + $this->countSkipped)) {
+            $statusNode->nodeValue = 'NOT OK';
+            $statusAttr->value = 'color: red';
+        }
+        $executionTimeNode->nodeValue = " ({$this->executionTimeSum}s)";
+    }
+
+    /**
+    * This function counts all types of tests' scenarios and writes in class members
+    * @param DOMDocument $dstFile - destination file
+    * @throws XPathExpressionException
+    */
+    private function countSummary(DOMDocument $dstFile): void
+    {
+        $xpathExprTests = "//table/tr[contains(@class,'scenarioRow')]";
+        /** @var DOMNodeList $tests */
+        $tests = (new DOMXPath($dstFile))->query($xpathExprTests);
+        if (!$tests) {
+            throw XPathExpressionException::malformedXPath($xpathExprTests);
+        }
         foreach ($tests as $test) {
             $class = str_replace('scenarioRow ', '', $test->getAttribute('class'));
             switch ($class) {
@@ -150,7 +260,7 @@ class HtmlReportMerger extends AbstractMerger
      */
     private function moveSummaryTable(DOMDocument $dstFile, DOMNode $node)
     {
-        $summaryTable = (new \DOMXPath($dstFile))->query("//div[@id='stepContainerSummary']")
+        $summaryTable = (new DOMXPath($dstFile))->query("//div[@id='stepContainerSummary']")
             ->item(0)->parentNode->parentNode;
         $node->appendChild($dstFile->importNode($summaryTable, true));
     }
@@ -162,7 +272,7 @@ class HtmlReportMerger extends AbstractMerger
      */
     private function updateToolbarTable(DOMDocument $dstFile)
     {
-        $dstFile = new \DOMXPath($dstFile);
+        $dstFile = new DOMXPath($dstFile);
         $pathFor = static function (string $type): string {
             return "//ul[@id='toolbar-filter']//a[@title='$type']";
         };
@@ -175,10 +285,15 @@ class HtmlReportMerger extends AbstractMerger
     /**
      * This function updates "+" and "-" button for viewing test steps in final report
      * @param $dstFile DOMDocument - destination file
+     * @throws XPathExpressionException
      */
     private function updateButtons(DOMDocument $dstFile)
     {
-        $nodes = (new \DOMXPath($dstFile))->query("//div[@class='layout']/table/tr[contains(@class, 'scenarioRow')]");
+        $xpathExprNodes = "//div[@class='layout']/table/tr[contains(@class, 'scenarioRow')]";
+        $nodes = (new DOMXPath($dstFile))->query($xpathExprNodes);
+        if (!$nodes) {
+            throw XPathExpressionException::malformedXPath($xpathExprNodes);
+        }
         for ($i = 2; $i < $nodes->length; $i += 2) {
             $n = $i / 2 + 1;
             $p = $nodes->item($i)->childNodes->item(1)->childNodes->item(1);
