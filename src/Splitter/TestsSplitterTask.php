@@ -125,7 +125,7 @@ class TestsSplitterTask extends TestsSplitter
         }
 
         // for even split, calculate number of tests in each group
-        $numberOfElementsInGroup = floor(count($orderedListOfTests) / $this->numGroups);
+        $numberOfElementsInGroup = round(count($orderedListOfTests) / $this->numGroups);
         $i = 1;
         $groups = [];
 
