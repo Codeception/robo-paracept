@@ -15,4 +15,9 @@ trait ReportMerger
     {
         return $this->task(HtmlReportMerger::class, $src);
     }
+
+    protected function taskMergeFailedTestsReports($src = [])
+    {
+        return $this->task(FailedTestsMergerTask::class, $src);
+    }
 }

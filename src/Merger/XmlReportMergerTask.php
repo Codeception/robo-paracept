@@ -11,7 +11,7 @@ use DOMXPath;
 use Robo\Exception\TaskException;
 use Robo\Task\BaseTask;
 
-class XmlReportMergerTask extends BaseTask implements ReportMergerTaskInterface
+class XmlReportMergerTask extends AbstractMerger
 {
     /**
      * @var array|mixed
@@ -31,11 +31,6 @@ class XmlReportMergerTask extends BaseTask implements ReportMergerTaskInterface
     protected $mergeRewrite = false;
     /** @var DOMElement[][] */
     protected $suites = [];
-
-    public function __construct(array $src = [])
-    {
-        $this->src = $src;
-    }
 
     public function sumTime(): void
     {
