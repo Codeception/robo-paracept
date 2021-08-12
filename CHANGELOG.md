@@ -1,13 +1,22 @@
-## [1.2.0](1.2.0)
+## [1.2.1](https://github.com/Codeception/robo-paracept/releases/tag/1.2.1) Bugfix
+
+Pull Request: [#82](https://github.com/Codeception/robo-paracept/pull/82)
+
+Calculation number of tests in groups in class TestsSplitterTask did not work as expected.
+If you have a high number of Tests it was possible that the last group received a huge number of tests while all others had a stable small number of tests.
+
+- Fixing calculation number of tests in Groups
+- Using PHP Built In round() instead of floor()
+
+## [1.2.0](https://github.com/Codeception/robo-paracept/releases/tag/1.2.0)
 
 - Bugfix for extension FailedTestsReporter and  new FailedTestsMergerTask [#75](https://github.com/Codeception/robo-paracept/pull/75)
     - generated Files will not be overwriten anymore
     - each generated File has now a uniqid-suffix (PHP Function uniqid('', true))
     - merge generated report files from FailedTestsReporter into single file
     - posibility to merge also another files into a single file
-
-
-- Bugfix src/Splitter/TestsSplitter.php::testsFrom [#78](https://github.com/Codeception/robo-paracept/pull/78) @ccsuperstar
+    
+- Bugfix src/Splitter/TestsSplitter.php::testsFrom [#78](https://github.com/Codeception/robo-paracept/pull/78) [@ccsuperstar](https://github.com/ccsuperstar)
     - revert string type hint and allow array or string again
 
 ## [1.1.1](https://github.com/Codeception/robo-paracept/releases/tag/1.1.1) Bugfix
@@ -28,7 +37,7 @@ Big day for Robo-Paracept. The first stable version is released! ✈️
 * **Support for modern PHP 7.3, 7.4, 8.0**
 * Added support for the latest [Robo task runner](https://robo.li)
 * Added **Filters** to select tests before splitting them
-* Added **SplitByTime** task to use time statistics of previous runs to balance groups of tests. Thanks to @ivan1986
+* Added **SplitByTime** task to use time statistics of previous runs to balance groups of tests. Thanks to [@ivan1986](https://github.com/ivan1986)
 
 ## [0.4.2](https://github.com/Codeception/robo-paracept/releases/tag/0.4.2) Resolve dependencies when splitting tests
 
@@ -41,9 +50,9 @@ Big day for Robo-Paracept. The first stable version is released! ✈️
 
 ## [0.4.0](https://github.com/Codeception/robo-paracept/releases/tag/0.4.0) Minor improvements
 
-* [#37](https://github.com/Codeception/robo-paracept/pull/37) Added `excluePath` option to `SplitTestsByGroups` task. By @thejanasatan
-* [#36](https://github.com/Codeception/robo-paracept/pull/36) Added mergeRewrite to merge reports by @maxgorovenko
-* [#30](https://github.com/Codeception/robo-paracept/pull/30) Fixed execute test name from data provider by @ivan1986
+* [#37](https://github.com/Codeception/robo-paracept/pull/37) Added `excluePath` option to `SplitTestsByGroups` task. By [@thejanasatan](https://github.com/thejanasatan)
+* [#36](https://github.com/Codeception/robo-paracept/pull/36) Added mergeRewrite to merge reports by [@maxgorovenko](https://github.com/maxgorovenko)
+* [#30](https://github.com/Codeception/robo-paracept/pull/30) Fixed execute test name from data provider by [@ivan1986](https://github.com/ivan1986)
 
 Also PHPUnit 6 compatibility can be achieved by including Codeception's autoloader:
 
@@ -51,7 +60,7 @@ Also PHPUnit 6 compatibility can be achieved by including Codeception's autoload
 require  'vendor/codeception/codeception/autoload.php'
 ```
 
-See https://github.com/Codeception/robo-paracept/issues/35#issuecomment-311605115
+See [#35 (comment)](https://github.com/Codeception/robo-paracept/issues/35#issuecomment-311605115)
 
 ## [0.3.1](https://github.com/Codeception/robo-paracept/releases/tag/0.3.1) 0.3.1: Merge pull request #27 from dhiva/master
 
