@@ -1,3 +1,7 @@
+## [1.2.2](https://github.com/Codeception/robo-paracept/releases/tag/1.2.2) Bugfix HTML Merger
+
+Fix [#31](https://github.com/Codeception/robo-paracept/issues/31)
+
 ## [1.2.1](https://github.com/Codeception/robo-paracept/releases/tag/1.2.1) Bugfix
 
 Pull Request: [#82](https://github.com/Codeception/robo-paracept/pull/82)
