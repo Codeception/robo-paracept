@@ -109,8 +109,12 @@ class HtmlReportMerger extends AbstractMerger
             throw XPathExpressionException::malformedXPath($xpathExprRefNodes);
         }
         for ($k = 1, $kMax = count($this->src); $k < $kMax; $k++) {
-            $srcHTML = new DOMDocument();
             $src = $this->src[$k];
+            if (!file_exists($src) || !is_readable($src)) {
+                $this->printTaskWarning('File did not exists or is not readable: ' . $src);
+                continue;
+            }
+            $srcHTML = new DOMDocument();
             $srcHTML->loadHTMLFile($src, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
             $this->countExecutionTime($srcHTML);
             $xpathExprSuiteNodes = "//div[@class='layout']/table/tr";
@@ -199,7 +203,7 @@ class HtmlReportMerger extends AbstractMerger
         $statusNode = $nodeList[0]->childNodes[1]->childNodes[0];
         $statusAttr = $statusNode->attributes[0];
         if (0 !== ($this->countFailed + $this->countIncomplete + $this->countSkipped)) {
-            $statusNode->nodeValue = 'NOT OK';
+            $statusNode->nodeValue = 'FAILED';
             $statusAttr->value = 'color: red';
         }
         $executionTimeNode->nodeValue = " ({$this->executionTimeSum}s)";
