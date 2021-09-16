@@ -16,6 +16,8 @@ class XmlReportMergerTaskTest extends TestCase
         $task->setLogger(new Logger(new NullOutput()));
         $task->from(TEST_PATH . '/fixtures/result1.xml')
             ->from(TEST_PATH . '/fixtures/result2.xml')
+            // This report did not exists and we should not throw an exception
+            ->from(TEST_PATH . '/fixtures/result3.xml')
             ->into(TEST_PATH . '/result/merged.xml')
             ->run();
 
