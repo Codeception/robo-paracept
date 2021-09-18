@@ -1,3 +1,7 @@
+## [1.2.3](https://github.com/Codeception/robo-paracept/releases/tag/1.2.3) Bugfix Release XmlMerger
+
+Fix the issue that an exception is thrown if a xml report does not exists.
+
 ## [1.2.2](https://github.com/Codeception/robo-paracept/releases/tag/1.2.2) Bugfix HTML Merger
 
 Fix [#31](https://github.com/Codeception/robo-paracept/issues/31)
