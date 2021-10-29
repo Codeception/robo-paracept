@@ -28,6 +28,7 @@ class HtmlReportMergerTest extends TestCase
         $task
             ->from(
                 [
+                    $reportPath . 'report_0.html', // this file did not exists and it should not fail
                     $reportPath . 'report_1.html',
                     $reportPath . 'report_2.html',
                     $reportPath . 'report_3.html',

@@ -85,6 +85,18 @@ class HtmlReportMerger extends AbstractMerger
             throw new TaskException($this, "No destination file is set. Use `->into()` method to set result HTML");
         }
 
+        $this->printTaskInfo("Remove not existing HTML reports...");
+        foreach ($this->src as $index => $item) {
+            if (!file_exists($item)) {
+                unset($this->src[$index]);
+                $this->printTaskWarning(
+                    "HTML report {$item} did not exist and was removed from merge list"
+                );
+            }
+        }
+        // Resetting keys
+        $this->src = array_values($this->src);
+
         $this->printTaskInfo("Merging HTML reports into {$this->dst}");
 
         //read first source file as main
