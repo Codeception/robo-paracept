@@ -9,24 +9,27 @@ use Codeception\Task\Filter\Filter;
 use ReflectionClass;
 use Robo\Exception\TaskException;
 use Robo\Task\BaseTask;
+use RuntimeException;
 
 abstract class TestsSplitter extends BaseTask
 {
-    /** @var int */
-    protected $numGroups;
-    /** @var string */
-    protected $projectRoot = '.';
+    protected int $numGroups;
+
+    protected string $projectRoot = '.';
+
     /** @var string[]|string */
     protected $testsFrom = 'tests';
-    /** @var string */
-    protected $saveTo = 'tests/_data/paracept_';
-    /** @var string */
-    protected $excludePath = 'vendor';
+
+    protected string $saveTo = 'tests/_data/paracept_';
+
+    protected string $excludePath = 'vendor';
+
     /** @var Filter[] $filter */
-    protected $filter;
+    protected array $filter = [];
 
     /**
      * TestsSplitter constructor.
+     *
      * @param int $groups number of groups to use
      */
     public function __construct(int $groups)
@@ -44,9 +47,6 @@ abstract class TestsSplitter extends BaseTask
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getProjectRoot(): string
     {
         return realpath($this->projectRoot);
@@ -85,12 +85,7 @@ abstract class TestsSplitter extends BaseTask
     }
 
     /**
-     * @param       $item
-     * @param array $items
-     * @param array $resolved
-     * @param array $unresolved
-     *
-     * @return array
+     * @param mixed $item
      */
     protected function resolveDependencies(
         $item,
@@ -106,14 +101,16 @@ abstract class TestsSplitter extends BaseTask
                     [$resolved, $unresolved] =
                         $this->resolveDependencies($dep, $items, $resolved, $unresolved);
                 } else {
-                    throw new \RuntimeException("Circular dependency: $item -> $dep");
+                    throw new RuntimeException(sprintf('Circular dependency: %s -> %s', $item, $dep));
                 }
             }
         }
+
         // Add $item to $resolved if it's not already there
         if (!in_array($item, $resolved, true)) {
             $resolved[] = $item;
         }
+
         // Remove all occurrences of $item in $unresolved
         while (($index = array_search($item, $unresolved, true)) !== false) {
             unset($unresolved[$index]);
@@ -124,10 +121,6 @@ abstract class TestsSplitter extends BaseTask
 
     /**
      * Make sure that tests are in array are always with full path and name.
-     *
-     * @param array $testsListWithDependencies
-     *
-     * @return array
      */
     protected function resolveDependenciesToFullNames(array $testsListWithDependencies): array
     {
@@ -141,6 +134,7 @@ abstract class TestsSplitter extends BaseTask
                     $ref = new ReflectionClass($class);
                     $dependency = $ref->getFileName() . ':' . $method;
                 }
+
                 // sometimes it is written as class::method.
                 // for that reason we do trim in first case and replace from :: to one in second case
                 // just test name, that means that class name is the same, just different method name
@@ -151,12 +145,14 @@ abstract class TestsSplitter extends BaseTask
                     ) . ':' . $dependency;
                     continue;
                 }
+
                 $dependency = str_replace('::', ':', $dependency);
                 // className:testName, that means we need to find proper test.
                 [$targetTestFileName, $targetTestMethodName] = explode(':', $dependency);
                 if (false === strrpos($targetTestFileName, '.php')) {
                     $targetTestFileName .= '.php';
                 }
+
                 // look for proper test in list of all tests. Test could be in different directory
                 // so we need to compare strings and if matched we just assign found test name
                 foreach (array_keys($testsListWithDependencies) as $arrayKey) {
@@ -171,7 +167,7 @@ abstract class TestsSplitter extends BaseTask
                     }
                 }
 
-                throw new \RuntimeException(
+                throw new RuntimeException(
                     'Dependency target test ' . $dependency . ' not found.'
                     . 'Please make sure test exists and you are using full test name'
                 );
@@ -183,8 +179,6 @@ abstract class TestsSplitter extends BaseTask
 
     /**
      * Filter tests by the given filters, FIFO principal
-     * @param array $tests
-     * @return array
      */
     protected function filter(array $tests): array
     {
@@ -198,6 +192,7 @@ abstract class TestsSplitter extends BaseTask
 
     /**
      * Claims that the Codeception is loaded for Tasks which need it
+     *
      * @throws TaskException
      */
     protected function claimCodeceptionLoaded(): void
@@ -210,16 +205,14 @@ abstract class TestsSplitter extends BaseTask
         }
     }
 
-    /**
-     * @return bool
-     */
     protected function doCodeceptLoaderExists(): bool
     {
-        return class_exists('\Codeception\Test\Loader');
+        return class_exists(\Codeception\Test\Loader::class);
     }
 
     /**
      * Splitting array of files to the group files
+     *
      * @param string[] $files - the relative path of the Testfile with or without test function
      * @example $this->splitToGroupFiles(['tests/FooCest.php', 'tests/BarTest.php:testBarReturn']);
      */
@@ -234,13 +227,13 @@ abstract class TestsSplitter extends BaseTask
         /** @var string $file */
         foreach ($files as $file) {
             $groups[($i % $this->numGroups) + 1][] = $file;
-            $i++;
+            ++$i;
         }
 
         // saving group files
         foreach ($groups as $i => $tests) {
             $filename = $this->saveTo . $i;
-            $this->printTaskInfo("Writing $filename");
+            $this->printTaskInfo("Writing {$filename}");
             file_put_contents($filename, implode("\n", $tests));
         }
     }

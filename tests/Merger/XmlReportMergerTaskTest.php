@@ -1,5 +1,6 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 namespace Tests\Codeception\Task\Merger;
 
@@ -7,8 +8,9 @@ use Codeception\Task\Merger\XmlReportMergerTask;
 use Consolidation\Log\Logger;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Output\NullOutput;
+use const Tests\Codeception\Task\TEST_PATH;
 
-class XmlReportMergerTaskTest extends TestCase
+final class XmlReportMergerTaskTest extends TestCase
 {
     public function testMergeReports(): void
     {

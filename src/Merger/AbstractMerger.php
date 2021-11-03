@@ -8,10 +8,7 @@ use Robo\Task\BaseTask;
 
 abstract class AbstractMerger extends BaseTask implements ReportMergerTaskInterface
 {
-    /**
-     * @var array
-     */
-    protected $src;
+    protected array $src = [];
 
     public function __construct($src = [])
     {
@@ -21,12 +18,9 @@ abstract class AbstractMerger extends BaseTask implements ReportMergerTaskInterf
     /**
      * @inheritDoc
      */
-    abstract public function from($fileName);
+    abstract public function from($fileName): self;
 
-    /**
-     * @inheritDoc
-     */
-    abstract public function into(string $fileName);
+    abstract public function into(string $fileName): self;
 
     /**
      * @inheritDoc

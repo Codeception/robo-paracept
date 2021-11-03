@@ -11,7 +11,9 @@ use Codeception\Test\Loader as TestLoader;
 use Exception;
 use PHPUnit\Framework\DataProviderTestSuite;
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
 use ReflectionObject;
+use Robo\Exception\TaskException;
 
 /**
  * Loads all tests into groups and saves them to groupfile according to pattern.
@@ -25,17 +27,16 @@ use ReflectionObject;
  *    ->addFilter(new Filter1())
  *    ->addFilter(new Filter2())
  *    ->run();
- * ?>
  * ```
+ *
+ * @see \Tests\Codeception\Task\Splitter\TestsSplitterTaskTest
  */
 class TestsSplitterTask extends TestsSplitter
 {
-
     /**
-     * @return bool|null
-     * @throws \Robo\Exception\TaskException
+     * @throws TaskException
      */
-    public function run()
+    public function run(): ?bool
     {
         $this->claimCodeceptionLoaded();
         $tests = $this->filter($this->loadTests());
@@ -52,7 +53,6 @@ class TestsSplitterTask extends TestsSplitter
                 $test = current($test->tests());
             }
 
-            // load dependencies for cest type. Unit tests dependencies are loaded automatically
             if ($test instanceof Cest) {
                 $test->getMetadata()->setServices(['di' => $di]);
                 $test->preload();
@@ -66,7 +66,7 @@ class TestsSplitterTask extends TestsSplitter
                 } else {
                     $testsListWithDependencies[TestDescriptor::getTestFullName($test)] = [];
                 }
-                // little hack to get dependencies from phpunit test cases that are private.
+            // little hack to get dependencies from phpunit test cases that are private.
             } elseif ($test instanceof TestCase) {
                 $ref = new ReflectionObject($test);
                 do {
@@ -80,7 +80,7 @@ class TestsSplitterTask extends TestsSplitter
                         } else {
                             $testsListWithDependencies[TestDescriptor::getTestFullName($test)] = [];
                         }
-                    } catch (\ReflectionException $e) {
+                    } catch (ReflectionException $exception) {
                         // go up on level on inheritance chain.
                     }
                 } while ($ref = $ref->getParentClass());
@@ -96,10 +96,11 @@ class TestsSplitterTask extends TestsSplitter
                 $testsListWithDependencies = $this->resolveDependenciesToFullNames(
                     $testsListWithDependencies
                 );
-            } catch (Exception $e) {
-                $this->printTaskError($e->getMessage());
+            } catch (Exception $exception) {
+                $this->printTaskError($exception->getMessage());
                 return false;
             }
+
             // resolved and ordered list of dependencies
             $orderedListOfTests = [];
             // helper array
@@ -114,11 +115,12 @@ class TestsSplitterTask extends TestsSplitter
                         $orderedListOfTests,
                         $unresolved
                     );
-                } catch (Exception $e) {
-                    $this->printTaskError($e->getMessage());
+                } catch (Exception $exception) {
+                    $this->printTaskError($exception->getMessage());
                     return false;
                 }
             }
+
             // if we don't have any dependencies just use keys from original list.
         } else {
             $orderedListOfTests = array_keys($testsListWithDependencies);
@@ -139,7 +141,7 @@ class TestsSplitterTask extends TestsSplitter
                 && $i <= ($this->numGroups - 1)
                 && count($groups[$i]) >= $numberOfElementsInGroup
             ) {
-                $i++;
+                ++$i;
             }
 
             $groups[$i][] = $test;
@@ -148,24 +150,18 @@ class TestsSplitterTask extends TestsSplitter
         // saving group files
         foreach ($groups as $i => $tests) {
             $filename = $this->saveTo . $i;
-            $this->printTaskInfo("Writing $filename");
+            $this->printTaskInfo("Writing {$filename}");
             file_put_contents($filename, implode("\n", $tests));
         }
 
         return null;
     }
 
-    /**
-     * @return TestLoader
-     */
     protected function getTestLoader(): TestLoader
     {
         return new TestLoader(['path' => $this->testsFrom]);
     }
 
-    /**
-     * @return array
-     */
     protected function loadTests(): array
     {
         $testLoader = $this->getTestLoader();

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Codeception\Task\Splitter;
 
 use Codeception\Task\Splitter\SplitTestsByTimeTask;
@@ -8,12 +10,14 @@ use Consolidation\Log\Logger;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Finder\Finder;
+use const Tests\Codeception\Task\TEST_PATH;
 
 /**
  * Class SplitTestsByTimeTaskTest
+ *
  * @coversDefaultClass \Codeception\Task\Splitter\SplitTestsByTimeTask
  */
-class SplitTestsByTimeTaskTest extends TestCase
+final class SplitTestsByTimeTaskTest extends TestCase
 {
     use TestsSplitterTrait;
 
@@ -67,7 +71,7 @@ class SplitTestsByTimeTaskTest extends TestCase
             ->run();
 
 
-        for ($i = 1; $i <= $expectedFiles; $i++) {
+        for ($i = 1; $i <= $expectedFiles; ++$i) {
             $filename = $groupTo . $i;
             $this->assertFileExists($filename);
             $lines = explode(PHP_EOL, file_get_contents($filename));

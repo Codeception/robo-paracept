@@ -18,6 +18,7 @@ Include into your RoboFile
 
 ```php
 <?php
+
 require_once 'vendor/autoload.php';
 require_once 'vendor/codeception/codeception/autoload.php';
 
@@ -26,7 +27,6 @@ class RoboFile extends \Robo\Tasks
     use Codeception\Task\Merger\ReportMerger;
     use Codeception\Task\Splitter\TestsSplitterTrait;
 }
-?>
 ```
 
 ## Idea

@@ -13,10 +13,12 @@ use RuntimeException;
 /**
  * This task will not consider any 'depends' annotation!
  * It will only split tests by the execution time
+ *
+ * @see \Tests\Codeception\Task\Splitter\SplitTestsByTimeTaskTest
  */
 class SplitTestsByTimeTask extends TestsSplitter
 {
-    protected $statFile = 'tests/_output/timeReport.json';
+    protected string $statFile = 'tests/_output/timeReport.json';
 
     public function statFile(string $path): self
     {
@@ -35,6 +37,7 @@ class SplitTestsByTimeTask extends TestsSplitter
 
         $testLoader = new Loader(['path' => $this->testsFrom]);
         $testLoader->loadTests($this->testsFrom);
+
         $tests = $testLoader->getTests();
         $data = $this->readStatFileContent();
 
@@ -46,8 +49,9 @@ class SplitTestsByTimeTask extends TestsSplitter
             if ($test instanceof DataProviderTestSuite) {
                 $test = current($test->tests());
             }
+
             $testName = Descriptor::getTestFullName($test);
-            if (1 !== preg_match('~^/~', $testName)) {
+            if (1 !== preg_match('#^/#', $testName)) {
                 $testName = '/' . $testName;
             }
 
@@ -57,7 +61,7 @@ class SplitTestsByTimeTask extends TestsSplitter
 
         arsort($testsWithTime);
 
-        for ($i = 0; $i < $this->numGroups; $i++) {
+        for ($i = 0; $i < $this->numGroups; ++$i) {
             $groups[$i] = [
                 'tests' => [],
                 'sum' => 0,
@@ -87,9 +91,6 @@ class SplitTestsByTimeTask extends TestsSplitter
 
     /**
      * Find group num with min execute time
-     *
-     * @param array $groups
-     * @return int
      */
     protected function getMinGroup(array $groups): int
     {
@@ -105,9 +106,6 @@ class SplitTestsByTimeTask extends TestsSplitter
         return $min;
     }
 
-    /**
-     * @return array
-     */
     private function readStatFileContent(): array
     {
         if (false === ($data = file_get_contents($this->statFile))) {

@@ -10,12 +10,7 @@ interface ReportMergerTaskInterface
      * @param array|string $fileName
      * @return $this
      */
-    public function from($fileName);
+    public function from($fileName): self;
 
-
-    /**
-     * @param string $fileName
-     * @return $this
-     */
-    public function into(string $fileName);
+    public function into(string $fileName): self;
 }
