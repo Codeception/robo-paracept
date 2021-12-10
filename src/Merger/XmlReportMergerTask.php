@@ -92,8 +92,9 @@ class XmlReportMergerTask extends AbstractMerger
             $this->printTaskInfo("Processing $src");
 
             $srcXml = new DOMDocument();
-            if (!file_exists($src)) {
-                throw new TaskException($this, "XML file $src does not exist");
+            if (!file_exists($src) || !is_readable($src)) {
+                $this->printTaskWarning('File did not exists or is not readable: ' . $src);
+                continue;
             }
             $loaded = $srcXml->load($src);
             if (!$loaded) {
