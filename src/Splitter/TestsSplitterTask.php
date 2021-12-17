@@ -12,6 +12,7 @@ use Exception;
 use PHPUnit\Framework\DataProviderTestSuite;
 use PHPUnit\Framework\TestCase;
 use ReflectionObject;
+use Robo\Result;
 
 /**
  * Loads all tests into groups and saves them to groupfile according to pattern.
@@ -39,7 +40,8 @@ class TestsSplitterTask extends TestsSplitter
     {
         $this->claimCodeceptionLoaded();
         $tests = $this->filter($this->loadTests());
-        $this->printTaskInfo('Processing ' . count($tests) . ' tests');
+        $numTests = count($tests);
+        $this->printTaskInfo("Processing $numTests tests");
 
         $testsHaveAtLeastOneDependency = false;
 
@@ -145,14 +147,21 @@ class TestsSplitterTask extends TestsSplitter
             $groups[$i][] = $test;
         }
 
+        $filenames = [];
         // saving group files
-        foreach ($groups as $i => $tests) {
+        foreach ($groups as $i => $groupTests) {
             $filename = $this->saveTo . $i;
             $this->printTaskInfo("Writing $filename");
-            file_put_contents($filename, implode("\n", $tests));
+            file_put_contents($filename, implode("\n", $groupTests));
+            $filenames[] = $filename;
         }
+        $numFiles = count($filenames);
 
-        return null;
+        return Result::success($this, "Split $numTests into $numFiles", [
+            'groups' => $groups,
+            'tests' => $tests,
+            'files' => $filenames,
+        ]);
     }
 
     /**

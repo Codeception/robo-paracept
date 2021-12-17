@@ -208,6 +208,8 @@ abstract class TestsSplitter extends BaseTask
                 'This task requires Codeception to be loaded. Please require autoload.php of Codeception'
             );
         }
+        // autoload PHPUnit files
+        \Codeception\PHPUnit\Init::init();
     }
 
     /**
