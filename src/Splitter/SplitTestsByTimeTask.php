@@ -8,6 +8,7 @@ use Codeception\Test\Loader;
 use JsonException;
 use PHPUnit\Framework\DataProviderTestSuite;
 use Robo\Exception\TaskException;
+use Robo\Result;
 use RuntimeException;
 
 /**
@@ -25,7 +26,7 @@ class SplitTestsByTimeTask extends TestsSplitter
         return $this;
     }
 
-    public function run(): void
+    public function run(): Result
     {
         $this->claimCodeceptionLoaded();
 
@@ -70,6 +71,7 @@ class SplitTestsByTimeTask extends TestsSplitter
             $groups[$i]['sum'] += $time;
         }
 
+        $filenames = [];
         // saving group files
         foreach ($groups as $i => ['tests' => $tests, 'sum' => $sum]) {
             $filename = $this->saveTo . ($i + 1);
@@ -82,7 +84,14 @@ class SplitTestsByTimeTask extends TestsSplitter
                 )
             );
             file_put_contents($filename, implode("\n", $tests));
+            $filenames[] = $filename;
         }
+
+        $numFiles = count($filenames);
+
+        return Result::success($this, "Split all tests into $numFiles group files", [
+            'files' => $filenames,
+        ]);
     }
 
     /**

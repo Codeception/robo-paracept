@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Codeception\Task\Filter;
 
+use Codeception\Lib\GroupManager;
 use Codeception\Test\Descriptor as TestDescriptor;
 use Codeception\Util\Annotation;
 use InvalidArgumentException;
@@ -123,6 +124,8 @@ class GroupFilter implements Filter
      */
     public function filter(): array
     {
+        $groupManager = new GroupManager([]);
+
         $testsByGroups = [];
         foreach ($this->getTests() as $test) {
             if (!($test instanceof SelfDescribing)) {
@@ -130,17 +133,18 @@ class GroupFilter implements Filter
                     'Tests must be an instance of ' . SelfDescribing::class
                 );
             }
-            [$class, $method] = explode(':', TestDescriptor::getTestSignature($test));
-            $annotations = Annotation::forMethod($class, $method)->fetchAll('group');
+
+            $groups = $groupManager->groupsForTest($test);
+
             if (
                 !empty($this->getExcludedGroups())
-                && [] === array_diff($this->getExcludedGroups(), $annotations)
+                && [] === array_diff($this->getExcludedGroups(), $groups)
             ) {
                 continue;
             }
             if (
                 !empty($this->getIncludedGroups())
-                && [] !== array_diff($this->getIncludedGroups(), $annotations)
+                && [] !== array_diff($this->getIncludedGroups(), $groups)
             ) {
                 continue;
             }

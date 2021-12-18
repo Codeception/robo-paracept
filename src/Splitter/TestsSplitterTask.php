@@ -12,6 +12,7 @@ use Exception;
 use PHPUnit\Framework\DataProviderTestSuite;
 use PHPUnit\Framework\TestCase;
 use ReflectionObject;
+use Robo\Result;
 
 /**
  * Loads all tests into groups and saves them to groupfile according to pattern.
@@ -32,14 +33,14 @@ class TestsSplitterTask extends TestsSplitter
 {
 
     /**
-     * @return bool|null
      * @throws \Robo\Exception\TaskException
      */
-    public function run()
+    public function run(): Result
     {
         $this->claimCodeceptionLoaded();
         $tests = $this->filter($this->loadTests());
-        $this->printTaskInfo('Processing ' . count($tests) . ' tests');
+        $numTests = count($tests);
+        $this->printTaskInfo("Processing $numTests tests");
 
         $testsHaveAtLeastOneDependency = false;
 
@@ -98,7 +99,7 @@ class TestsSplitterTask extends TestsSplitter
                 );
             } catch (Exception $e) {
                 $this->printTaskError($e->getMessage());
-                return false;
+                return Result::error($this, $e->getMessage(), ['exception' => $e]);
             }
             // resolved and ordered list of dependencies
             $orderedListOfTests = [];
@@ -116,7 +117,7 @@ class TestsSplitterTask extends TestsSplitter
                     );
                 } catch (Exception $e) {
                     $this->printTaskError($e->getMessage());
-                    return false;
+                    return Result::error($this, $e->getMessage(), ['exception' => $e]);
                 }
             }
             // if we don't have any dependencies just use keys from original list.
@@ -145,14 +146,21 @@ class TestsSplitterTask extends TestsSplitter
             $groups[$i][] = $test;
         }
 
+        $filenames = [];
         // saving group files
-        foreach ($groups as $i => $tests) {
+        foreach ($groups as $i => $groupTests) {
             $filename = $this->saveTo . $i;
             $this->printTaskInfo("Writing $filename");
-            file_put_contents($filename, implode("\n", $tests));
+            file_put_contents($filename, implode("\n", $groupTests));
+            $filenames[] = $filename;
         }
+        $numFiles = count($filenames);
 
-        return null;
+        return Result::success($this, "Split $numTests into $numFiles group files", [
+            'groups' => $groups,
+            'tests' => $tests,
+            'files' => $filenames,
+        ]);
     }
 
     /**
