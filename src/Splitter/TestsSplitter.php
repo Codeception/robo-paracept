@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Codeception\Task\Splitter;
 
+use Codeception\Configuration;
 use Codeception\Task\Filter\DefaultFilter;
 use Codeception\Task\Filter\Filter;
 use ReflectionClass;
@@ -229,6 +230,12 @@ abstract class TestsSplitter extends BaseTask
     {
         $i = 0;
         $groups = [];
+
+        if (!Configuration::projectDir()) {
+            $this->output()->writeln("Codeception config was not loaded, paths to tests may not be set correctly.");
+            $this->output()->writeln("Execute \Codeception\Configuration::config() before this task set root directory");
+        }
+
 
         $this->printTaskInfo('Processing ' . count($files) . ' files');
 
