@@ -211,6 +211,13 @@ abstract class TestsSplitter extends BaseTask
         }
         // autoload PHPUnit files
         \Codeception\PHPUnit\Init::init();
+
+        try {
+            // load Codeception config to set base directory
+            \Codeception\Configuration::config();
+        } catch (\Exception $e) {
+            $this->output()->writeln('Codeception config was not loaded, please load it manually');
+        }
     }
 
     /**

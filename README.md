@@ -208,4 +208,12 @@ class CustomFilter extends DefaultFilter {
 The TestFileSplitterTask.php pushes an array of SplFileInfo Objects to the filter.  
 The TestsSplitterTask.php pushes an array of SelfDescribing Objects to the filter.
 
+## Configuration
+
+Load Codeception config file to specify the path to Codeception before split* tasks:
+
+```php
+\Codeception\Configuration::config('tests/codeception.yml');
+```
+
 ### License MIT
