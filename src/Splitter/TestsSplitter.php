@@ -233,7 +233,7 @@ abstract class TestsSplitter extends BaseTask
 
         if (!Configuration::projectDir()) {
             $this->output()->writeln("Codeception config was not loaded, paths to tests may not be set correctly.");
-            $this->output()->writeln("Execute \Codeception\Configuration::config() before this task set root directory");
+            $this->output()->writeln("Execute \Codeception\Configuration::config() before this task");
         }
 
 
