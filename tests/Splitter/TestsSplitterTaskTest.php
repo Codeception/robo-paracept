@@ -86,7 +86,14 @@ class TestsSplitterTaskTest extends TestCase
         $task->testsFrom($from);
         $groupTo = TEST_PATH . '/result/group_';
         $task->groupsTo($groupTo);
-        $task->run();
+        $result = $task->run();
+
+        $this->assertNotEmpty($result);
+
+        if ($expectedFiles > 0) {
+            $this->assertTrue($result->wasSuccessful());
+            $this->assertEquals($expectedFiles, count($result['files']));
+        }
 
         $files = Finder::create()
             ->files()

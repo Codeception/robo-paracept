@@ -33,10 +33,9 @@ class TestsSplitterTask extends TestsSplitter
 {
 
     /**
-     * @return bool|null
      * @throws \Robo\Exception\TaskException
      */
-    public function run()
+    public function run(): Result
     {
         $this->claimCodeceptionLoaded();
         $tests = $this->filter($this->loadTests());
@@ -100,7 +99,7 @@ class TestsSplitterTask extends TestsSplitter
                 );
             } catch (Exception $e) {
                 $this->printTaskError($e->getMessage());
-                return false;
+                return Result::error($this, $e->getMessage(), ['exception' => $e]);
             }
             // resolved and ordered list of dependencies
             $orderedListOfTests = [];
@@ -118,7 +117,7 @@ class TestsSplitterTask extends TestsSplitter
                     );
                 } catch (Exception $e) {
                     $this->printTaskError($e->getMessage());
-                    return false;
+                    return Result::error($this, $e->getMessage(), ['exception' => $e]);
                 }
             }
             // if we don't have any dependencies just use keys from original list.
@@ -157,7 +156,7 @@ class TestsSplitterTask extends TestsSplitter
         }
         $numFiles = count($filenames);
 
-        return Result::success($this, "Split $numTests into $numFiles", [
+        return Result::success($this, "Split $numTests into $numFiles group files", [
             'groups' => $groups,
             'tests' => $tests,
             'files' => $filenames,

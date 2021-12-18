@@ -225,7 +225,7 @@ abstract class TestsSplitter extends BaseTask
      * @param string[] $files - the relative path of the Testfile with or without test function
      * @example $this->splitToGroupFiles(['tests/FooCest.php', 'tests/BarTest.php:testBarReturn']);
      */
-    protected function splitToGroupFiles(array $files): void
+    protected function splitToGroupFiles(array $files): array
     {
         $i = 0;
         $groups = [];
@@ -239,11 +239,14 @@ abstract class TestsSplitter extends BaseTask
             $i++;
         }
 
+        $filenames = [];
         // saving group files
         foreach ($groups as $i => $tests) {
             $filename = $this->saveTo . $i;
             $this->printTaskInfo("Writing $filename");
             file_put_contents($filename, implode("\n", $tests));
+            $filenames[] = $filename;
         }
+        return $filenames;
     }
 }
