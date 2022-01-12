@@ -1,17 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Codeception\Task\Splitter;
 
 use Codeception\Task\Splitter\FailedTestSplitterTask;
-use Codeception\Task\Splitter\TestsSplitter;
 use Consolidation\Log\Logger;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Finder\Finder;
+use const Tests\Codeception\Task\TEST_PATH;
 
-class FailedTestSplitterTaskTest extends TestCase
+final class FailedTestSplitterTaskTest extends TestCase
 {
     public function testRunWillFailIfReportFileDoesNotExists(): void
     {
@@ -32,6 +34,7 @@ class FailedTestSplitterTaskTest extends TestCase
         $expected = 4;
         $task = new FailedTestSplitterTask($expected);
         $task->setLogger(new Logger(new NullOutput()));
+
         $groupTo = TEST_PATH . '/result/group_';
         $task
             ->setReportPath(TEST_PATH . '/fixtures/failedTests.txt')
@@ -39,7 +42,7 @@ class FailedTestSplitterTaskTest extends TestCase
             ->run();
 
         $countedFiles = 0;
-        for ($i = 1; $i <= $expected; $i++) {
+        for ($i = 1; $i <= $expected; ++$i) {
             $this->assertFileExists($groupTo . $i);
             $countedFiles += count(
                 explode(
@@ -48,6 +51,7 @@ class FailedTestSplitterTaskTest extends TestCase
                 )
             );
         }
+
         $this->assertSame(
             8,
             $countedFiles,

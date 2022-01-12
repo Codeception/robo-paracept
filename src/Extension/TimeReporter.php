@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Codeception\Task\Extension;
 
 use Codeception\Event\TestEvent;
@@ -9,21 +11,19 @@ use Codeception\Test\Descriptor;
 
 class TimeReporter extends Extension
 {
-    public static $events = [
+    public static array $events = [
         Events::RESULT_PRINT_AFTER => 'endRun',
         Events::TEST_END => 'after',
     ];
 
-    private $timeList = [];
+    private array $timeList = [];
 
     /**
      * Event handler after each test - collect stat
-     *
-     * @param TestEvent $e
      */
     public function after(TestEvent $e): void
     {
-        $name = $this->getTestname($e);
+        $name = $this->getTestName($e);
 
         if (empty($this->timeList[$name])) {
             $this->timeList[$name] = 0;
@@ -42,11 +42,7 @@ class TimeReporter extends Extension
         file_put_contents($file, json_encode($data, JSON_PRETTY_PRINT));
     }
 
-    /**
-     * @param TestEvent $e
-     * @return false|string
-     */
-    public function getTestname(TestEvent $e): string
+    public function getTestName(TestEvent $e): string
     {
         $name = Descriptor::getTestFullName($e->getTest());
         return substr(str_replace($this->getRootDir(), '', $name), 1);

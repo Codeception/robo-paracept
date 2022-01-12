@@ -12,18 +12,18 @@ use PHPUnit\Framework\SelfDescribing;
 
 /**
  * Class GroupFilter - allows to filter tests by the @group Annotation
+ *
+ * @see \Tests\Codeception\Task\Filter\GroupFilterTest
  */
 class GroupFilter implements Filter
 {
     /** @var string[] $includedGroups */
-    private $includedGroups = [];
+    private array $includedGroups = [];
 
-    /** @var array[] $excludedGroups */
-    private $excludedGroups = [];
-    /**
-     * @var SelfDescribing[]
-     */
-    private $tests = [];
+    private array $excludedGroups = [];
+
+    /** @var SelfDescribing[] */
+    private array $tests = [];
 
     public function reset(): void
     {
@@ -51,8 +51,6 @@ class GroupFilter implements Filter
 
     /**
      * Adds a group name to the excluded array
-     * @param string $group
-     * @return $this
      */
     public function groupExcluded(string $group): self
     {
@@ -74,8 +72,6 @@ class GroupFilter implements Filter
 
     /**
      * Adds a group name to the included array
-     * @param string $group
-     * @return $this
      */
     public function groupIncluded(string $group): self
     {
@@ -95,9 +91,6 @@ class GroupFilter implements Filter
         return $this;
     }
 
-    /**
-     * @return array[]
-     */
     public function getExcludedGroups(): array
     {
         return $this->excludedGroups;
@@ -121,6 +114,8 @@ class GroupFilter implements Filter
 
     /**
      * Filter the tests by the given included and excluded @group annotations
+     *
+     * @return \PHPUnit\Framework\SelfDescribing[]
      */
     public function filter(): array
     {
@@ -142,12 +137,14 @@ class GroupFilter implements Filter
             ) {
                 continue;
             }
+
             if (
                 !empty($this->getIncludedGroups())
                 && [] !== array_diff($this->getIncludedGroups(), $groups)
             ) {
                 continue;
             }
+
             $testsByGroups[] = $test;
         }
 

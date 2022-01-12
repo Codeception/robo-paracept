@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Codeception\Task\Extension;
 
 use Codeception\Event\FailEvent;
@@ -7,22 +9,24 @@ use Codeception\Task\Extension\FailedTestsReporter;
 use PHPUnit\Framework\TestCase;
 use SplFileInfo;
 use Symfony\Component\Finder\Finder;
+use const Tests\Codeception\Task\TEST_PATH;
 
 /**
  * Class FailedTestsReporterTest
+ *
  * @coversDefaultClass \Codeception\Task\Extension\FailedTestsReporter
  */
-class FailedTestsReporterTest extends TestCase
+final class FailedTestsReporterTest extends TestCase
 {
-    private $failedTests = [
-        ['testname' => 'tests/acceptance/bar/baz.php:testA',],
-        ['testname' => 'tests/acceptance/bar/baz.php:testB',],
-        ['testname' => 'tests/acceptance/bar/baz.php:testC',],
-        ['testname' => 'tests/acceptance/bar/baz.php:testD',],
-        ['testname' => 'tests/acceptance/bar/baz.php:testE',],
-        ['testname' => 'tests/acceptance/bar/baz.php:testF',],
-        ['testname' => 'tests/acceptance/bar/baz.php:testG',],
-        ['testname' => 'tests/acceptance/bar/baz.php:testH',],
+    private array $failedTests = [
+        ['testName' => 'tests/acceptance/bar/baz.php:testA',],
+        ['testName' => 'tests/acceptance/bar/baz.php:testB',],
+        ['testName' => 'tests/acceptance/bar/baz.php:testC',],
+        ['testName' => 'tests/acceptance/bar/baz.php:testD',],
+        ['testName' => 'tests/acceptance/bar/baz.php:testE',],
+        ['testName' => 'tests/acceptance/bar/baz.php:testF',],
+        ['testName' => 'tests/acceptance/bar/baz.php:testG',],
+        ['testName' => 'tests/acceptance/bar/baz.php:testH',],
     ];
 
     /**
@@ -32,7 +36,7 @@ class FailedTestsReporterTest extends TestCase
     {
         $reporter = $this->getMockBuilder(FailedTestsReporter::class)
             ->disableOriginalConstructor()
-            ->onlyMethods(['getTestname', 'getLogDir'])
+            ->onlyMethods(['getTestName', 'getLogDir'])
             ->getMock();
 
         $reporter->method('getLogDir')->willReturn(TEST_PATH . '/result/');
@@ -46,13 +50,13 @@ class FailedTestsReporterTest extends TestCase
 
             $testEvents[] = [
                 'mock' => $eventMock,
-                'testname' => $test['testname']
+                'testName' => $test['testName']
             ];
         }
 
-        // get Testname by the TestEventMock
+        // get test name by the TestEventMock
         $reporter
-            ->method('getTestname')
+            ->method('getTestName')
             ->withConsecutive(
                 ...array_map(
                     static function (FailEvent $event): array {
@@ -61,7 +65,7 @@ class FailedTestsReporterTest extends TestCase
                     array_column($testEvents, 'mock')
                 )
             )
-            ->willReturnOnConsecutiveCalls(...array_column($testEvents, 'testname'));
+            ->willReturnOnConsecutiveCalls(...array_column($testEvents, 'testName'));
 
         foreach ($testEvents as $event) {
             $reporter->afterFail($event['mock']);
