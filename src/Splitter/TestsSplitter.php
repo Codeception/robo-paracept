@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Codeception\Task\Splitter;
 
+use Codeception\Configuration;
 use Codeception\Task\Filter\DefaultFilter;
 use Codeception\Task\Filter\Filter;
 use ReflectionClass;
@@ -203,6 +204,15 @@ abstract class TestsSplitter extends BaseTask
                 'This task requires Codeception to be loaded. Please require autoload.php of Codeception'
             );
         }
+        // autoload PHPUnit files
+        \Codeception\PHPUnit\Init::init();
+
+        try {
+            // load Codeception config to set base directory
+            \Codeception\Configuration::config();
+        } catch (\Exception $e) {
+            $this->output()->writeln('Codeception config was not loaded, please load it manually');
+        }
     }
 
     protected function doCodeceptLoaderExists(): bool
@@ -216,10 +226,16 @@ abstract class TestsSplitter extends BaseTask
      * @param string[] $files - the relative path of the Testfile with or without test function
      * @example $this->splitToGroupFiles(['tests/FooCest.php', 'tests/BarTest.php:testBarReturn']);
      */
-    protected function splitToGroupFiles(array $files): void
+    protected function splitToGroupFiles(array $files): array
     {
         $i = 0;
         $groups = [];
+
+        if (!Configuration::projectDir()) {
+            $this->output()->writeln("Codeception config was not loaded, paths to tests may not be set correctly.");
+            $this->output()->writeln("Execute \Codeception\Configuration::config() before this task");
+        }
+
 
         $this->printTaskInfo('Processing ' . count($files) . ' files');
 
@@ -230,11 +246,14 @@ abstract class TestsSplitter extends BaseTask
             ++$i;
         }
 
+        $filenames = [];
         // saving group files
         foreach ($groups as $i => $tests) {
             $filename = $this->saveTo . $i;
             $this->printTaskInfo("Writing {$filename}");
             file_put_contents($filename, implode("\n", $tests));
+            $filenames[] = $filename;
         }
+        return $filenames;
     }
 }

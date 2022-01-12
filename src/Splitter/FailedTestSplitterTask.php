@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Codeception\Task\Splitter;
 
 use InvalidArgumentException;
+use Robo\Result;
 use RuntimeException;
 
 /**
@@ -25,7 +26,7 @@ class FailedTestSplitterTask extends TestsSplitter
     /**
      * @inheritDoc
      */
-    public function run(): void
+    public function run(): Result
     {
         $this->claimCodeceptionLoaded();
         $reportPath = $this->getReportPath();
@@ -36,7 +37,7 @@ class FailedTestSplitterTask extends TestsSplitter
             );
         }
 
-        $this->splitToGroupFiles(
+        $filenames = $this->splitToGroupFiles(
             $this->filter(
                 explode(
                     PHP_EOL,
@@ -44,6 +45,12 @@ class FailedTestSplitterTask extends TestsSplitter
                 )
             )
         );
+
+        $numFiles = count($filenames);
+
+        return Result::success($this, "Split all tests into $numFiles group files", [
+            'files' => $filenames,
+        ]);
     }
 
     public function setReportPath(string $reportFilePath): self

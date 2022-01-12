@@ -234,7 +234,7 @@ class HtmlReportMerger extends AbstractMerger
         /** @var DOMAttr $statusAttr */
         $statusNode = $nodeList[0]->childNodes[1]->childNodes[0];
         $statusAttr = $statusNode->attributes[0];
-        if (0 !== ($this->countFailed + $this->countIncomplete + $this->countSkipped)) {
+        if (0 !== $this->countFailed) {
             $statusNode->nodeValue = 'FAILED';
             $statusAttr->value = 'color: red';
         }

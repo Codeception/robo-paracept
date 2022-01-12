@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Codeception\Task\Splitter;
 
+use Robo\Result;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
@@ -33,7 +34,7 @@ class TestFileSplitterTask extends TestsSplitter
      */
     private array $pattern = ['*Cept.php', '*Cest.php', '*Test.php', '*.feature'];
 
-    public function run(): void
+    public function run(): Result
     {
         $files = Finder::create()
             ->followLinks()
@@ -42,12 +43,20 @@ class TestFileSplitterTask extends TestsSplitter
             ->in($this->projectRoot ?: getcwd())
             ->exclude($this->excludePath);
 
-        $this->splitToGroupFiles(
+
+
+        $filenames = $this->splitToGroupFiles(
             array_map(
                 static fn(SplFileInfo $fileInfo): string => $fileInfo->getRelativePathname(),
                 $this->filter(iterator_to_array($files->getIterator()))
             )
         );
+
+        $numFiles = count($filenames);
+
+        return Result::success($this, "Split all tests into $numFiles group files", [
+            'files' => $filenames,
+        ]);
     }
 
     /**
