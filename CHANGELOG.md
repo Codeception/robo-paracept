@@ -5,7 +5,7 @@ robo-paracept 2.0 is now released
 - support for PHP 7.4 , 8.0, 8.1
 - refactorings
 
-Thanks to @DavertMik and @TavoNiievez for their contributions.
+Thanks to (@DavertMik)[https://github.com/DavertMik] and @TavoNiievez for their contributions.
 
 ## [1.3.1](https://github.com/Codeception/robo-paracept/releases/tag/1.3.1) Preloading Codeception configuration
 
@@ -27,8 +27,8 @@ If one of the html reports wasn't created by a parallel job the merger will not 
 The Merger will show a warning that an expected html report wasn't found.
 
 ## What's Changed
-* Update CHANGELOG.md by @Arhell in https://github.com/Codeception/robo-paracept/pull/90
-* Bugfix/91 fixing html merger by @vansari in https://github.com/Codeception/robo-paracept/pull/92
+* Update CHANGELOG.md by (@Arhell)[https://github.com/Arhell] in https://github.com/Codeception/robo-paracept/pull/90
+* Bugfix/91 fixing html merger by (@vansari)[https://github.com/vansari] in https://github.com/Codeception/robo-paracept/pull/92
 
 **Full Changelog**: https://github.com/Codeception/robo-paracept/compare/1.2.3...1.2.4
 
