@@ -1,4 +1,4 @@
-## [2.0.0](https://github.com/Codeception/robo-paracept/releases/tag/2.0.0) 2.0.0 Major Release
+## [2.0.0](https://github.com/Codeception/robo-paracept/releases/tag/2.0.0) Major Release
 
 robo-paracept 2.0 is now released
 
