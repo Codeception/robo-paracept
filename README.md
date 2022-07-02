@@ -6,7 +6,7 @@ robo-paracept
 [![Total Downloads](https://poser.pugx.org/codeception/robo-paracept/downloads)](https://packagist.org/packages/codeception/robo-paracept)
 [![License](https://poser.pugx.org/codeception/robo-paracept/license)](https://packagist.org/packages/codeception/robo-paracept)
 
-Robo tasks for Codeception tests parallel execution. Requires [Robo Task Runner](http://robo.li)
+Robo tasks for Codeception tests parallel execution. Requires [Robo Task Runner](https://robo.li)
 
 ## Install via Composer
 
