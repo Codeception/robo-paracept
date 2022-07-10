@@ -65,7 +65,8 @@ class FailedTestsReporter extends Extension
     {
         $name = Descriptor::getTestFullName($e->getTest());
 
-        return substr(str_replace($this->getRootDir(), '', $name), 1);
+        // If a leading DIRECTORY_SEPARATOR was found, remove it
+        return ltrim(str_replace($this->getRootDir(), '', $name), DIRECTORY_SEPARATOR);
     }
 
     public function getUniqReportFile(): string

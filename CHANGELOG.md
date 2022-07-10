@@ -1,3 +1,7 @@
+## [2.0.1](https://github.com/Codeception/robo-paracept/releases/tag/2.0.1) Bugfix Release - TimeReporter and FailedTestsReporter
+
+* Fix bug where leading character was being removed from tests in the reporter instead of leading directory separator
+
 ## [2.0.0](https://github.com/Codeception/robo-paracept/releases/tag/2.0.0) Major Release
 
 robo-paracept 2.0 is now released
