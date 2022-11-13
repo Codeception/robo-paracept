@@ -216,4 +216,32 @@ Load Codeception config file to specify the path to Codeception before split* ta
 \Codeception\Configuration::config('tests/codeception.yml');
 ```
 
+## Contributing
+
+Thank you for contributing to codeception/robo-paracept!
+
+1. Fork this project
+2. install all deps
+3. create a branch from master
+4. make your changes
+5. extend or create tests for your changes
+6. run `composer test` (This will execute lint, codestyle and unit tests sequential)
+7. open a Merge Request
+
+### Coding Standard
+
+Please note that this project follows the PSR-12 Coding Standard. You can check your coding style with:
+
+```shell
+composer codestyle
+```
+
+### Unit Tests
+
+All changes which you will done must pass the unit tests. If you change some logic or you add some new methods please be fair and write a test.
+
+```shell
+composer unit
+```
+
 ### License MIT

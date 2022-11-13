@@ -137,11 +137,12 @@ class GroupFilter implements Filter
             $groups = $groupManager->groupsForTest($test);
 
             if (!$groups && $test instanceof \PHPUnit\Framework\DataProviderTestSuite) {
-              /** @var \PHPUnit\Framework\DataProviderTestSuite $dataProviderTestSuite */
-              $dataProviderTestSuite = $test;
-              // By definition (a) all tests of dataprovider test suite are the same test case definition, and (b) there is at least one test case
-              $firstDataProviderTest = $dataProviderTestSuite->tests()[0];
-              $groups = $groupManager->groupsForTest($firstDataProviderTest);
+                /** @var \PHPUnit\Framework\DataProviderTestSuite $dataProviderTestSuite */
+                $dataProviderTestSuite = $test;
+                // By definition (a) all tests of dataprovider test suite are the same test
+                // case definition, and (b) there is at least one test case
+                $firstDataProviderTest = $dataProviderTestSuite->tests()[0];
+                $groups = $groupManager->groupsForTest($firstDataProviderTest);
             }
 
             if (
