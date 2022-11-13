@@ -1,36 +1,39 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Codeception\Task\Extension;
 
 use Codeception\Event\TestEvent;
 use Codeception\Task\Extension\TimeReporter;
 use PHPUnit\Framework\TestCase;
+use const Tests\Codeception\Task\TEST_PATH;
 
 /**
  * Class TimeReporterTest
+ *
  * @coversDefaultClass \Codeception\Task\Extension\TimeReporter
  */
-class TimeReporterTest extends TestCase
+final class TimeReporterTest extends TestCase
 {
-
     /**
      * @covers ::after
      * @covers ::endRun
      */
-    public function testAfterAndEndRun(): void
+    public function testAfterAndEndRun()
     {
         $eventTests = [
-            ['testname' => 'tests/acceptance/bar/baz.php:testA', 'time' => 10,],
-            ['testname' => 'tests/acceptance/bar/baz.php:testA', 'time' => 50,], // rerun
-            ['testname' => 'tests/acceptance/bar/baz.php:testB', 'time' => 100,],
-            ['testname' => 'tests/acceptance/bar/baz.php:testC', 'time' => 50,],
-            ['testname' => 'tests/acceptance/bar/baz.php:testD', 'time' => 33,],
-            ['testname' => 'tests/acceptance/bar/baz.php:testD', 'time' => 50,], // rerun
-            ['testname' => 'tests/acceptance/bar/baz.php:testE', 'time' => 66,],
-            ['testname' => 'tests/acceptance/bar/baz.php:testF', 'time' => 90,],
-            ['testname' => 'tests/acceptance/bar/baz.php:testG', 'time' => 100,],
-            ['testname' => 'tests/acceptance/bar/baz.php:testG', 'time' => 13,], //rerun
-            ['testname' => 'tests/acceptance/bar/baz.php:testH', 'time' => 50,],
+            ['testName' => 'tests/acceptance/bar/baz.php:testA', 'time' => 10,],
+            ['testName' => 'tests/acceptance/bar/baz.php:testA', 'time' => 50,], // rerun
+            ['testName' => 'tests/acceptance/bar/baz.php:testB', 'time' => 100,],
+            ['testName' => 'tests/acceptance/bar/baz.php:testC', 'time' => 50,],
+            ['testName' => 'tests/acceptance/bar/baz.php:testD', 'time' => 33,],
+            ['testName' => 'tests/acceptance/bar/baz.php:testD', 'time' => 50,], // rerun
+            ['testName' => 'tests/acceptance/bar/baz.php:testE', 'time' => 66,],
+            ['testName' => 'tests/acceptance/bar/baz.php:testF', 'time' => 90,],
+            ['testName' => 'tests/acceptance/bar/baz.php:testG', 'time' => 100,],
+            ['testName' => 'tests/acceptance/bar/baz.php:testG', 'time' => 13,], //rerun
+            ['testName' => 'tests/acceptance/bar/baz.php:testH', 'time' => 50,],
         ];
 
         $expected = [
@@ -46,7 +49,7 @@ class TimeReporterTest extends TestCase
 
         $reporter = $this->getMockBuilder(TimeReporter::class)
             ->disableOriginalConstructor()
-            ->onlyMethods(['getTestname', 'getLogDir'])
+            ->onlyMethods(['getTestName', 'getLogDir'])
             ->getMock();
         $reporter->method('getLogDir')->willReturn(TEST_PATH . '/result/');
 
@@ -61,13 +64,13 @@ class TimeReporterTest extends TestCase
             $eventMock->method('getTime')->willReturn($test['time']);
             $testEvents[] = [
                 'mock' => $eventMock,
-                'testname' => $test['testname']
+                'testName' => $test['testName']
             ];
         }
 
-        // get Testname by the TestEventMock
+        // get test name by the TestEventMock
         $reporter
-            ->method('getTestname')
+            ->method('getTestName')
             ->withConsecutive(
                 ...array_map(
                     static function (TestEvent $event): array {
@@ -76,7 +79,7 @@ class TimeReporterTest extends TestCase
                     array_column($testEvents, 'mock')
                 )
             )
-            ->willReturnOnConsecutiveCalls(...array_column($testEvents, 'testname'));
+            ->willReturnOnConsecutiveCalls(...array_column($testEvents, 'testName'));
 
         // fill timeList with the mocked Events
         foreach ($testEvents as $testEvent) {

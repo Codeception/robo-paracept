@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Codeception\Task\Merger;
 
 use InvalidArgumentException;
-use Robo\Task\BaseTask;
 use RuntimeException;
 use Symfony\Component\Finder\Finder;
 
@@ -24,22 +23,23 @@ use Symfony\Component\Finder\Finder;
  *    ->fromPathWithPattern(__DIR__ . 'tests/_data/failed_2/', '/failedTests_\w+\.txt$/')
  *    ->into(__DIR__ . '/failedTests.txt') // absolute path with Filename
  *    ->run();
- * ?>
  * ```
+ *
+ * @see \Tests\Codeception\Task\Merger\FailedTestsMergerTaskTest
  */
 class FailedTestsMergerTask extends AbstractMerger
 {
-    public const DEFAULT_PATTERN = '/^failedTests_\w+\.\w+\.txt$/';
-
-    public $pathPatterns = [];
-
     /**
      * @var string
      */
-    private $dest;
+    public const DEFAULT_PATTERN = '/^failedTests_\w+\.\w+\.txt$/';
+
+    public array $pathPatterns = [];
+
+    private string $dest = '';
 
     /** @var string[] */
-    protected $src = [];
+    protected array $src = [];
 
     /**
      * @param string[]|string $fileName
@@ -60,6 +60,7 @@ class FailedTestsMergerTask extends AbstractMerger
 
     /**
      * Search all report files in path with default pattern or the given pattern
+     *
      * @param string $path - The path where the report files exists
      * @param string|null $pattern - The regex pattern for the files (optional)
      * @return $this
@@ -78,7 +79,7 @@ class FailedTestsMergerTask extends AbstractMerger
         return $this;
     }
 
-    public function run()
+    public function run(): void
     {
         $content = [];
         $files = array_merge($this->src, $this->searchFilesByPattern());
@@ -86,12 +87,14 @@ class FailedTestsMergerTask extends AbstractMerger
             if (!is_file($file)) {
                 continue;
             }
+
             $tmpContent = file_get_contents($file);
             if (!$tmpContent) {
                 throw new RuntimeException(
                     'Could not read content of reportfile: ' . $file
                 );
             }
+
             $content[] = $tmpContent;
         }
 
@@ -102,7 +105,6 @@ class FailedTestsMergerTask extends AbstractMerger
 
     /**
      * Search the files by the given path and pattern
-     * @return array
      */
     private function searchFilesByPattern(): array
     {

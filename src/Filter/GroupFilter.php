@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Codeception\Task\Filter;
 
+use Codeception\Lib\GroupManager;
 use Codeception\Test\Descriptor as TestDescriptor;
 use Codeception\Util\Annotation;
 use InvalidArgumentException;
@@ -11,18 +12,18 @@ use PHPUnit\Framework\SelfDescribing;
 
 /**
  * Class GroupFilter - allows to filter tests by the @group Annotation
+ *
+ * @see \Tests\Codeception\Task\Filter\GroupFilterTest
  */
 class GroupFilter implements Filter
 {
     /** @var string[] $includedGroups */
-    private $includedGroups = [];
+    private array $includedGroups = [];
 
-    /** @var array[] $excludedGroups */
-    private $excludedGroups = [];
-    /**
-     * @var SelfDescribing[]
-     */
-    private $tests = [];
+    private array $excludedGroups = [];
+
+    /** @var SelfDescribing[] */
+    private array $tests = [];
 
     public function reset(): void
     {
@@ -50,8 +51,6 @@ class GroupFilter implements Filter
 
     /**
      * Adds a group name to the excluded array
-     * @param string $group
-     * @return $this
      */
     public function groupExcluded(string $group): self
     {
@@ -73,8 +72,6 @@ class GroupFilter implements Filter
 
     /**
      * Adds a group name to the included array
-     * @param string $group
-     * @return $this
      */
     public function groupIncluded(string $group): self
     {
@@ -94,9 +91,6 @@ class GroupFilter implements Filter
         return $this;
     }
 
-    /**
-     * @return array[]
-     */
     public function getExcludedGroups(): array
     {
         return $this->excludedGroups;
@@ -120,9 +114,13 @@ class GroupFilter implements Filter
 
     /**
      * Filter the tests by the given included and excluded @group annotations
+     *
+     * @return \PHPUnit\Framework\SelfDescribing[]
      */
     public function filter(): array
     {
+        $groupManager = new GroupManager([]);
+
         $testsByGroups = [];
         foreach ($this->getTests() as $test) {
             if (!($test instanceof SelfDescribing)) {
@@ -130,20 +128,23 @@ class GroupFilter implements Filter
                     'Tests must be an instance of ' . SelfDescribing::class
                 );
             }
-            [$class, $method] = explode(':', TestDescriptor::getTestSignature($test));
-            $annotations = Annotation::forMethod($class, $method)->fetchAll('group');
+
+            $groups = $groupManager->groupsForTest($test);
+
             if (
                 !empty($this->getExcludedGroups())
-                && [] === array_diff($this->getExcludedGroups(), $annotations)
+                && [] === array_diff($this->getExcludedGroups(), $groups)
             ) {
                 continue;
             }
+
             if (
                 !empty($this->getIncludedGroups())
-                && [] !== array_diff($this->getIncludedGroups(), $annotations)
+                && [] !== array_diff($this->getIncludedGroups(), $groups)
             ) {
                 continue;
             }
+
             $testsByGroups[] = $test;
         }
 

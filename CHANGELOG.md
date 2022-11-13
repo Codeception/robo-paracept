@@ -1,3 +1,45 @@
+## [2.0.1](https://github.com/Codeception/robo-paracept/releases/tag/2.0.1) Bugfix Release - TimeReporter and FailedTestsReporter
+
+* Fix bug where leading character was being removed from tests in the reporter instead of leading directory separator
+
+## [2.0.0](https://github.com/Codeception/robo-paracept/releases/tag/2.0.0) Major Release
+
+robo-paracept 2.0 is now released
+
+- support for PHP 7.4 , 8.0, 8.1
+- refactorings
+
+Thanks to [@DavertMik](https://github.com/DavertMik) and [@TavoNiievez](https://github.com/TavoNiievez) for their contributions.
+
+## [1.3.1](https://github.com/Codeception/robo-paracept/releases/tag/1.3.1) Preloading Codeception configuration
+
+* Loading default Codeception config to detect the main directory path
+* Show warning if Codeception config was not loaded
+
+## [1.3.0](https://github.com/Codeception/robo-paracept/releases/tag/1.3.0) Split group improvements
+
+* Load PHPUnit bridge of Codeception before splitting tests
+* All `Split*` to return result objects (readme updated)
+* Warn if root directory for Codeception is not set when splitting by groups
+* Improved matching groups by using GroupManager
+
+See [#96](https://github.com/Codeception/robo-paracept/pull/96)
+
+## [1.2.4](https://github.com/Codeception/robo-paracept/releases/tag/1.2.4) Bugfix Release HTMLMerger
+
+If one of the html reports wasn't created by a parallel job the merger will not longer throw an exception.
+The Merger will show a warning that an expected html report wasn't found.
+
+## What's Changed
+* Update CHANGELOG.md by [@Arhell](https://github.com/Arhell) in https://github.com/Codeception/robo-paracept/pull/90
+* Bugfix/91 fixing html merger by [@vansari](https://github.com/vansari) in https://github.com/Codeception/robo-paracept/pull/92
+
+**Full Changelog**: https://github.com/Codeception/robo-paracept/compare/1.2.3...1.2.4
+
+## [1.2.3](https://github.com/Codeception/robo-paracept/releases/tag/1.2.3) Bugfix Release XmlMerger
+
+Fix the issue that an exception is thrown if a xml report does not exists.
+
 ## [1.2.2](https://github.com/Codeception/robo-paracept/releases/tag/1.2.2) Bugfix HTML Merger
 
 Fix [#31](https://github.com/Codeception/robo-paracept/issues/31)

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Codeception\Task\Splitter;
 
 use Codeception\Task\Splitter\TestsSplitterTask;
@@ -9,12 +11,14 @@ use PHPUnit\Framework\TestCase;
 use Robo\Exception\TaskException;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Finder\Finder;
+use const Tests\Codeception\Task\TEST_PATH;
 
 /**
  * Class TestsSplitterTaskTest
+ *
  * @coversDefaultClass \Codeception\Task\Splitter\TestsSplitterTask
  */
-class TestsSplitterTaskTest extends TestCase
+final class TestsSplitterTaskTest extends TestCase
 {
     use TestsSplitterTrait;
 
@@ -31,8 +35,7 @@ class TestsSplitterTaskTest extends TestCase
 
         $this->expectException(TaskException::class);
         $this->expectErrorMessage(
-            'This task requires Codeception to be loaded.'
-            . ' Please require autoload.php of Codeception'
+            'This task requires Codeception to be loaded. Please require autoload.php of Codeception'
         );
         $service->run();
     }
@@ -70,10 +73,6 @@ class TestsSplitterTaskTest extends TestCase
     /**
      * @covers ::run
      * @dataProvider providerTestLoadTestsWithDifferentPatterns
-     * @param string $type
-     * @param int $groups
-     * @param string $from
-     * @param int $expectedFiles
      */
     public function testLoadTests(
         string $type,
@@ -84,9 +83,17 @@ class TestsSplitterTaskTest extends TestCase
         $task = new TestsSplitterTask($groups);
         $task->setLogger(new Logger(new NullOutput()));
         $task->testsFrom($from);
+
         $groupTo = TEST_PATH . '/result/group_';
         $task->groupsTo($groupTo);
-        $task->run();
+        $result = $task->run();
+
+        $this->assertNotEmpty($result);
+
+        if ($expectedFiles > 0) {
+            $this->assertTrue($result->wasSuccessful());
+            $this->assertEquals($expectedFiles, count($result['files']));
+        }
 
         $files = Finder::create()
             ->files()
@@ -95,22 +102,21 @@ class TestsSplitterTaskTest extends TestCase
 
         $this->assertCount($expectedFiles, $files->getIterator());
 
-        for ($i = 1; $i <= $expectedFiles; $i++) {
+        for ($i = 1; $i <= $expectedFiles; ++$i) {
             $this->assertFileExists($groupTo . $i);
         }
+
         // check that the dependencies are ordered correct
         if ('depends' === $type) {
-            for ($i = 1; $i <= $expectedFiles; $i++) {
+            for ($i = 1; $i <= $expectedFiles; ++$i) {
                 $content = explode(PHP_EOL, file_get_contents($groupTo . $i));
                 $check = array_flip(
                     array_map(
-                        static function (string $fullpath): string {
-                            return explode(':', $fullpath)[1];
-                        },
+                        static fn(string $fullPath): string => explode(':', $fullPath)[1],
                         $content
                     )
                 );
-                if (preg_grep('/Example1Test\.php/', $content)) {
+                if (preg_grep('#Example1Test\.php#', $content)) {
                     $this->assertGreaterThan(
                         $check['testB'],
                         $check['testA'],
@@ -122,7 +128,8 @@ class TestsSplitterTaskTest extends TestCase
                         'The index of testC must be greater than testA to ensure the correct order.'
                     );
                 }
-                if (preg_grep('/Example2Test\.php/', $content)) {
+
+                if (preg_grep('#Example2Test\.php#', $content)) {
                     $this->assertGreaterThan(
                         $check['testE'],
                         $check['testD'],

@@ -5,17 +5,20 @@ declare(strict_types=1);
 namespace Codeception\Task\Splitter;
 
 use InvalidArgumentException;
+use Robo\Result;
 use RuntimeException;
 
+/**
+ * @see \Tests\Codeception\Task\Splitter\FailedTestSplitterTaskTest
+ */
 class FailedTestSplitterTask extends TestsSplitter
 {
-    /** @var string */
-    private $reportPath = null;
+    private ?string $reportPath = null;
 
     /**
      * @return string - the absolute path to the report file with the failed tests
      */
-    public function getReportPath(): string
+    public function getReportPath(): ?string
     {
         return $this->reportPath;
     }
@@ -23,18 +26,18 @@ class FailedTestSplitterTask extends TestsSplitter
     /**
      * @inheritDoc
      */
-    public function run()
+    public function run(): Result
     {
         $this->claimCodeceptionLoaded();
         $reportPath = $this->getReportPath();
 
         if (!@file_exists($reportPath) || !is_file($reportPath)) {
             throw new RuntimeException(
-                'The reportfile did not exists or is not a regular file.'
+                'The report file did not exists or is not a regular file.'
             );
         }
 
-        $this->splitToGroupFiles(
+        $filenames = $this->splitToGroupFiles(
             $this->filter(
                 explode(
                     PHP_EOL,
@@ -42,13 +45,15 @@ class FailedTestSplitterTask extends TestsSplitter
                 )
             )
         );
+
+        $numFiles = count($filenames);
+
+        return Result::success($this, "Split all tests into $numFiles group files", [
+            'files' => $filenames,
+        ]);
     }
 
-    /**
-     * @param string $reportFilePath
-     * @return FailedTestSplitterTask
-     */
-    public function setReportPath(string $reportFilePath): FailedTestSplitterTask
+    public function setReportPath(string $reportFilePath): self
     {
         if (empty($reportFilePath)) {
             throw new InvalidArgumentException('The reportPath could not be empty!');

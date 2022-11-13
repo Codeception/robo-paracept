@@ -8,15 +8,18 @@ use Codeception\Test\Loader;
 use JsonException;
 use PHPUnit\Framework\DataProviderTestSuite;
 use Robo\Exception\TaskException;
+use Robo\Result;
 use RuntimeException;
 
 /**
  * This task will not consider any 'depends' annotation!
  * It will only split tests by the execution time
+ *
+ * @see \Tests\Codeception\Task\Splitter\SplitTestsByTimeTaskTest
  */
 class SplitTestsByTimeTask extends TestsSplitter
 {
-    protected $statFile = 'tests/_output/timeReport.json';
+    protected string $statFile = 'tests/_output/timeReport.json';
 
     public function statFile(string $path): self
     {
@@ -25,7 +28,7 @@ class SplitTestsByTimeTask extends TestsSplitter
         return $this;
     }
 
-    public function run(): void
+    public function run(): Result
     {
         $this->claimCodeceptionLoaded();
 
@@ -35,6 +38,7 @@ class SplitTestsByTimeTask extends TestsSplitter
 
         $testLoader = new Loader(['path' => $this->testsFrom]);
         $testLoader->loadTests($this->testsFrom);
+
         $tests = $testLoader->getTests();
         $data = $this->readStatFileContent();
 
@@ -46,8 +50,9 @@ class SplitTestsByTimeTask extends TestsSplitter
             if ($test instanceof DataProviderTestSuite) {
                 $test = current($test->tests());
             }
+
             $testName = Descriptor::getTestFullName($test);
-            if (1 !== preg_match('~^/~', $testName)) {
+            if (1 !== preg_match('#^/#', $testName)) {
                 $testName = '/' . $testName;
             }
 
@@ -57,7 +62,7 @@ class SplitTestsByTimeTask extends TestsSplitter
 
         arsort($testsWithTime);
 
-        for ($i = 0; $i < $this->numGroups; $i++) {
+        for ($i = 0; $i < $this->numGroups; ++$i) {
             $groups[$i] = [
                 'tests' => [],
                 'sum' => 0,
@@ -70,6 +75,7 @@ class SplitTestsByTimeTask extends TestsSplitter
             $groups[$i]['sum'] += $time;
         }
 
+        $filenames = [];
         // saving group files
         foreach ($groups as $i => ['tests' => $tests, 'sum' => $sum]) {
             $filename = $this->saveTo . ($i + 1);
@@ -82,14 +88,18 @@ class SplitTestsByTimeTask extends TestsSplitter
                 )
             );
             file_put_contents($filename, implode("\n", $tests));
+            $filenames[] = $filename;
         }
+
+        $numFiles = count($filenames);
+
+        return Result::success($this, "Split all tests into $numFiles group files", [
+            'files' => $filenames,
+        ]);
     }
 
     /**
      * Find group num with min execute time
-     *
-     * @param array $groups
-     * @return int
      */
     protected function getMinGroup(array $groups): int
     {
@@ -105,9 +115,6 @@ class SplitTestsByTimeTask extends TestsSplitter
         return $min;
     }
 
-    /**
-     * @return array
-     */
     private function readStatFileContent(): array
     {
         if (false === ($data = file_get_contents($this->statFile))) {

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Codeception\Task\Merger;
 
 use Codeception\Task\Merger\HtmlReportMerger;
@@ -9,8 +11,9 @@ use DOMNodeList;
 use DOMXPath;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Output\NullOutput;
+use const Tests\Codeception\Task\TEST_PATH;
 
-class HtmlReportMergerTest extends TestCase
+final class HtmlReportMergerTest extends TestCase
 {
     /**
      * @covers ::run
@@ -18,16 +21,17 @@ class HtmlReportMergerTest extends TestCase
     public function testRun(): void
     {
         $expectedTimeInSeconds = 234.98;
-        $expectedTestSum = 3;
         $expectedSuccess= 3;
 
         $reportPath = TEST_PATH . '/fixtures/reports/html/';
         $task = new HtmlReportMerger();
         $task->setLogger(new Logger(new NullOutput()));
+
         $resultReport = TEST_PATH . '/result/report.html';
         $task
             ->from(
                 [
+                    $reportPath . 'report_0.html', // this file did not exists and it should not fail
                     $reportPath . 'report_1.html',
                     $reportPath . 'report_2.html',
                     $reportPath . 'report_3.html',
@@ -51,7 +55,7 @@ class HtmlReportMergerTest extends TestCase
         $values = (new DOMXPath($dstHTML))
             ->query("//h1[text() = 'Codeception Results ']");
         preg_match(
-            '/^Codeception Results .* \((?<timesum>\d+\.\d+)s\)$/',
+            '#^Codeception Results .* \((?<timesum>\d+\.\d+)s\)$#',
             $values[0]->nodeValue,
             $matches
         );

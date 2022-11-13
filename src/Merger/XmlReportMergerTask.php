@@ -9,28 +9,22 @@ use DOMElement;
 use DOMNode;
 use DOMXPath;
 use Robo\Exception\TaskException;
-use Robo\Task\BaseTask;
 
+/**
+ * @see \Tests\Codeception\Task\Merger\XmlReportMergerTaskTest
+ */
 class XmlReportMergerTask extends AbstractMerger
 {
-    /**
-     * @var array|mixed
-     */
-    protected $src = [];
-    /**
-     * @var string
-     */
-    protected $dst;
-    /**
-     * @var bool
-     */
-    protected $summarizeTime = true;
-    /**
-     * @var bool
-     */
-    protected $mergeRewrite = false;
+    protected array $src = [];
+
+    protected string $dst = '';
+
+    protected bool $summarizeTime = true;
+
+    protected bool $mergeRewrite = false;
+
     /** @var DOMElement[][] */
-    protected $suites = [];
+    protected array $suites = [];
 
     public function sumTime(): void
     {
@@ -51,7 +45,6 @@ class XmlReportMergerTask extends AbstractMerger
 
     /**
      * @param array|string $fileName
-     * @return $this
      */
     public function from($fileName): self
     {
@@ -64,11 +57,7 @@ class XmlReportMergerTask extends AbstractMerger
         return $this;
     }
 
-    /**
-     * @param string $fileName
-     * @return $this
-     */
-    public function into($fileName): self
+    public function into(string $fileName): self
     {
         $this->dst = $fileName;
 
@@ -77,33 +66,37 @@ class XmlReportMergerTask extends AbstractMerger
 
     public function run(): void
     {
-        if (!$this->dst) {
+        if ($this->dst === '' || $this->dst === '0') {
             throw new TaskException(
                 $this,
                 "No destination file is set. Use `->into()` method to set result xml"
             );
         }
-        $this->printTaskInfo("Merging JUnit XML reports into {$this->dst}");
+
+        $this->printTaskInfo(sprintf('Merging JUnit XML reports into %s', $this->dst));
         $dstXml = new DOMDocument();
         $dstXml->appendChild($dstXml->createElement('testsuites'));
 
         $this->suites = [];
         foreach ($this->src as $src) {
-            $this->printTaskInfo("Processing $src");
+            $this->printTaskInfo("Processing {$src}");
 
             $srcXml = new DOMDocument();
-            if (!file_exists($src)) {
-                throw new TaskException($this, "XML file $src does not exist");
-            }
-            $loaded = $srcXml->load($src);
-            if (!$loaded) {
-                $this->printTaskInfo("<error>File $src can't be loaded as XML</error>");
+            if (!file_exists($src) || !is_readable($src)) {
+                $this->printTaskWarning('File did not exists or is not readable: ' . $src);
                 continue;
             }
+
+            $loaded = $srcXml->load($src);
+            if (!$loaded) {
+                $this->printTaskInfo("<error>File {$src} can't be loaded as XML</error>");
+                continue;
+            }
+
             $suiteNodes = (new DOMXPath($srcXml))->query('//testsuites/testsuite');
             foreach ($suiteNodes as $suiteNode) {
+                /** @var $suiteNode DOMElement **/
                 $suiteNode = $dstXml->importNode($suiteNode, true);
-                /** @var $suiteNode DOMElement  * */
                 $this->loadSuites($suiteNode);
             }
         }
@@ -154,9 +147,11 @@ class XmlReportMergerTask extends AbstractMerger
                 $data['failures'] += $test->getElementsByTagName('failure')->length;
                 $data['errors'] += $test->getElementsByTagName('error')->length;
             }
+
             foreach ($data as $key => $value) {
                 $resultNode->setAttribute($key, (string)$value);
             }
+
             $dstXml->firstChild->appendChild($resultNode);
         }
     }

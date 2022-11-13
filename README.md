@@ -6,7 +6,7 @@ robo-paracept
 [![Total Downloads](https://poser.pugx.org/codeception/robo-paracept/downloads)](https://packagist.org/packages/codeception/robo-paracept)
 [![License](https://poser.pugx.org/codeception/robo-paracept/license)](https://packagist.org/packages/codeception/robo-paracept)
 
-Robo tasks for Codeception tests parallel execution. Requires [Robo Task Runner](http://robo.li)
+Robo tasks for Codeception tests parallel execution. Requires [Robo Task Runner](https://robo.li)
 
 ## Install via Composer
 
@@ -18,6 +18,7 @@ Include into your RoboFile
 
 ```php
 <?php
+
 require_once 'vendor/autoload.php';
 require_once 'vendor/codeception/codeception/autoload.php';
 
@@ -26,7 +27,6 @@ class RoboFile extends \Robo\Tasks
     use Codeception\Task\Merger\ReportMerger;
     use Codeception\Task\Splitter\TestsSplitterTrait;
 }
-?>
 ```
 
 ## Idea
@@ -42,21 +42,39 @@ So we prepared a set of predefined Robo tasks that can be combined and reconfigu
 Load tests from a folder and distributes them between groups.
 
 ```php
-$this->taskSplitTestsByGroups(5)
+$result = $this->taskSplitTestsByGroups(5)
     ->testsFrom('tests/acceptance')
     ->projectRoot('.')
     ->groupsTo('tests/_data/group_')
     ->run();
+
+// task returns a result which contains information about processed data:
+// optionally check result data   
+if ($result->wasSuccessful()) {
+    $groups = $result['groups'];
+    $tests = $result['tests'];
+    $filenames = $result['files'];
+}
 ```
 
-this command uses `Codeception\Test\Loader` to load tests and organize them between group. If you want just split test file and not actual tests (and not load tests into memory) you can use:
+> This command **loads Codeception into memory**, loads and parses tests to organize them between group. If you want just split test file and not actual tests (and not load tests into memory) use `taskSplitTestFilesByGroups`:
+
+### SplitTestFilesByGroups
+
+To split tests by suites (files) without loading them into memory use `taskSplitTestFilesByGroups` method:
 
 ```php
-$this->taskSplitTestFilesByGroups(5)
+$result = $this->taskSplitTestFilesByGroups(5)
    ->testsFrom('tests')
    ->groupsTo('tests/_data/paratest_')
    ->run();
+
+// optionally check result data
+if ($result->wasSuccessful()) {
+    $filenames = $result['files'];
+}   
 ```
+
 ### SplitTestsByTime
 
 Enable extension for collect execution time of you use taskSplitTestsByTime
@@ -70,11 +88,16 @@ extensions:
 Load tests from a folder and distributes them between groups by execution time.
 
 ```php
-$this->taskSplitTestsByTime(5)
+$result = $this->taskSplitTestsByTime(5)
     ->testsFrom('tests/acceptance')
     ->projectRoot('.')
     ->groupsTo('tests/_data/group_')
     ->run();
+
+// optionally check result data
+if ($result->wasSuccessful()) {
+    $filenames = $result['files'];
+}
 ```
 
 this command need run all tests with `Codeception\Task\TimeReporter` for collect execution time. If you want just split tests between group (and not execute its) you can use SplitTestsByGroups. **Please be aware**: This task will not consider any 'depends' annotation!
@@ -100,11 +123,16 @@ $this->taskMergeFailedTestsReports()
 
 Load the failed Tests from a reportfile into the groups:
 ```php
-$this
+$result = $this
     ->taskSplitFailedTests(5)
     ->setReportPath(\Codeception\Configuration::outputDir() . 'failedTests.txt') // absoulute Path to Reportfile
     ->groupsTo(\Codeception\Configuration::outputDir() . 'group_')
     ->run();
+
+// optionally check result data
+if ($result->wasSuccessful()) {
+    $filenames = $result['files'];
+} 
 ```
 
 ### MergeXmlReports
@@ -179,5 +207,13 @@ class CustomFilter extends DefaultFilter {
 
 The TestFileSplitterTask.php pushes an array of SplFileInfo Objects to the filter.  
 The TestsSplitterTask.php pushes an array of SelfDescribing Objects to the filter.
+
+## Configuration
+
+Load Codeception config file to specify the path to Codeception before split* tasks:
+
+```php
+\Codeception\Configuration::config('tests/codeception.yml');
+```
 
 ### License MIT

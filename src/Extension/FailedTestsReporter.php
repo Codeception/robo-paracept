@@ -26,28 +26,26 @@ class FailedTestsReporter extends Extension
     /** @var string */
     public const REPORT_NAME = 'failedTests';
 
-    /** @var array $failedTests */
-    private $failedTests = [];
+    private array $failedTests = [];
 
     /**
      * @var string[] $events
      */
-    public static $events = [
+    public static array $events = [
         Events::TEST_FAIL => 'afterFail',
         Events::RESULT_PRINT_AFTER => 'endRun',
     ];
 
     /**
      * Event after each failed test - collect the failed test
-     * @param FailEvent $event
      */
     public function afterFail(FailEvent $event): void
     {
-        $this->failedTests[] = $this->getTestname($event);
+        $this->failedTests[] = $this->getTestName($event);
     }
 
     /**
-     * Event after all Tests - write failed tests to reportfile
+     * Event after all Tests - write failed tests to report file
      */
     public function endRun(): void
     {
@@ -63,20 +61,14 @@ class FailedTestsReporter extends Extension
         file_put_contents($file, implode(PHP_EOL, $this->failedTests));
     }
 
-    /**
-     * @param TestEvent $e
-     * @return false|string
-     */
-    public function getTestname(TestEvent $e): string
+    public function getTestName(TestEvent $e): string
     {
         $name = Descriptor::getTestFullName($e->getTest());
 
-        return substr(str_replace($this->getRootDir(), '', $name), 1);
+        // If a leading DIRECTORY_SEPARATOR was found, remove it
+        return ltrim(str_replace($this->getRootDir(), '', $name), DIRECTORY_SEPARATOR);
     }
 
-    /**
-     * @return string
-     */
     public function getUniqReportFile(): string
     {
         return self::REPORT_NAME . '_' . uniqid('', true) . '.txt';

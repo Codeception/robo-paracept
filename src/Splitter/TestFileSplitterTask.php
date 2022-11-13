@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Codeception\Task\Splitter;
 
+use Robo\Result;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
@@ -22,14 +23,18 @@ use Symfony\Component\Finder\SplFileInfo;
  *    ->addFilter(new Filter1())
  *    ->addFilter(new Filter2())
  *    ->run();
- * ?>
  * ```
+ *
+ * @see \Tests\Codeception\Task\Splitter\TestFileSplitterTaskTest
  */
 class TestFileSplitterTask extends TestsSplitter
 {
-    private $pattern = ['*Cept.php', '*Cest.php', '*Test.php', '*.feature'];
+    /**
+     * @var string[]
+     */
+    private array $pattern = ['*Cept.php', '*Cest.php', '*Test.php', '*.feature'];
 
-    public function run()
+    public function run(): Result
     {
         $files = Finder::create()
             ->followLinks()
@@ -38,38 +43,42 @@ class TestFileSplitterTask extends TestsSplitter
             ->in($this->projectRoot ?: getcwd())
             ->exclude($this->excludePath);
 
-        $this->splitToGroupFiles(
+
+
+        $filenames = $this->splitToGroupFiles(
             array_map(
-                static function (SplFileInfo $fileInfo): string {
-                    return $fileInfo->getRelativePathname();
-                },
+                static fn(SplFileInfo $fileInfo): string => $fileInfo->getRelativePathname(),
                 $this->filter(iterator_to_array($files->getIterator()))
             )
         );
+
+        $numFiles = count($filenames);
+
+        return Result::success($this, "Split all tests into $numFiles group files", [
+            'files' => $filenames,
+        ]);
     }
 
     /**
      * @param string[] $pattern
-     * @return TestFileSplitterTask
      */
-    public function setPattern(array $pattern): TestFileSplitterTask
+    public function setPattern(array $pattern): self
     {
         $this->pattern = $pattern;
 
         return $this;
     }
 
-    /**
-     * @param string $pattern
-     * @return TestFileSplitterTask
-     */
-    public function addPattern(string $pattern): TestFileSplitterTask
+    public function addPattern(string $pattern): self
     {
         $this->pattern[] = $pattern;
 
         return $this;
     }
 
+    /**
+     * @return string[]
+     */
     public function getPattern(): array
     {
         return $this->pattern;

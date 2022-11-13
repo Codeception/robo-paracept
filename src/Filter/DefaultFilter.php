@@ -9,10 +9,7 @@ namespace Codeception\Task\Filter;
  */
 class DefaultFilter implements Filter
 {
-    /**
-     * @var array
-     */
-    private $tests;
+    private array $tests = [];
 
     /**
      * @inheritDoc

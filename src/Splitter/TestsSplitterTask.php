@@ -11,7 +11,9 @@ use Codeception\Test\Loader as TestLoader;
 use Exception;
 use PHPUnit\Framework\DataProviderTestSuite;
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
 use ReflectionObject;
+use Robo\Result;
 
 /**
  * Loads all tests into groups and saves them to groupfile according to pattern.
@@ -25,21 +27,21 @@ use ReflectionObject;
  *    ->addFilter(new Filter1())
  *    ->addFilter(new Filter2())
  *    ->run();
- * ?>
  * ```
+ *
+ * @see \Tests\Codeception\Task\Splitter\TestsSplitterTaskTest
  */
 class TestsSplitterTask extends TestsSplitter
 {
-
     /**
-     * @return bool|null
      * @throws \Robo\Exception\TaskException
      */
-    public function run()
+    public function run(): Result
     {
         $this->claimCodeceptionLoaded();
         $tests = $this->filter($this->loadTests());
-        $this->printTaskInfo('Processing ' . count($tests) . ' tests');
+        $numTests = count($tests);
+        $this->printTaskInfo("Processing $numTests tests");
 
         $testsHaveAtLeastOneDependency = false;
 
@@ -52,7 +54,6 @@ class TestsSplitterTask extends TestsSplitter
                 $test = current($test->tests());
             }
 
-            // load dependencies for cest type. Unit tests dependencies are loaded automatically
             if ($test instanceof Cest) {
                 $test->getMetadata()->setServices(['di' => $di]);
                 $test->preload();
@@ -66,7 +67,7 @@ class TestsSplitterTask extends TestsSplitter
                 } else {
                     $testsListWithDependencies[TestDescriptor::getTestFullName($test)] = [];
                 }
-                // little hack to get dependencies from phpunit test cases that are private.
+            // little hack to get dependencies from phpunit test cases that are private.
             } elseif ($test instanceof TestCase) {
                 $ref = new ReflectionObject($test);
                 do {
@@ -80,7 +81,7 @@ class TestsSplitterTask extends TestsSplitter
                         } else {
                             $testsListWithDependencies[TestDescriptor::getTestFullName($test)] = [];
                         }
-                    } catch (\ReflectionException $e) {
+                    } catch (ReflectionException $exception) {
                         // go up on level on inheritance chain.
                     }
                 } while ($ref = $ref->getParentClass());
@@ -98,8 +99,9 @@ class TestsSplitterTask extends TestsSplitter
                 );
             } catch (Exception $e) {
                 $this->printTaskError($e->getMessage());
-                return false;
+                return Result::error($this, $e->getMessage(), ['exception' => $e]);
             }
+
             // resolved and ordered list of dependencies
             $orderedListOfTests = [];
             // helper array
@@ -116,9 +118,10 @@ class TestsSplitterTask extends TestsSplitter
                     );
                 } catch (Exception $e) {
                     $this->printTaskError($e->getMessage());
-                    return false;
+                    return Result::error($this, $e->getMessage(), ['exception' => $e]);
                 }
             }
+
             // if we don't have any dependencies just use keys from original list.
         } else {
             $orderedListOfTests = array_keys($testsListWithDependencies);
@@ -139,33 +142,34 @@ class TestsSplitterTask extends TestsSplitter
                 && $i <= ($this->numGroups - 1)
                 && count($groups[$i]) >= $numberOfElementsInGroup
             ) {
-                $i++;
+                ++$i;
             }
 
             $groups[$i][] = $test;
         }
 
+        $filenames = [];
         // saving group files
-        foreach ($groups as $i => $tests) {
+        foreach ($groups as $i => $groupTests) {
             $filename = $this->saveTo . $i;
             $this->printTaskInfo("Writing $filename");
-            file_put_contents($filename, implode("\n", $tests));
+            file_put_contents($filename, implode("\n", $groupTests));
+            $filenames[] = $filename;
         }
+        $numFiles = count($filenames);
 
-        return null;
+        return Result::success($this, "Split $numTests into $numFiles group files", [
+            'groups' => $groups,
+            'tests' => $tests,
+            'files' => $filenames,
+        ]);
     }
 
-    /**
-     * @return TestLoader
-     */
     protected function getTestLoader(): TestLoader
     {
         return new TestLoader(['path' => $this->testsFrom]);
     }
 
-    /**
-     * @return array
-     */
     protected function loadTests(): array
     {
         $testLoader = $this->getTestLoader();
