@@ -38,7 +38,7 @@
         "optimize-autoloader": true,
         "sort-packages": true,
         "platform": {
-            "php": "7.4.32"
+            "php": "8.0.12"
         }
     },
     "scripts": {
