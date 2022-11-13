@@ -2,9 +2,9 @@ name: Unit Tests
 
 on:
   push:
-    branches: [ "2.0" ]
+    branches: [ "2.1" ]
   pull_request:
-    branches: [ "2.0" ]
+    branches: [ "2.1" ]
 
 jobs:
   test:
