@@ -18,8 +18,10 @@ class XmlReportMergerTask extends AbstractMerger
     protected array $src = [];
 
     protected string $dst = '';
+    protected array $suiteDuration = [];
 
     protected bool $summarizeTime = true;
+    protected bool $maxSuiteTime = false;
 
     protected bool $mergeRewrite = false;
 
@@ -34,6 +36,12 @@ class XmlReportMergerTask extends AbstractMerger
     public function maxTime(): void
     {
         $this->summarizeTime = false;
+    }
+
+    public function maxSuiteTime(): void
+    {
+        $this->summarizeTime = false;
+        $this->maxSuiteTime = true;
     }
 
     public function mergeRewrite(): self
@@ -111,6 +119,7 @@ class XmlReportMergerTask extends AbstractMerger
 
     protected function loadSuites(DOMElement $current): void
     {
+        $this->suiteDuration[$current->getAttribute('name')][] = (float) $current->getAttribute('time');
         /** @var DOMNode $node */
         foreach ($current->childNodes as $node) {
             if ($node instanceof DOMElement) {
@@ -136,13 +145,20 @@ class XmlReportMergerTask extends AbstractMerger
                 'errors' => 0,
                 'time' => 0,
             ];
+
             foreach ($tests as $test) {
                 $resultNode->appendChild($test);
 
                 $data['assertions'] += (int)$test->getAttribute('assertions');
-                $data['time'] = $this->summarizeTime
-                    ? ((float)$test->getAttribute('time') + $data['time'])
-                    : max($test->getAttribute('time'), $data['time']);
+                if ($this->summarizeTime) {
+                    $data['time'] = ((float)$test->getAttribute('time') + $data['time']);
+                } else {
+                    if ($this->maxSuiteTime) {
+                        $data['time'] = max($this->suiteDuration[$suiteName]);
+                    } else {
+                        $data['time'] = max($test->getAttribute('time'), $data['time']);
+                    }
+                }
 
                 $data['failures'] += $test->getElementsByTagName('failure')->length;
                 $data['errors'] += $test->getElementsByTagName('error')->length;

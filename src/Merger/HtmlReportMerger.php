@@ -50,7 +50,20 @@ class HtmlReportMerger extends AbstractMerger
 
     protected bool $previousLibXmlUseErrors = false;
 
-    private float $executionTimeSum = 0;
+    protected bool $maxTime = false;
+
+    protected array $executionTime = [];
+
+    /**
+     * @var string|float
+     */
+    private $executionTimeSum = 0;
+
+
+    public function maxTime(): void
+    {
+        $this->maxTime = true;
+    }
 
     /**
      * HtmlReportMerger constructor.
@@ -198,9 +211,10 @@ class HtmlReportMerger extends AbstractMerger
         if (!$nodeList) {
             throw XPathExpressionException::malformedXPath($xpathHeadline);
         }
-
+        $hoursMinutesSeconds = '(([0-1]?\d|2[0-3])(?::([0-5]?\d))?(?::([0-5]?\d))\.\d+)';
+        $seconds = '\d+\.\d+s';
         $pregResult = preg_match(
-            '#^Codeception Results .* \((?<timesum>\d+\.\d+)s\)$#',
+            "#^Codeception Results .* \((?<timesum>$hoursMinutesSeconds|$seconds)\)$#",
             $nodeList[0]->nodeValue,
             $matches
         );
@@ -213,7 +227,18 @@ class HtmlReportMerger extends AbstractMerger
             return;
         }
 
-        $this->executionTimeSum += (float)$matches['timesum'];
+        if (str_contains($matches['timesum'], 's')) {
+            $matches['timesum'] = str_replace('s', '', $matches['timesum']);
+        }
+        if (!$this->maxTime) {
+            if (str_contains($matches['timesum'], ':')) {
+                $this->executionTimeSum = $this->sumTime(strval($this->executionTimeSum), (string)$matches['timesum']);
+            } else {
+                $this->executionTimeSum += (float)$matches['timesum'];
+            }
+        } else {
+            $this->executionTime[] = (string)$matches['timesum'];
+        }
     }
 
     /**
@@ -238,8 +263,20 @@ class HtmlReportMerger extends AbstractMerger
             $statusNode->nodeValue = 'FAILED';
             $statusAttr->value = 'color: red';
         }
-
-        $executionTimeNode->nodeValue = sprintf(' (%ss)', $this->executionTimeSum);
+        if (!$this->maxTime) {
+            $executionTime = (string)$this->executionTimeSum;
+        } else {
+            usort($this->executionTime, function ($a, $b) {
+                return strcmp($a, $b);
+            });
+            $executionTime = max($this->executionTime);
+        }
+        $executionTimeNode->nodeValue = sprintf(
+            (preg_match('#([0-1]?\d|2[0-3])(?::([0-5]?\d))?(?::([0-5]?\d))\.\d+#', $executionTime))
+                ? ' (%s)'
+                : ' (%ss)',
+            $executionTime
+        );
     }
 
     /**
@@ -341,5 +378,39 @@ class HtmlReportMerger extends AbstractMerger
             $p->setAttribute('onclick', "showHide('{$n}', this)");
             $table->setAttribute('id', "stepContainer" . $n);
         }
+    }
+
+    private function sumTime(string $time1, string $time2): string
+    {
+        $times = [$time1,  $time2];
+        $seconds = 0;
+        $milliseconds = 0;
+        $isHour = false;
+        foreach ($times as $time) {
+            if ($time !== '0') {
+                $output = explode(':', $time);
+                if (count($output) > 2) {
+                    $isHour = true;
+                    [$hour, $minute, $second] = $output;
+                    $seconds += $hour * 3600;
+                } else {
+                    [$minute, $second] = $output;
+                }
+                $seconds += $minute * 60;
+                [$second, $millisecond] = explode('.', $second);
+                $seconds += $second;
+                $milliseconds += $millisecond;
+            }
+        }
+        if ($isHour) {
+            $hours = floor($seconds / 3600);
+            $seconds -= $hours * 3600;
+        }
+        $minutes  = floor($seconds / 60);
+        $seconds -= $minutes * 60;
+
+        return $isHour
+            ? sprintf('%02d:%02d:%02d.%02d', $hours, $minutes, $seconds, $milliseconds)
+            : sprintf('%02d:%02d.%02d', $minutes, $seconds, $milliseconds);
     }
 }
