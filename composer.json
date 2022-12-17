@@ -16,7 +16,7 @@
     "require": {
         "php": "^8.0",
         "consolidation/robo": "^4.0",
-        "symfony/finder": ">=2.7 <6.1",
+        "symfony/finder": ">=4.4.24 <7.0",
         "ext-dom": "*",
         "ext-libxml": "*",
         "ext-json": "*"
