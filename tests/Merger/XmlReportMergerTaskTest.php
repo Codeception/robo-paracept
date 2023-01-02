@@ -26,11 +26,11 @@ final class XmlReportMergerTaskTest extends TestCase
         $this->assertFileExists(TEST_PATH . '/result/merged.xml');
         $xml = file_get_contents(TEST_PATH . '/result/merged.xml');
         $this->assertStringContainsString(
-            '<testsuite name="cli" tests="53" assertions="209" failures="0" errors="0"',
+            '<testsuite name="cli" tests="53" assertions="209" failures="0" errors="0" time="5.215475">',
             $xml
         );
         $this->assertStringContainsString(
-            '<testsuite name="unit" tests="22" assertions="52"',
+            '<testsuite name="unit" tests="22" assertions="52" failures="0" errors="0" time="0.160419">',
             $xml
         );
         $this->assertStringContainsString(
@@ -42,6 +42,28 @@ final class XmlReportMergerTaskTest extends TestCase
             '<testcase name="testBasic" class="GenerateCestTest"',
             $xml,
             'from second file'
+        );
+    }
+
+    public function testMergeReportsMaxSuiteTime(): void
+    {
+        $task = new XmlReportMergerTask();
+        $task->setLogger(new Logger(new NullOutput()));
+        $task->maxSuiteTime();
+        $task->from(TEST_PATH . '/fixtures/result1.xml')
+            ->from(TEST_PATH . '/fixtures/result2.xml')
+            ->into(TEST_PATH . '/result/merged.xml')
+            ->run();
+
+        $this->assertFileExists(TEST_PATH . '/result/merged.xml');
+        $xml = file_get_contents(TEST_PATH . '/result/merged.xml');
+        $this->assertStringContainsString(
+            '<testsuite name="cli" tests="53" assertions="209" failures="0" errors="0" time="4.980045">',
+            $xml
+        );
+        $this->assertStringContainsString(
+            '<testsuite name="unit" tests="22" assertions="52" failures="0" errors="0" time="0.160419">',
+            $xml
         );
     }
 
