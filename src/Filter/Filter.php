@@ -12,13 +12,11 @@ interface Filter
 {
     /**
      * Set the collection of tests which should be filtered
-     * @param array $tests
      */
     public function setTests(array $tests): void;
 
     /**
      * Returns the filtered Tests
-     * @return array
      */
     public function filter(): array;
 }

@@ -20,15 +20,17 @@ use Symfony\Component\Finder\SplFileInfo;
  *    ->testsFrom('tests/unit/Acme')
  *    ->codeceptionRoot('projects/tested')
  *    ->groupsTo('tests/_log/paratest_')
- *    ->addFilter(new Filter1())
- *    ->addFilter(new Filter2())
  *    ->run();
- * ?>
  * ```
+ *
+ * @see \Tests\Codeception\Task\Splitter\TestFileSplitterTaskTest
  */
 class TestFileSplitterTask extends TestsSplitter
 {
-    private $pattern = ['*Cept.php', '*Cest.php', '*Test.php', '*.feature'];
+    /**
+     * @var string[]
+     */
+    private array $pattern = ['*Cept.php', '*Cest.php', '*Test.php', '*.feature'];
 
     public function run(): Result
     {
@@ -43,9 +45,7 @@ class TestFileSplitterTask extends TestsSplitter
 
         $filenames = $this->splitToGroupFiles(
             array_map(
-                static function (SplFileInfo $fileInfo): string {
-                    return $fileInfo->getRelativePathname();
-                },
+                static fn(SplFileInfo $fileInfo): string => $fileInfo->getRelativePathname(),
                 $this->filter(iterator_to_array($files->getIterator()))
             )
         );
@@ -59,26 +59,24 @@ class TestFileSplitterTask extends TestsSplitter
 
     /**
      * @param string[] $pattern
-     * @return TestFileSplitterTask
      */
-    public function setPattern(array $pattern): TestFileSplitterTask
+    public function setPattern(array $pattern): self
     {
         $this->pattern = $pattern;
 
         return $this;
     }
 
-    /**
-     * @param string $pattern
-     * @return TestFileSplitterTask
-     */
-    public function addPattern(string $pattern): TestFileSplitterTask
+    public function addPattern(string $pattern): self
     {
         $this->pattern[] = $pattern;
 
         return $this;
     }
 
+    /**
+     * @return string[]
+     */
     public function getPattern(): array
     {
         return $this->pattern;

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Codeception\Task\Filter;
 
 use Codeception\Task\Filter\GroupFilter;
@@ -7,14 +9,15 @@ use Codeception\Test\Loader as TestLoader;
 use InvalidArgumentException;
 use PHPUnit\Framework\SelfDescribing;
 use PHPUnit\Framework\TestCase;
+use const Tests\Codeception\Task\TEST_PATH;
 
 /**
  * Class GroupFilterTest
+ *
  * @coversDefaultClass \Codeception\Task\Filter\GroupFilter
  */
-class GroupFilterTest extends TestCase
+final class GroupFilterTest extends TestCase
 {
-
     /**
      * @testdox Test that the excluded group is unique in the array
      * @covers ::getExcludedGroups
@@ -115,11 +118,13 @@ class GroupFilterTest extends TestCase
     {
         $loader = new TestLoader(['path' => TEST_PATH . '/fixtures/Cests']);
         $loader->loadTests(TEST_PATH . '/fixtures/Cests');
+
         $tests = $loader->getTests();
         $this->assertCount(3, $tests);
         // Filter with no groups should return all tests
         $filter = new GroupFilter();
         $filter->setTests($tests);
+
         $filtered = $filter->filter();
         $this->assertCount(3, $filtered);
         // Filter with group foo should return 2 Tests
@@ -142,11 +147,13 @@ class GroupFilterTest extends TestCase
     {
         $loader = new TestLoader(['path' => TEST_PATH . '/fixtures/Unit']);
         $loader->loadTests(TEST_PATH . '/fixtures/Unit');
+
         $tests = $loader->getTests();
         $this->assertCount(4, $tests);
         // Filter with no groups should return all tests
         $filter = new GroupFilter();
         $filter->setTests($tests);
+
         $filtered = $filter->filter();
         $this->assertCount(4, $filtered);
         // Filter with group foo should return 2 Tests

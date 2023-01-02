@@ -9,8 +9,6 @@ use Robo\Collection\CollectionBuilder;
 trait TestsSplitterTrait
 {
     /**
-     * @param int $numGroups
-     *
      * @return TestsSplitterTask|CollectionBuilder
      */
     protected function taskSplitTestsByGroups(int $numGroups)
@@ -19,8 +17,6 @@ trait TestsSplitterTrait
     }
 
     /**
-     * @param int $numGroups
-     *
      * @return TestFileSplitterTask|CollectionBuilder
      */
     protected function taskSplitTestFilesByGroups(int $numGroups)
@@ -29,8 +25,6 @@ trait TestsSplitterTrait
     }
 
     /**
-     * @param int $numGroups
-     *
      * @return TestFileSplitterTask|CollectionBuilder
      */
     protected function taskSplitTestsByTime(int $numGroups)
@@ -39,8 +33,6 @@ trait TestsSplitterTrait
     }
 
     /**
-     * @param int $numGroups
-     *
      * @return TestFileSplitterTask|CollectionBuilder
      */
     protected function taskSplitFailedTests(int $numGroups)

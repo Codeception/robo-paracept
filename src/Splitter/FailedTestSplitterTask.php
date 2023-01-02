@@ -8,15 +8,17 @@ use InvalidArgumentException;
 use Robo\Result;
 use RuntimeException;
 
+/**
+ * @see \Tests\Codeception\Task\Splitter\FailedTestSplitterTaskTest
+ */
 class FailedTestSplitterTask extends TestsSplitter
 {
-    /** @var string */
-    private $reportPath = null;
+    private ?string $reportPath = null;
 
     /**
      * @return string - the absolute path to the report file with the failed tests
      */
-    public function getReportPath(): string
+    public function getReportPath(): ?string
     {
         return $this->reportPath;
     }
@@ -31,7 +33,7 @@ class FailedTestSplitterTask extends TestsSplitter
 
         if (!@file_exists($reportPath) || !is_file($reportPath)) {
             throw new RuntimeException(
-                'The reportfile did not exists or is not a regular file.'
+                'The report file did not exists or is not a regular file.'
             );
         }
 
@@ -51,11 +53,7 @@ class FailedTestSplitterTask extends TestsSplitter
         ]);
     }
 
-    /**
-     * @param string $reportFilePath
-     * @return FailedTestSplitterTask
-     */
-    public function setReportPath(string $reportFilePath): FailedTestSplitterTask
+    public function setReportPath(string $reportFilePath): self
     {
         if (empty($reportFilePath)) {
             throw new InvalidArgumentException('The reportPath could not be empty!');

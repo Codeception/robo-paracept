@@ -1,5 +1,6 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 namespace Tests\Codeception\Task\Splitter;
 
@@ -9,12 +10,14 @@ use Consolidation\Log\Logger;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Finder\Finder;
+use const Tests\Codeception\Task\TEST_PATH;
 
 /**
  * Class TestFileSplitterTaskTest
+ *
  * @coversDefaultClass \Codeception\Task\Splitter\TestFileSplitterTask
  */
-class TestFileSplitterTaskTest extends TestCase
+final class TestFileSplitterTaskTest extends TestCase
 {
     use TestsSplitterTrait;
 
@@ -70,9 +73,10 @@ class TestFileSplitterTaskTest extends TestCase
             ->groupsTo($groupTo)
             ->run();
 
-        for ($i = 1; $i <= $expected; $i++) {
+        for ($i = 1; $i <= $expected; ++$i) {
             $this->assertFileExists($groupTo . $i);
         }
+
         $this->assertFileDoesNotExist($groupTo . ($expected + 1));
     }
 

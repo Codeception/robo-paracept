@@ -6,7 +6,7 @@ robo-paracept
 [![Total Downloads](https://poser.pugx.org/codeception/robo-paracept/downloads)](https://packagist.org/packages/codeception/robo-paracept)
 [![License](https://poser.pugx.org/codeception/robo-paracept/license)](https://packagist.org/packages/codeception/robo-paracept)
 
-Robo tasks for Codeception tests parallel execution. Requires [Robo Task Runner](http://robo.li)
+Robo tasks for Codeception tests parallel execution. Requires [Robo Task Runner](https://robo.li)
 
 ## Install via Composer
 
@@ -18,6 +18,7 @@ Include into your RoboFile
 
 ```php
 <?php
+
 require_once 'vendor/autoload.php';
 require_once 'vendor/codeception/codeception/autoload.php';
 
@@ -26,7 +27,6 @@ class RoboFile extends \Robo\Tasks
     use Codeception\Task\Merger\ReportMerger;
     use Codeception\Task\Splitter\TestsSplitterTrait;
 }
-?>
 ```
 
 ## Idea
