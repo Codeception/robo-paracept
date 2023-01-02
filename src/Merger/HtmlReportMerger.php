@@ -163,21 +163,29 @@ class HtmlReportMerger extends AbstractMerger
                 throw XPathExpressionException::malformedXPath($xpathExprSuiteNodes);
             }
 
-            $j = 0;
-            foreach ($suiteNodes as $suiteNode) {
-                if ($suiteNode->getAttribute('class') == '') {
-                    //move to next reference node
-                    ++$j;
-                    if ($j > $refnodes->length - 1) {
-                        break;
-                    }
+            // Do not process the "summary" node anymore:
+            for ($j = 0; $j < $suiteNodes->length - 1; $j++) {
+                $suiteNode = $suiteNodes->item($j);
 
+                if ($suiteNode->getAttribute('class') == '') {
+                    // Find matching reference node
+                    $toFind = $suiteNode->nodeValue;
+                    $idxOfRefNode = $this->findRefNodeIdx($refnodes, $toFind);
+                    // if not found it is a new suite => append suite header and insert at the end == insert before the last one (= summary)
+                    if ($idxOfRefNode == -1) {
+                      $suiteNode = $dstHTML->importNode($suiteNode, true);
+                      $table->insertBefore($suiteNode, $refnodes->item($refnodes->length));
+
+                      $insertIdx = $refnodes->length + 1;
+                    } else {
+                      $insertIdx = $idxOfRefNode + 1;
+                    }
                     continue;
                 }
 
                 //insert nodes before current reference node
                 $suiteNode = $dstHTML->importNode($suiteNode, true);
-                $table->insertBefore($suiteNode, $refnodes->item($j));
+                $table->insertBefore($suiteNode, $refnodes->item($insertIdx));
             }
         }
 
@@ -196,6 +204,15 @@ class HtmlReportMerger extends AbstractMerger
 
         //return to initial statement
         libxml_use_internal_errors($this->previousLibXmlUseErrors);
+    }
+
+    private function findRefNodeIdx(DOMNodeList $refNodes, string $nodeValue) {
+      for ($i = 0; $i < $refNodes->count(); $i++) {
+        if ($refNodes->item($i)->nodeValue == $nodeValue) {
+          return $i;
+        }
+      }
+      return -1;
     }
 
     /**
