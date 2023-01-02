@@ -20,8 +20,6 @@ use Symfony\Component\Finder\SplFileInfo;
  *    ->testsFrom('tests/unit/Acme')
  *    ->codeceptionRoot('projects/tested')
  *    ->groupsTo('tests/_log/paratest_')
- *    ->addFilter(new Filter1())
- *    ->addFilter(new Filter2())
  *    ->run();
  * ```
  *
