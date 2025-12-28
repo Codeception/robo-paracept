@@ -146,9 +146,9 @@ abstract class TestsSplitter extends BaseTask
                 // just test name, that means that class name is the same, just different method name
                 if (strrpos($dependency, ':') === false) {
                     $testsListWithDependencies[$testName][$i] = trim(
-                            substr($testName, 0, strrpos($testName, ':')),
-                            ':'
-                        ) . ':' . $dependency;
+                        substr($testName, 0, strrpos($testName, ':')),
+                        ':'
+                    ) . ':' . $dependency;
                     continue;
                 }
 
